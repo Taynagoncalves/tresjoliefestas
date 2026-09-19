@@ -25,6 +25,7 @@
   --radius-lg: 28px;
   --radius-md: 18px;
   --radius-sm: 10px;
+  --header-height: clamp(84px, 11vw, 118px);
 
   /* Sombra suave */
   --shadow-soft: 0 10px 30px rgba(201, 143, 134, 0.18);
@@ -176,10 +177,10 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 88px;
+  height: var(--header-height);
 }
 
-.header__logo img { height: 72px; width: auto; }
+.header__logo img { height: clamp(64px, 9vw, 98px); width: auto; }
 
 .nav { display: none; }
 
@@ -219,7 +220,7 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   transform: translateX(100%);
   transition: transform 0.35s ease;
   z-index: 1050;
-  padding: calc(88px + 2rem) 2rem 2rem;
+  padding: calc(var(--header-height) + 2rem) 2rem 2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -252,7 +253,7 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
-  padding-top: calc(88px + clamp(2rem, 6vw, 4rem));
+  padding-top: calc(var(--header-height) + clamp(2rem, 6vw, 4rem));
   padding-bottom: clamp(3rem, 8vw, 5rem);
   background: linear-gradient(180deg, var(--color-pink-bg) 0%, #FFFFFF 100%);
   overflow: hidden;
@@ -634,7 +635,7 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 }
 
 .footer__brand { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
-.footer__logo { height: 100px; width: auto; filter: brightness(0) invert(1); opacity: 0.9; }
+.footer__logo { height: clamp(90px, 12vw, 130px); width: auto; border-radius: var(--radius-sm); }
 
 .footer__instagram {
   display: inline-flex;
