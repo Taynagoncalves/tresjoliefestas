@@ -389,6 +389,50 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   color: var(--color-charcoal);
 }
 
+/* ---------- Montagem de festa ---------- */
+.montagem { background: var(--color-pink-bg); }
+
+.montagem__tagline {
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+  color: var(--color-charcoal);
+  margin: 0 auto 2rem;
+  max-width: 560px;
+}
+
+.montagem__list {
+  list-style: disc;
+  max-width: 520px;
+  margin: 0 auto clamp(2.5rem, 6vw, 3.5rem);
+  padding-left: 1.4rem;
+  color: var(--color-charcoal);
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.montagem__gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.montagem__photo {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 6px solid var(--color-white);
+  box-shadow: var(--shadow-card);
+}
+
+.montagem__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* ---------- Cenários / Galeria ---------- */
 .cenarios { background: var(--color-pink-bg); position: relative; }
 
@@ -670,6 +714,9 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   .cards-grid--3 { grid-template-columns: repeat(3, 1fr); }
 
   .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .montagem__gallery { grid-template-columns: repeat(2, 1fr); }
+  .montagem__photo--wide { grid-column: 1 / 3; aspect-ratio: 16 / 9; }
 
   .espaco__inner { flex-direction: row; align-items: stretch; }
   .espaco__info, .espaco__map { flex: 1; }
