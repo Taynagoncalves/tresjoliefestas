@@ -317,13 +317,16 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 
 .hero__balloon {
   position: absolute;
-  font-size: 2.5rem;
-  opacity: 0.5;
+  width: 44px;
+  height: auto;
+  color: var(--color-rose-gold);
+  opacity: 0.55;
+  filter: drop-shadow(0 6px 12px rgba(201,143,134,0.35));
   animation: floaty 6s ease-in-out infinite;
   pointer-events: none;
 }
 .hero__balloon--1 { top: 10%; left: 4%; animation-delay: 0.5s; }
-.hero__balloon--2 { top: 60%; left: 90%; font-size: 1.8rem; animation-delay: 1.5s; }
+.hero__balloon--2 { top: 60%; left: 90%; width: 30px; animation-delay: 1.5s; }
 
 @keyframes floaty {
   0%, 100% { transform: translateY(0); }
@@ -605,12 +608,14 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 
 .cta__balloon {
   position: absolute;
-  font-size: 3rem;
-  opacity: 0.4;
+  width: 60px;
+  height: auto;
+  color: var(--color-rose-gold-dark);
+  opacity: 0.45;
   animation: floaty 5s ease-in-out infinite;
 }
 .cta__balloon--1 { top: 8%; left: 8%; }
-.cta__balloon--2 { bottom: 10%; right: 8%; animation-delay: 1s; font-size: 2.2rem; }
+.cta__balloon--2 { bottom: 10%; right: 8%; animation-delay: 1s; width: 42px; }
 
 /* ---------- Rodapé ---------- */
 .footer {

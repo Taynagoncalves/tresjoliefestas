@@ -47,6 +47,15 @@
 </head>
 <body>
 
+<!-- Símbolos SVG reutilizáveis -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-balloon" viewBox="0 0 100 150">
+    <path d="M50 2C26 2 9 24 9 51c0 25 15 45 33 50l-2 9h20l-2-9c18-5 33-25 33-50C91 24 74 2 50 2z" fill="currentColor"/>
+    <path d="M50 101l-5 12h10l-5-12z" fill="currentColor"/>
+    <path d="M50 113c-9 14-9 16 0 30" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
 <!-- ===== HEADER ===== -->
 <header class="header" id="header">
   <div class="container header__inner">
@@ -98,8 +107,8 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero" id="inicio">
-    <div class="hero__balloon hero__balloon--1" aria-hidden="true">🎈</div>
-    <div class="hero__balloon hero__balloon--2" aria-hidden="true">🎈</div>
+    <svg class="hero__balloon hero__balloon--1" viewBox="0 0 100 150" aria-hidden="true"><use href="#icon-balloon"></use></svg>
+    <svg class="hero__balloon hero__balloon--2" viewBox="0 0 100 150" aria-hidden="true"><use href="#icon-balloon"></use></svg>
 
     <div class="container hero__inner">
       <div class="hero__content fade-in-up">
@@ -379,8 +388,8 @@
 
   <!-- ===== CTA FINAL ===== -->
   <section class="cta">
-    <div class="cta__balloon cta__balloon--1" aria-hidden="true">🎈</div>
-    <div class="cta__balloon cta__balloon--2" aria-hidden="true">🎈</div>
+    <svg class="cta__balloon cta__balloon--1" viewBox="0 0 100 150" aria-hidden="true"><use href="#icon-balloon"></use></svg>
+    <svg class="cta__balloon cta__balloon--2" viewBox="0 0 100 150" aria-hidden="true"><use href="#icon-balloon"></use></svg>
     <div class="container cta__inner fade-in-up">
       <h2 class="cta__title">Vamos montar a festa dos seus sonhos?</h2>
       <a href="#" class="btn btn--primary btn--large js-whatsapp" target="_blank" rel="noopener">
