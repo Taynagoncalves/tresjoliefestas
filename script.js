@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupImagePlaceholders();
   setupGalleryLightbox();
   setupHeroCarousel();
+  setupCart();
   setYear();
 });
 
@@ -332,6 +333,214 @@ function setupHeroCarousel() {
 
   update();
   startAutoplay();
+}
+
+/* ---------- Carrinho de locação ---------- */
+function setupCart() {
+  const cartFloat = document.getElementById('cart-float');
+  const cartBadge = document.getElementById('cart-badge');
+  const cartDrawer = document.getElementById('cart-drawer');
+  const cartOverlay = document.getElementById('cart-drawer-overlay');
+  const cartClose = document.getElementById('cart-drawer-close');
+  const cartItemsWrap = document.getElementById('cart-items');
+  const checkoutBtn = document.getElementById('cart-checkout-btn');
+  const addButtons = document.querySelectorAll('.js-add-to-cart');
+
+  const checkoutModal = document.getElementById('checkout-modal');
+  const checkoutOverlay = document.getElementById('checkout-overlay');
+  const checkoutCloseBtn = document.getElementById('checkout-close');
+  const checkoutForm = document.getElementById('checkout-form');
+  const nameInput = document.getElementById('checkout-name');
+  const localInput = document.getElementById('checkout-local');
+  const horarioInput = document.getElementById('checkout-horario');
+
+  if (!cartFloat || !cartDrawer || !cartItemsWrap || !checkoutModal || !checkoutForm) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cart = [];
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function addToCart(name, image) {
+    const existing = cart.find((item) => item.name === name);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({ name, image, qty: 1 });
+    }
+    renderCart();
+  }
+
+  function removeFromCart(name) {
+    cart = cart.filter((item) => item.name !== name);
+    renderCart();
+  }
+
+  function renderCart() {
+    if (!cart.length) {
+      cartItemsWrap.innerHTML = '<p class="cart-drawer__empty" id="cart-empty">Seu carrinho está vazio. Clique em "Alugar" nos cenários para adicionar aqui.</p>';
+    } else {
+      cartItemsWrap.innerHTML = cart.map((item) => `
+        <div class="cart-item">
+          <img class="cart-item__thumb" src="${item.image}" alt="${escapeHtml(item.name)}">
+          <div class="cart-item__info">
+            <p class="cart-item__name">${escapeHtml(item.name)}</p>
+            <p class="cart-item__qty">Quantidade: ${item.qty}</p>
+          </div>
+          <button type="button" class="cart-item__remove js-cart-remove" data-name="${escapeHtml(item.name)}" aria-label="Remover ${escapeHtml(item.name)} do carrinho">&times;</button>
+        </div>
+      `).join('');
+
+      cartItemsWrap.querySelectorAll('.js-cart-remove').forEach((btn) => {
+        btn.addEventListener('click', () => removeFromCart(btn.dataset.name));
+      });
+    }
+
+    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+    if (totalQty > 0) {
+      cartBadge.hidden = false;
+      cartBadge.textContent = totalQty;
+    } else {
+      cartBadge.hidden = true;
+    }
+    if (checkoutBtn) checkoutBtn.disabled = cart.length === 0;
+  }
+
+  function bumpCart() {
+    cartFloat.classList.add('is-bumping');
+    setTimeout(() => cartFloat.classList.remove('is-bumping'), 400);
+  }
+
+  function flyToCart(imgEl) {
+    if (prefersReducedMotion || !imgEl) {
+      bumpCart();
+      return;
+    }
+
+    const startRect = imgEl.getBoundingClientRect();
+    const endRect = cartFloat.getBoundingClientRect();
+
+    const clone = document.createElement('img');
+    clone.src = imgEl.src;
+    clone.className = 'cart-fly-item';
+    clone.style.left = `${startRect.left}px`;
+    clone.style.top = `${startRect.top}px`;
+    clone.style.width = `${startRect.width}px`;
+    clone.style.height = `${startRect.height}px`;
+    clone.style.opacity = '1';
+    document.body.appendChild(clone);
+
+    // Força o navegador a registrar o estado inicial antes de animar
+    // eslint-disable-next-line no-unused-expressions
+    clone.getBoundingClientRect();
+
+    requestAnimationFrame(() => {
+      clone.style.left = `${endRect.left + endRect.width / 2 - 14}px`;
+      clone.style.top = `${endRect.top + endRect.height / 2 - 14}px`;
+      clone.style.width = '28px';
+      clone.style.height = '28px';
+      clone.style.opacity = '0.2';
+    });
+
+    clone.addEventListener('transitionend', () => {
+      clone.remove();
+      bumpCart();
+    }, { once: true });
+  }
+
+  function openDrawer() {
+    cartDrawer.classList.add('open');
+    cartOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    cartDrawer.classList.remove('open');
+    cartOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function openCheckout() {
+    if (!cart.length) return;
+    closeDrawer();
+    checkoutModal.classList.add('open');
+    checkoutOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    nameInput.focus();
+  }
+
+  function closeCheckout() {
+    checkoutModal.classList.remove('open');
+    checkoutOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  addButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const { name, image } = btn.dataset;
+      addToCart(name, image);
+
+      const card = btn.closest('.gallery-item');
+      const img = card ? card.querySelector('img') : null;
+      flyToCart(img);
+
+      btn.classList.add('is-added');
+      setTimeout(() => btn.classList.remove('is-added'), 900);
+    });
+  });
+
+  cartFloat.addEventListener('click', openDrawer);
+  if (cartClose) cartClose.addEventListener('click', closeDrawer);
+  if (cartOverlay) cartOverlay.addEventListener('click', closeDrawer);
+  if (checkoutBtn) checkoutBtn.addEventListener('click', openCheckout);
+  if (checkoutCloseBtn) checkoutCloseBtn.addEventListener('click', closeCheckout);
+  if (checkoutOverlay) checkoutOverlay.addEventListener('click', closeCheckout);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    closeCheckout();
+    closeDrawer();
+  });
+
+  checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    let valid = true;
+    [nameInput, horarioInput].forEach((input) => {
+      if (!input.value.trim()) {
+        input.classList.add('is-invalid');
+        valid = false;
+      } else {
+        input.classList.remove('is-invalid');
+      }
+    });
+    if (!valid) return;
+
+    const lines = [
+      'Olá! Gostaria de fazer um pedido de locação pela Très Jolie Festas:',
+      '',
+      ...cart.map((item) => `• ${item.name}${item.qty > 1 ? ` (x${item.qty})` : ''}`),
+      '',
+      `Nome: ${nameInput.value.trim()}`,
+    ];
+    if (localInput.value.trim()) lines.push(`Local da festa: ${localInput.value.trim()}`);
+    lines.push(`Data/horário do evento: ${horarioInput.value.trim()}`);
+
+    const message = lines.join('\n');
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank', 'noopener');
+
+    closeCheckout();
+    checkoutForm.reset();
+    cart = [];
+    renderCart();
+  });
+
+  renderCart();
 }
 
 /* ---------- Ano do rodapé ---------- */
