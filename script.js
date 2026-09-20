@@ -484,7 +484,7 @@ function setupCart() {
       const { name, image } = btn.dataset;
       addToCart(name, image);
 
-      const card = btn.closest('.gallery-item');
+      const card = btn.closest('.gallery-card');
       const img = card ? card.querySelector('img') : null;
       flyToCart(img);
 
