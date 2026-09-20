@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScrollAnimations();
   setupImagePlaceholders();
   setupGalleryLightbox();
+  setupHeroCarousel();
   setYear();
 });
 
@@ -253,6 +254,83 @@ function setupGalleryLightbox() {
       diff > 0 ? showPrev() : showNext();
     }
   }, { passive: true });
+}
+
+/* ---------- Carrossel do Hero ---------- */
+function setupHeroCarousel() {
+  const carousel = document.getElementById('hero-carousel');
+  const track = document.getElementById('hero-carousel-track');
+  const dotsWrap = document.getElementById('hero-carousel-dots');
+  const btnPrev = document.getElementById('hero-carousel-prev');
+  const btnNext = document.getElementById('hero-carousel-next');
+
+  if (!carousel || !track || !dotsWrap) return;
+
+  const slides = Array.from(track.children);
+  if (!slides.length) return;
+
+  let currentIndex = 0;
+  let autoplayTimer = null;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const dots = slides.map((_, index) => {
+    const dot = document.createElement('button');
+    dot.className = 'hero__carousel-dot';
+    dot.setAttribute('aria-label', `Ir para foto ${index + 1}`);
+    dot.addEventListener('click', () => goTo(index));
+    dotsWrap.appendChild(dot);
+    return dot;
+  });
+
+  function update() {
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    dots.forEach((dot, index) => dot.classList.toggle('is-active', index === currentIndex));
+  }
+
+  function goTo(index) {
+    currentIndex = (index + slides.length) % slides.length;
+    update();
+  }
+
+  function next() { goTo(currentIndex + 1); }
+  function prev() { goTo(currentIndex - 1); }
+
+  function startAutoplay() {
+    if (prefersReducedMotion) return;
+    stopAutoplay();
+    autoplayTimer = setInterval(next, 4500);
+  }
+
+  function stopAutoplay() {
+    if (autoplayTimer) clearInterval(autoplayTimer);
+    autoplayTimer = null;
+  }
+
+  btnPrev.addEventListener('click', () => { prev(); startAutoplay(); });
+  btnNext.addEventListener('click', () => { next(); startAutoplay(); });
+
+  carousel.addEventListener('mouseenter', stopAutoplay);
+  carousel.addEventListener('mouseleave', startAutoplay);
+  carousel.addEventListener('focusin', stopAutoplay);
+  carousel.addEventListener('focusout', startAutoplay);
+
+  // Swipe (mobile)
+  let touchStartX = 0;
+  carousel.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    stopAutoplay();
+  }, { passive: true });
+
+  carousel.addEventListener('touchend', (e) => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 40) {
+      diff > 0 ? prev() : next();
+    }
+    startAutoplay();
+  }, { passive: true });
+
+  update();
+  startAutoplay();
 }
 
 /* ---------- Ano do rodapé ---------- */

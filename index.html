@@ -161,11 +161,38 @@
         </ul>
       </div>
 
-      <div class="hero__gallery fade-in-up" aria-hidden="false">
-        <img class="hero__img hero__img--1 js-photo" data-src="imagens/imagem%20inicio.jpeg" alt="Cenário elegante em branco com arco decorativo e pedestais" loading="lazy">
-        <img class="hero__img hero__img--2 js-photo" data-src="imagens/imagem%205.jpeg" alt="Cenário decorado com painel redondo tema unicórnio" loading="lazy">
-        <img class="hero__img hero__img--3 js-photo" data-src="imagens/imagem%206.jpeg" alt="Cenário rosa com laço decorativo e número em neon" loading="lazy">
+      <div class="hero__carousel fade-in-up" id="hero-carousel" aria-roledescription="carrossel" aria-label="Fotos de cenários">
+        <div class="hero__carousel-track" id="hero-carousel-track">
+          <div class="hero__slide">
+            <img class="js-photo" data-src="imagens/imagem%20inicio.jpeg" alt="Cenário elegante em branco com arco decorativo e pedestais" loading="lazy">
+          </div>
+          <div class="hero__slide">
+            <img class="js-photo" data-src="imagens/imagem%204.jpeg" alt="Cenário tema fazendinha com painel redondo e cercadinho de madeira" loading="lazy">
+          </div>
+          <div class="hero__slide">
+            <img class="js-photo" data-src="imagens/imagem%205.jpeg" alt="Cenário decorado com painel redondo tema unicórnio" loading="lazy">
+          </div>
+          <div class="hero__slide">
+            <img class="js-photo" data-src="imagens/imagem%206.jpeg" alt="Cenário rosa com laço decorativo e número em neon" loading="lazy">
+          </div>
+          <div class="hero__slide">
+            <img class="js-photo" data-src="imagens/imagem%208.jpeg" alt="Cenário tema Pequena Sereia com painel redondo" loading="lazy">
+          </div>
+          <div class="hero__slide">
+            <img class="js-photo" data-src="imagens/imagem%2010.jpeg" alt="Cenário tema capivara Feliz Aniversário com número em neon" loading="lazy">
+          </div>
+        </div>
+
         <svg class="hero__heart" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-heart"></use></svg>
+
+        <button class="hero__carousel-btn hero__carousel-btn--prev" id="hero-carousel-prev" aria-label="Foto anterior">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="hero__carousel-btn hero__carousel-btn--next" id="hero-carousel-next" aria-label="Próxima foto">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+
+        <div class="hero__carousel-dots" id="hero-carousel-dots"></div>
       </div>
     </div>
 
