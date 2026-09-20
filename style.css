@@ -13,6 +13,7 @@
   --color-pink-bg-soft: #FBE6E2;
   --color-white: #FFFFFF;
   --color-beige-frame: #EFE1D8;
+  --color-gold: #C9A227;
 
   /* Tipografia */
   --font-title: 'Playfair Display', serif;
@@ -726,26 +727,26 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  background: var(--color-rose-gold);
-  color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-rose-gold-dark);
+  border: 1.5px solid var(--color-gold);
   font-size: 0.82rem;
   font-weight: 700;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
-  box-shadow: 0 4px 10px rgba(201,143,134,0.35);
+  border-radius: 0;
   min-height: 38px;
   transition: background 0.25s ease, transform 0.25s ease;
 }
-.gallery-item__rent:hover { background: var(--color-rose-gold-dark); transform: translateY(-2px); }
+.gallery-item__rent:hover { background: var(--color-pink-bg-soft); transform: translateY(-2px); }
 .gallery-item__rent svg {
   width: 15px; height: 15px;
   fill: none;
-  stroke: currentColor;
+  stroke: var(--color-rose-gold-dark);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.gallery-item__rent.is-added { background: var(--color-taupe); }
+.gallery-item__rent.is-added { background: var(--color-pink-bg-soft); }
 
 .gallery-item__title {
   margin: 0.7rem 0 0;
