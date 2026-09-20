@@ -999,22 +999,21 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   bottom: max(16px, env(safe-area-inset-bottom, 16px));
   width: 52px;
   height: 52px;
-  background: var(--color-white);
-  border: 1.5px solid var(--color-rose-gold);
+  background: var(--color-rose-gold);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 18px rgba(201,143,134,0.28);
+  box-shadow: 0 8px 24px rgba(201,143,134,0.5);
   z-index: 900;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease;
 }
-.cart-float:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(201,143,134,0.38); }
+.cart-float:hover { transform: translateY(-3px); }
 .cart-float .icon {
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   fill: none;
-  stroke: var(--color-rose-gold);
-  stroke-width: 1.5;
+  stroke: var(--color-white);
+  stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
