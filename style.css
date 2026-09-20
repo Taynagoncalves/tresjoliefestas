@@ -545,6 +545,43 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   box-shadow: var(--shadow-card);
 }
 
+.montagem__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin: 0 0 2rem;
+  padding: 1.1rem 1.3rem;
+  background: var(--color-white);
+  border: 2px solid var(--color-rose-gold);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+}
+.montagem__notice-icon {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-rose-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.montagem__notice-icon svg {
+  width: 17px; height: 17px;
+  fill: none;
+  stroke: var(--color-white);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.montagem__notice p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--color-charcoal);
+}
+.montagem__notice strong { color: var(--color-rose-gold-dark); }
+
 .montagem__benefits {
   display: flex;
   flex-direction: column;
