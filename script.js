@@ -256,13 +256,12 @@ function setupGalleryLightbox() {
   }, { passive: true });
 }
 
-/* ---------- Carrossel do Hero ---------- */
+/* ---------- Carrossel de fundo do Hero ---------- */
 function setupHeroCarousel() {
   const carousel = document.getElementById('hero-carousel');
   const track = document.getElementById('hero-carousel-track');
   const dotsWrap = document.getElementById('hero-carousel-dots');
-  const btnPrev = document.getElementById('hero-carousel-prev');
-  const btnNext = document.getElementById('hero-carousel-next');
+  const scrollBtn = document.getElementById('hero-scroll');
 
   if (!carousel || !track || !dotsWrap) return;
 
@@ -277,7 +276,7 @@ function setupHeroCarousel() {
     const dot = document.createElement('button');
     dot.className = 'hero__carousel-dot';
     dot.setAttribute('aria-label', `Ir para foto ${index + 1}`);
-    dot.addEventListener('click', () => goTo(index));
+    dot.addEventListener('click', () => { goTo(index); startAutoplay(); });
     dotsWrap.appendChild(dot);
     return dot;
   });
@@ -306,13 +305,8 @@ function setupHeroCarousel() {
     autoplayTimer = null;
   }
 
-  btnPrev.addEventListener('click', () => { prev(); startAutoplay(); });
-  btnNext.addEventListener('click', () => { next(); startAutoplay(); });
-
   carousel.addEventListener('mouseenter', stopAutoplay);
   carousel.addEventListener('mouseleave', startAutoplay);
-  carousel.addEventListener('focusin', stopAutoplay);
-  carousel.addEventListener('focusout', startAutoplay);
 
   // Swipe (mobile)
   let touchStartX = 0;
@@ -328,6 +322,13 @@ function setupHeroCarousel() {
     }
     startAutoplay();
   }, { passive: true });
+
+  if (scrollBtn) {
+    scrollBtn.addEventListener('click', () => {
+      const nextSection = document.getElementById('como-funciona');
+      if (nextSection) nextSection.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    });
+  }
 
   update();
   startAutoplay();

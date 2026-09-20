@@ -124,77 +124,50 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero" id="inicio">
-    <svg class="hero__balloon hero__balloon--1" viewBox="0 0 100 150" aria-hidden="true"><use href="#icon-balloon"></use></svg>
-    <svg class="hero__balloon hero__balloon--2" viewBox="0 0 100 150" aria-hidden="true"><use href="#icon-balloon"></use></svg>
+    <div class="hero__bg" id="hero-carousel" aria-roledescription="carrossel" aria-label="Fotos de cenários">
+      <div class="hero__bg-track" id="hero-carousel-track">
+        <div class="hero__slide">
+          <img class="js-photo" data-src="imagens/imagem%20inicio.jpeg" alt="Cenário elegante em branco com arco decorativo e pedestais" loading="eager">
+        </div>
+        <div class="hero__slide">
+          <img class="js-photo" data-src="imagens/imagem%204.jpeg" alt="Cenário tema fazendinha com painel redondo e cercadinho de madeira" loading="lazy">
+        </div>
+        <div class="hero__slide">
+          <img class="js-photo" data-src="imagens/imagem%205.jpeg" alt="Cenário decorado com painel redondo tema unicórnio" loading="lazy">
+        </div>
+        <div class="hero__slide">
+          <img class="js-photo" data-src="imagens/imagem%206.jpeg" alt="Cenário rosa com laço decorativo e número em neon" loading="lazy">
+        </div>
+        <div class="hero__slide">
+          <img class="js-photo" data-src="imagens/imagem%208.jpeg" alt="Cenário tema Pequena Sereia com painel redondo" loading="lazy">
+        </div>
+        <div class="hero__slide">
+          <img class="js-photo" data-src="imagens/imagem%2010.jpeg" alt="Cenário tema capivara Feliz Aniversário com número em neon" loading="lazy">
+        </div>
+      </div>
+      <div class="hero__overlay" aria-hidden="true"></div>
+    </div>
 
-    <div class="container hero__inner">
+    <div class="container hero__content-wrap">
       <div class="hero__content fade-in-up">
-        <h1 class="hero__title">Locação de móveis, louças e painéis para festas</h1>
+        <h1 class="hero__title">Locação de móveis, louças<br><em>e painéis para festas</em></h1>
         <p class="hero__subtitle">Cenários personalizados para tornar a sua festa inesquecível.</p>
         <div class="hero__actions">
           <a href="#" class="btn btn--primary js-whatsapp" target="_blank" rel="noopener">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.62 0-3.14-.44-4.44-1.2l-.32-.19-3 .79.8-2.92-.2-.3A7.94 7.94 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.38-5.62c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>
             Fale no WhatsApp
           </a>
-          <a href="#cenarios" class="btn btn--outline">Veja nossos cenários</a>
+          <a href="#cenarios" class="btn btn--outline btn--outline-light">Veja nossos cenários</a>
         </div>
-
-        <ul class="hero__trust">
-          <li>
-            <span class="hero__trust-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-            </span>
-            Atendimento personalizado
-          </li>
-          <li>
-            <span class="hero__trust-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-            </span>
-            Montagem no local
-          </li>
-          <li>
-            <span class="hero__trust-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-            </span>
-            Cenários exclusivos
-          </li>
-        </ul>
-      </div>
-
-      <div class="hero__carousel fade-in-up" id="hero-carousel" aria-roledescription="carrossel" aria-label="Fotos de cenários">
-        <div class="hero__carousel-track" id="hero-carousel-track">
-          <div class="hero__slide">
-            <img class="js-photo" data-src="imagens/imagem%20inicio.jpeg" alt="Cenário elegante em branco com arco decorativo e pedestais" loading="lazy">
-          </div>
-          <div class="hero__slide">
-            <img class="js-photo" data-src="imagens/imagem%204.jpeg" alt="Cenário tema fazendinha com painel redondo e cercadinho de madeira" loading="lazy">
-          </div>
-          <div class="hero__slide">
-            <img class="js-photo" data-src="imagens/imagem%205.jpeg" alt="Cenário decorado com painel redondo tema unicórnio" loading="lazy">
-          </div>
-          <div class="hero__slide">
-            <img class="js-photo" data-src="imagens/imagem%206.jpeg" alt="Cenário rosa com laço decorativo e número em neon" loading="lazy">
-          </div>
-          <div class="hero__slide">
-            <img class="js-photo" data-src="imagens/imagem%208.jpeg" alt="Cenário tema Pequena Sereia com painel redondo" loading="lazy">
-          </div>
-          <div class="hero__slide">
-            <img class="js-photo" data-src="imagens/imagem%2010.jpeg" alt="Cenário tema capivara Feliz Aniversário com número em neon" loading="lazy">
-          </div>
-        </div>
-
-        <svg class="hero__heart" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-heart"></use></svg>
-
-        <button class="hero__carousel-btn hero__carousel-btn--prev" id="hero-carousel-prev" aria-label="Foto anterior">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button class="hero__carousel-btn hero__carousel-btn--next" id="hero-carousel-next" aria-label="Próxima foto">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-
-        <div class="hero__carousel-dots" id="hero-carousel-dots"></div>
       </div>
     </div>
+
+    <div class="hero__carousel-dots" id="hero-carousel-dots"></div>
+
+    <button class="hero__scroll" id="hero-scroll" aria-label="Rolar para a próxima seção">
+      <span>Role</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"/></svg>
+    </button>
 
     <div class="wave-divider" aria-hidden="true">
       <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,50 L1440,100 L0,100 Z"></path></svg>
