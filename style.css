@@ -659,8 +659,8 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.2rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
 }
 
 .gallery-item {
