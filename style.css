@@ -623,11 +623,26 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 .montagem__showcase { position: relative; }
 
 .gallery-grid--compact {
-  gap: 0.7rem;
-  max-width: 460px;
+  gap: 1.1rem;
+  max-width: 600px;
   margin: 0 auto;
+  grid-template-columns: repeat(3, 1fr) !important;
 }
-.gallery-grid--compact .gallery-item { border-width: 4px; aspect-ratio: 1 / 1; }
+.gallery-grid--compact .gallery-item {
+  border-width: 6px;
+  aspect-ratio: 4 / 5;
+  box-shadow: 0 10px 24px rgba(61,61,61,0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.gallery-grid--compact .gallery-item:nth-child(3n+1) { transform: rotate(-2.5deg); }
+.gallery-grid--compact .gallery-item:nth-child(3n+2) { transform: rotate(2deg); }
+.gallery-grid--compact .gallery-item:nth-child(3n) { transform: rotate(-1.5deg); }
+.gallery-grid--compact .gallery-item:hover,
+.gallery-grid--compact .gallery-item:focus-within {
+  transform: rotate(0deg) scale(1.06);
+  box-shadow: 0 16px 34px rgba(201,143,134,0.35);
+  z-index: 2;
+}
 
 .gallery-grid--cha {
   max-width: 980px;
