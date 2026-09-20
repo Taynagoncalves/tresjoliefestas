@@ -621,8 +621,12 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 /* Vitrine de fotos da montagem (com balões) */
 .montagem__showcase { position: relative; }
 
-.gallery-grid--compact { gap: 0.9rem; }
-.gallery-grid--compact .gallery-item { border-width: 6px; }
+.gallery-grid--compact {
+  gap: 0.7rem;
+  max-width: 460px;
+  margin: 0 auto;
+}
+.gallery-grid--compact .gallery-item { border-width: 4px; aspect-ratio: 1 / 1; }
 
 .gallery-grid--cha {
   max-width: 980px;
@@ -716,25 +720,23 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 }
 
 .gallery-item__rent {
-  position: absolute;
-  left: 50%;
-  bottom: 10px;
-  transform: translateX(-50%);
-  z-index: 2;
+  width: 100%;
+  margin-top: 0.6rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
   background: var(--color-rose-gold);
   color: var(--color-white);
   font-size: 0.82rem;
   font-weight: 700;
-  padding: 0.5rem 1.1rem;
-  border-radius: 50px;
-  box-shadow: 0 6px 16px rgba(201,143,134,0.45);
-  min-height: 36px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(201,143,134,0.35);
+  min-height: 38px;
   transition: background 0.25s ease, transform 0.25s ease;
 }
-.gallery-item__rent:hover { background: var(--color-rose-gold-dark); transform: translateX(-50%) translateY(-2px); }
+.gallery-item__rent:hover { background: var(--color-rose-gold-dark); transform: translateY(-2px); }
 .gallery-item__rent svg {
   width: 15px; height: 15px;
   fill: none;
@@ -996,21 +998,22 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   bottom: max(16px, env(safe-area-inset-bottom, 16px));
   width: 52px;
   height: 52px;
-  background: var(--color-rose-gold);
+  background: var(--color-white);
+  border: 1.5px solid var(--color-rose-gold);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(201,143,134,0.5);
+  box-shadow: 0 6px 18px rgba(201,143,134,0.28);
   z-index: 900;
-  transition: transform 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.cart-float:hover { transform: translateY(-3px); }
+.cart-float:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(201,143,134,0.38); }
 .cart-float .icon {
-  width: 24px; height: 24px;
+  width: 22px; height: 22px;
   fill: none;
-  stroke: var(--color-white);
-  stroke-width: 1.8;
+  stroke: var(--color-rose-gold);
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
