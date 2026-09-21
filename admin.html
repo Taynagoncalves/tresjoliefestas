@@ -53,7 +53,11 @@
     </div>
 
     <section class="admin-card">
-      <h2><span class="admin-card__icon admin-card__icon--add" aria-hidden="true">+</span>Adicionar cenário</h2>
+      <button type="button" class="admin-card__toggle" id="add-cenario-toggle" aria-expanded="false" aria-controls="add-cenario-content">
+        <h2><span class="admin-card__icon admin-card__icon--add" aria-hidden="true">+</span>Adicionar cenário</h2>
+        <svg class="admin-card__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="admin-card__content admin-hidden" id="add-cenario-content">
       <form id="add-form">
         <div class="admin-field-row">
           <div class="admin-field">
@@ -93,6 +97,7 @@
           <button type="button" class="btn btn--outline" id="import-btn">Importar cenários já existentes no site</button>
           <p class="admin-msg" id="import-msg"></p>
         </div>
+      </div>
       </div>
     </section>
 

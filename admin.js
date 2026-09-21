@@ -99,7 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAddForm();
   setupImport();
   setupFilters();
+  setupAddToggle();
 });
+
+/* ---------- Colapsar/expandir "Adicionar cenário" ---------- */
+function setupAddToggle() {
+  const toggle = document.getElementById('add-cenario-toggle');
+  const content = document.getElementById('add-cenario-content');
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    content.classList.toggle('admin-hidden', isOpen);
+  });
+}
 
 function escapeHtml(str) {
   const div = document.createElement('div');
@@ -219,10 +231,20 @@ function setupAddForm() {
     msg.className = 'admin-msg';
 
     try {
+      const photos = [];
       for (let i = 0; i < files.length; i += 1) {
         progress.textContent = `Enviando foto ${i + 1} de ${files.length}...`;
-        await uploadAndSave(title, category, files[i]);
+        photos.push(await uploadToCloudinary(files[i]));
       }
+
+      await window.db.collection('cenarios').add({
+        title,
+        category,
+        photos,
+        imageUrl: photos[0],
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
       progress.textContent = '';
       msg.textContent = 'Cenário salvo com sucesso!';
       msg.classList.add('admin-msg--success');
@@ -256,17 +278,6 @@ async function uploadToCloudinary(file) {
   return json.secure_url;
 }
 
-async function uploadAndSave(title, category, file) {
-  const imageUrl = await uploadToCloudinary(file);
-
-  await window.db.collection('cenarios').add({
-    title,
-    category,
-    imageUrl,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-  });
-}
-
 /* ---------- Importar cenários já existentes no site ---------- */
 function setupImport() {
   const btn = document.getElementById('import-btn');
@@ -285,15 +296,25 @@ function setupImport() {
     msg.className = 'admin-msg';
 
     try {
+      // Agrupa fotos com o mesmo título e categoria em um único cenário com várias fotos
+      const grouped = new Map();
+      EXISTING_SITE_ITEMS.forEach((item) => {
+        const key = `${item.category}::${item.title}`;
+        if (!grouped.has(key)) grouped.set(key, { title: item.title, category: item.category, photos: [] });
+        grouped.get(key).photos.push(item.imageUrl);
+      });
+      const groups = Array.from(grouped.values());
+
       const batchSize = 400; // limite de segurança por lote
-      for (let i = 0; i < EXISTING_SITE_ITEMS.length; i += batchSize) {
+      for (let i = 0; i < groups.length; i += batchSize) {
         const batch = window.db.batch();
-        EXISTING_SITE_ITEMS.slice(i, i + batchSize).forEach((item) => {
+        groups.slice(i, i + batchSize).forEach((group) => {
           const ref = window.db.collection('cenarios').doc();
           batch.set(ref, {
-            title: item.title,
-            category: item.category,
-            imageUrl: item.imageUrl,
+            title: group.title,
+            category: group.category,
+            photos: group.photos,
+            imageUrl: group.photos[0],
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           });
         });
@@ -313,12 +334,15 @@ function setupImport() {
 }
 
 /* ---------- Lista, edição e exclusão ---------- */
-let currentFilter = 'all';
+let currentFilter = 'cenarios';
 let cachedItems = [];
 
 function renderFilterButtons() {
   const filterEl = document.querySelector('.admin-filter');
-  const buttons = [{ key: 'all', label: 'Todos' }, ...getKnownCategories().map((c) => ({ key: c, label: CATEGORY_LABELS[c] || c }))];
+  const categories = getKnownCategories();
+  if (!categories.includes(currentFilter)) currentFilter = categories[0];
+
+  const buttons = categories.map((c) => ({ key: c, label: CATEGORY_LABELS[c] || c }));
   filterEl.innerHTML = buttons.map((b) =>
     `<button type="button" class="${b.key === currentFilter ? 'is-active' : ''}" data-filter="${escapeHtml(b.key)}">${escapeHtml(b.label)}</button>`
   ).join('');
@@ -354,10 +378,18 @@ async function loadList() {
 
 const CATEGORY_LABELS = { cenarios: 'Nossos cenários', 'cha-de-bebe': 'Chá de Bebê' };
 
+function getItemPhotos(item) {
+  return item.photos && item.photos.length ? item.photos : (item.imageUrl ? [item.imageUrl] : []);
+}
+
 function renderItemCard(item) {
+  const photos = getItemPhotos(item);
   return `
     <div class="admin-item" data-id="${item.id}">
-      <img src="${item.imageUrl}" alt="${escapeHtml(item.title)}">
+      <div class="admin-item__thumb">
+        <img src="${photos[0] || ''}" alt="${escapeHtml(item.title)}">
+        ${photos.length > 1 ? `<span class="admin-item__count">${photos.length} fotos</span>` : ''}
+      </div>
       <p class="admin-item__category">${CATEGORY_LABELS[item.category] || item.category}</p>
       <p class="admin-item__title">${escapeHtml(item.title)}</p>
       <div class="admin-item__actions">
@@ -383,33 +415,28 @@ function wireItemButtons(container) {
 
 function renderList() {
   const listEl = document.getElementById('admin-list');
-  const items = currentFilter === 'all' ? cachedItems : cachedItems.filter((i) => i.category === currentFilter);
+  const items = cachedItems.filter((i) => i.category === currentFilter);
 
   if (!items.length) {
-    listEl.innerHTML = '<p class="admin-empty">Nenhum cenário cadastrado ainda.</p>';
+    listEl.innerHTML = '<p class="admin-empty">Nenhum cenário cadastrado nessa categoria ainda.</p>';
     return;
   }
 
-  if (currentFilter === 'all') {
-    listEl.innerHTML = Object.keys(CATEGORY_LABELS).map((categoryKey) => {
-      const groupItems = items.filter((i) => i.category === categoryKey);
-      if (!groupItems.length) return '';
-      return `
-        <div class="admin-list-group">
-          <h3 class="admin-list-group__title">${CATEGORY_LABELS[categoryKey]}</h3>
-          <div class="admin-list-grid">${groupItems.map(renderItemCard).join('')}</div>
-        </div>
-      `;
-    }).join('');
-  } else {
-    listEl.innerHTML = `<div class="admin-list-grid">${items.map(renderItemCard).join('')}</div>`;
-  }
-
+  listEl.innerHTML = `<div class="admin-list-grid">${items.map(renderItemCard).join('')}</div>`;
   wireItemButtons(listEl);
 }
 
 function openEdit(itemEl, item) {
+  const photos = getItemPhotos(item);
+
   itemEl.innerHTML = `
+    <p class="admin-edit-label">Editando:</p>
+    <div class="admin-edit-photos js-edit-photos"></div>
+    <label class="admin-file-picker admin-file-picker--sm">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+      <span class="js-edit-add-label">Adicionar mais fotos</span>
+      <input type="file" class="js-edit-add-photos admin-file-input" accept="image/*" multiple>
+    </label>
     <form class="admin-edit-form js-edit-form">
       <div class="admin-field">
         <label>Título</label>
@@ -417,14 +444,11 @@ function openEdit(itemEl, item) {
       </div>
       <div class="admin-field">
         <label>Onde aparece</label>
-        <select class="js-edit-category">
-          <option value="cenarios" ${item.category === 'cenarios' ? 'selected' : ''}>Nossos cenários</option>
-          <option value="cha-de-bebe" ${item.category === 'cha-de-bebe' ? 'selected' : ''}>Chá de Bebê</option>
-        </select>
+        <select class="js-edit-category">${categoryOptionsHtml(item.category)}</select>
       </div>
-      <div class="admin-field">
-        <label>Substituir foto (opcional)</label>
-        <input type="file" class="js-edit-photo" accept="image/*">
+      <div class="admin-field admin-hidden js-edit-new-category-wrap">
+        <label>Nome da nova categoria</label>
+        <input type="text" class="js-edit-new-category" placeholder="Ex.: Aniversário Adulto">
       </div>
       <div class="admin-item__actions">
         <button type="submit" class="admin-btn-edit">Salvar</button>
@@ -434,23 +458,68 @@ function openEdit(itemEl, item) {
     </form>
   `;
 
+  function renderPhotosStrip() {
+    const stripEl = itemEl.querySelector('.js-edit-photos');
+    stripEl.innerHTML = photos.map((url, i) => `
+      <div class="admin-edit-photo">
+        <img src="${url}" alt="Foto ${i + 1} de ${escapeHtml(item.title)}">
+        <button type="button" class="admin-edit-photo__remove js-remove-photo" data-index="${i}" aria-label="Remover esta foto" ${photos.length <= 1 ? 'disabled' : ''}>&times;</button>
+      </div>
+    `).join('');
+    stripEl.querySelectorAll('.js-remove-photo').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (photos.length <= 1) return;
+        photos.splice(Number(btn.dataset.index), 1);
+        renderPhotosStrip();
+      });
+    });
+  }
+  renderPhotosStrip();
+
+  const addPhotosInput = itemEl.querySelector('.js-edit-add-photos');
+  const addLabel = itemEl.querySelector('.js-edit-add-label');
+  addPhotosInput.addEventListener('change', async () => {
+    const files = Array.from(addPhotosInput.files || []);
+    if (!files.length) return;
+
+    addPhotosInput.disabled = true;
+    try {
+      for (let i = 0; i < files.length; i += 1) {
+        addLabel.textContent = `Enviando ${i + 1} de ${files.length}...`;
+        photos.push(await uploadToCloudinary(files[i]));
+      }
+      renderPhotosStrip();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      addLabel.textContent = 'Adicionar mais fotos';
+      addPhotosInput.value = '';
+      addPhotosInput.disabled = false;
+    }
+  });
+
+  const categorySelect = itemEl.querySelector('.js-edit-category');
+  const newCategoryWrap = itemEl.querySelector('.js-edit-new-category-wrap');
+  const newCategoryInput = itemEl.querySelector('.js-edit-new-category');
+  setupCategoryToggle(categorySelect, newCategoryWrap, newCategoryInput);
+
   itemEl.querySelector('.js-cancel').addEventListener('click', () => renderList());
 
   itemEl.querySelector('.js-edit-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const msgEl = itemEl.querySelector('.js-edit-msg');
     const newTitle = itemEl.querySelector('.js-edit-title').value.trim();
-    const newCategory = itemEl.querySelector('.js-edit-category').value;
-    const newFile = itemEl.querySelector('.js-edit-photo').files[0];
+    const newCategory = resolveCategory(categorySelect, newCategoryInput);
+
+    if (!newTitle || !newCategory || !photos.length) return;
 
     try {
-      const updates = { title: newTitle, category: newCategory };
-
-      if (newFile) {
-        updates.imageUrl = await uploadToCloudinary(newFile);
-      }
-
-      await window.db.collection('cenarios').doc(id).update(updates);
+      await window.db.collection('cenarios').doc(item.id).update({
+        title: newTitle,
+        category: newCategory,
+        photos,
+        imageUrl: photos[0],
+      });
       loadList();
     } catch (err) {
       msgEl.textContent = 'Erro ao salvar as alterações.';

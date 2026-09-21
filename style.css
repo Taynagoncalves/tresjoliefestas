@@ -703,6 +703,19 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 .gallery-item:focus-visible .gallery-item__zoom,
 .gallery-item:focus-within .gallery-item__zoom { opacity: 1; }
 
+.gallery-item__count {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(20, 14, 13, 0.65);
+  color: var(--color-white);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 50px;
+  z-index: 1;
+}
+
 /* Botão "Alugar" e foto clicável dentro do card (Locação) */
 .gallery-item__photo {
   display: block;

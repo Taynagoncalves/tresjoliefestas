@@ -110,21 +110,27 @@ function renderGalleryGrid(containerId, items) {
   const container = document.getElementById(containerId);
   if (!container || !items.length) return;
 
-  container.innerHTML = items.map((item) => `
+  container.innerHTML = items.map((item) => {
+    const photos = item.photos && item.photos.length ? item.photos : [item.imageUrl];
+    const cover = photos[0];
+    const photosAttr = escapeHtml(JSON.stringify(photos));
+    return `
     <div class="gallery-card fade-in-up">
       <div class="gallery-item">
-        <button class="gallery-item__photo js-gallery-item" aria-label="Ampliar foto: cenário ${escapeHtml(item.title)}">
-          <img class="js-photo" data-src="${item.imageUrl}" alt="Cenário ${escapeHtml(item.title)}, disponível para locação" loading="lazy">
+        <button class="gallery-item__photo js-gallery-item" data-photos="${photosAttr}" aria-label="Ampliar foto: cenário ${escapeHtml(item.title)}">
+          <img class="js-photo" data-src="${cover}" alt="Cenário ${escapeHtml(item.title)}, disponível para locação" loading="lazy">
+          ${photos.length > 1 ? `<span class="gallery-item__count">${photos.length} fotos</span>` : ''}
           <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
         </button>
       </div>
       <p class="gallery-item__title">${escapeHtml(item.title)}</p>
-      <button class="gallery-item__rent js-add-to-cart" data-name="${escapeHtml(item.title)}" data-image="${item.imageUrl}" aria-label="Alugar cenário ${escapeHtml(item.title)}">
+      <button class="gallery-item__rent js-add-to-cart" data-name="${escapeHtml(item.title)}" data-image="${cover}" aria-label="Alugar cenário ${escapeHtml(item.title)}">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
         Alugar
       </button>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 /* ---------- WhatsApp ---------- */
@@ -284,7 +290,10 @@ function setupGalleryLightbox() {
 
   if (!galleryItems.length || !lightbox || !lightboxImg) return;
 
+  let mode = 'flat'; // 'flat' percorre todas as fotos da página; 'scoped' fica só nas fotos de um cenário
   let currentIndex = 0;
+  let scopedPhotos = [];
+  let scopedAlt = '';
   let lastFocusedElement = null;
 
   function getImageSrc(item) {
@@ -296,7 +305,20 @@ function setupGalleryLightbox() {
   }
 
   function openLightbox(index) {
+    mode = 'flat';
     currentIndex = index;
+    lastFocusedElement = document.activeElement;
+    updateLightboxImage();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    btnClose.focus();
+  }
+
+  function openScopedLightbox(photos, alt) {
+    mode = 'scoped';
+    scopedPhotos = photos;
+    scopedAlt = alt;
+    currentIndex = 0;
     lastFocusedElement = document.activeElement;
     updateLightboxImage();
     lightbox.classList.add('open');
@@ -311,7 +333,9 @@ function setupGalleryLightbox() {
   }
 
   function updateLightboxImage() {
-    const { src, alt } = getImageSrc(galleryItems[currentIndex]);
+    const { src, alt } = mode === 'scoped'
+      ? { src: scopedPhotos[currentIndex], alt: scopedAlt }
+      : getImageSrc(galleryItems[currentIndex]);
     if (src) {
       lightboxImg.src = src;
       lightboxImg.alt = alt;
@@ -322,17 +346,31 @@ function setupGalleryLightbox() {
   }
 
   function showNext() {
-    currentIndex = (currentIndex + 1) % galleryItems.length;
+    const total = mode === 'scoped' ? scopedPhotos.length : galleryItems.length;
+    currentIndex = (currentIndex + 1) % total;
     updateLightboxImage();
   }
 
   function showPrev() {
-    currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+    const total = mode === 'scoped' ? scopedPhotos.length : galleryItems.length;
+    currentIndex = (currentIndex - 1 + total) % total;
     updateLightboxImage();
   }
 
   galleryItems.forEach((item, index) => {
-    item.addEventListener('click', () => openLightbox(index));
+    item.addEventListener('click', () => {
+      const photosAttr = item.dataset.photos;
+      if (photosAttr) {
+        try {
+          const photos = JSON.parse(photosAttr);
+          if (photos.length > 1) {
+            openScopedLightbox(photos, item.querySelector('img')?.alt || '');
+            return;
+          }
+        } catch (err) { /* segue para o modo padrão */ }
+      }
+      openLightbox(index);
+    });
   });
 
   btnClose.addEventListener('click', closeLightbox);
@@ -625,7 +663,10 @@ function setupCart() {
     const lines = [
       'Olá! Gostaria de fazer um pedido de locação pela Très Jolie Festas:',
       '',
-      ...cart.map((item) => `• ${item.name}${item.qty > 1 ? ` (x${item.qty})` : ''}`),
+      ...cart.flatMap((item) => [
+        `• ${item.name}${item.qty > 1 ? ` (x${item.qty})` : ''}`,
+        new URL(item.image, window.location.href).href,
+      ]),
       '',
       `Nome: ${nameInput.value.trim()}`,
     ];
