@@ -6,11 +6,12 @@
 const WHATSAPP_NUMBER = '5561992378041';
 const WHATSAPP_MESSAGE = 'Olá! Vim pelo site da Très Jolie Festas e gostaria de mais informações sobre locação.';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   setupWhatsappLinks();
   setupHeaderScroll();
   setupMobileMenu();
   setupSmoothScrollAndActiveMenu();
+  await loadDynamicGalleries();
   setupScrollAnimations();
   setupImagePlaceholders();
   setupGalleryLightbox();
@@ -18,6 +19,55 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCart();
   setYear();
 });
+
+/* ---------- Util ---------- */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+/* ---------- Cenários gerenciados pelo admin (Firebase) ---------- */
+async function loadDynamicGalleries() {
+  if (!window.db) return; // Firebase ainda não configurado: mantém o HTML fixo
+
+  try {
+    const snapshot = await window.db.collection('cenarios').orderBy('createdAt', 'asc').get();
+    if (snapshot.empty) return; // nenhum cenário cadastrado ainda: mantém o HTML fixo
+
+    const byCategory = { cenarios: [], 'cha-de-bebe': [] };
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      if (byCategory[data.category]) byCategory[data.category].push(data);
+    });
+
+    renderGalleryGrid('gallery-grid', byCategory.cenarios);
+    renderGalleryGrid('cha-de-bebe-grid', byCategory['cha-de-bebe']);
+  } catch (err) {
+    console.error('Não foi possível carregar os cenários do Firebase:', err);
+  }
+}
+
+function renderGalleryGrid(containerId, items) {
+  const container = document.getElementById(containerId);
+  if (!container || !items.length) return;
+
+  container.innerHTML = items.map((item) => `
+    <div class="gallery-card fade-in-up">
+      <div class="gallery-item">
+        <button class="gallery-item__photo js-gallery-item" aria-label="Ampliar foto: cenário ${escapeHtml(item.title)}">
+          <img class="js-photo" data-src="${item.imageUrl}" alt="Cenário ${escapeHtml(item.title)}, disponível para locação" loading="lazy">
+          <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
+        </button>
+      </div>
+      <p class="gallery-item__title">${escapeHtml(item.title)}</p>
+      <button class="gallery-item__rent js-add-to-cart" data-name="${escapeHtml(item.title)}" data-image="${item.imageUrl}" aria-label="Alugar cenário ${escapeHtml(item.title)}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+        Alugar
+      </button>
+    </div>
+  `).join('');
+}
 
 /* ---------- WhatsApp ---------- */
 function setupWhatsappLinks() {
@@ -358,12 +408,6 @@ function setupCart() {
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let cart = [];
-
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
 
   function addToCart(name, image) {
     const existing = cart.find((item) => item.name === name);

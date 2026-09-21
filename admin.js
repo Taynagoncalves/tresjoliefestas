@@ -1,0 +1,328 @@
+/* =========================================================
+   Très Jolie Festas — admin.js
+   Painel para adicionar, editar e excluir cenários (fotos + título)
+   exibidos nas seções "Nossos cenários" e "Chá de Bebê" do site.
+   ========================================================= */
+
+/* Cenários que já estão fixos no HTML do site, usados apenas pelo
+   botão "Importar cenários já existentes" para trazê-los para o
+   Firebase na primeira vez que o painel for usado. */
+const EXISTING_SITE_ITEMS = [
+  { title: 'Fadinhas', category: 'cenarios', imageUrl: 'imagens/cenarios/fadinhas2.png' },
+  { title: 'Hello Kitty', category: 'cenarios', imageUrl: 'imagens/cenarios/hello%20kity.png' },
+  { title: 'Minnie Rosa', category: 'cenarios', imageUrl: 'imagens/cenarios/minnie%20rosa.png' },
+  { title: 'Turma da Mônica', category: 'cenarios', imageUrl: 'imagens/cenarios/turma%20da%20monica.png' },
+  { title: 'Wandinha', category: 'cenarios', imageUrl: 'imagens/cenarios/wandinha.png' },
+  { title: 'Basquetebol', category: 'cenarios', imageUrl: 'imagens/cenarios/basquetebol.jpeg' },
+  { title: 'Borboletas', category: 'cenarios', imageUrl: 'imagens/cenarios/borboletas.jpeg' },
+  { title: 'Futebol', category: 'cenarios', imageUrl: 'imagens/cenarios/futbol.jpeg' },
+  { title: 'Futebol', category: 'cenarios', imageUrl: 'imagens/cenarios/fut%20bol%202.jpeg' },
+  { title: 'Cenário 1', category: 'cenarios', imageUrl: 'imagens/cenarios/cenario1.jpeg' },
+  { title: 'Cenário 2', category: 'cenarios', imageUrl: 'imagens/cenarios/cenario2.jpeg' },
+  { title: 'Cenário 3', category: 'cenarios', imageUrl: 'imagens/cenarios/cenario%203.jpeg' },
+  { title: 'Cenário 4', category: 'cenarios', imageUrl: 'imagens/cenarios/cenario4.jpeg' },
+  { title: 'Cenário 5', category: 'cenarios', imageUrl: 'imagens/cenarios/cenario%205.jpeg' },
+  { title: 'Cenário 6', category: 'cenarios', imageUrl: 'imagens/cenarios/cenario%206.jpeg' },
+  { title: 'Laço e Neon', category: 'cenarios', imageUrl: 'imagens/imagem%206.jpeg' },
+  { title: 'Capivara', category: 'cenarios', imageUrl: 'imagens/cenarios/capivara.jpeg' },
+  { title: 'Fazendinha', category: 'cenarios', imageUrl: 'imagens/cenarios/fazendinha.jpeg' },
+  { title: 'Unicórnio', category: 'cenarios', imageUrl: 'imagens/cenarios/unicorinho.jpeg' },
+  { title: 'Pequena Sereia', category: 'cenarios', imageUrl: 'imagens/cenarios/pequena%20sereia.jpeg' },
+  { title: 'Chá de Bebê', category: 'cha-de-bebe', imageUrl: 'imagens/cha%20de%20bebe/cha%20de%20bebe%203.jpeg' },
+  { title: 'Chá de Bebê', category: 'cha-de-bebe', imageUrl: 'imagens/cha%20de%20bebe/cha%20de%20bebe%204.jpeg' },
+  { title: 'Chá de Bebê', category: 'cha-de-bebe', imageUrl: 'imagens/cha%20de%20bebe/cha%20de%20bebe.png' },
+  { title: 'Chá de Bebê', category: 'cha-de-bebe', imageUrl: 'imagens/cha%20de%20bebe/cha%20de%20bebe2.png' },
+  { title: 'Chá de Bebê', category: 'cha-de-bebe', imageUrl: 'imagens/cha%20de%20bebe/cha%20de%20bebe%207.jpeg' },
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.auth || !window.db) {
+    document.getElementById('login-msg').textContent =
+      'O Firebase ainda não foi configurado (arquivo firebase-config.js). Preencha as chaves do seu projeto antes de usar o painel.';
+    return;
+  }
+  if (!window.CLOUDINARY_CLOUD_NAME || window.CLOUDINARY_CLOUD_NAME === 'SEU_CLOUD_NAME') {
+    document.getElementById('login-msg').textContent =
+      'O Cloudinary ainda não foi configurado (arquivo firebase-config.js). Preencha CLOUDINARY_CLOUD_NAME e CLOUDINARY_UPLOAD_PRESET antes de usar o painel.';
+    return;
+  }
+
+  const loginSection = document.getElementById('admin-login');
+  const dashboard = document.getElementById('admin-dashboard');
+  const loginForm = document.getElementById('login-form');
+  const loginMsg = document.getElementById('login-msg');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  window.auth.onAuthStateChanged((user) => {
+    if (user) {
+      loginSection.classList.add('admin-hidden');
+      dashboard.classList.remove('admin-hidden');
+      loadList();
+    } else {
+      loginSection.classList.remove('admin-hidden');
+      dashboard.classList.add('admin-hidden');
+    }
+  });
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginMsg.textContent = '';
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    try {
+      await window.auth.signInWithEmailAndPassword(email, password);
+    } catch (err) {
+      loginMsg.textContent = 'Não foi possível entrar: e-mail ou senha incorretos.';
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => window.auth.signOut());
+
+  setupAddForm();
+  setupImport();
+  setupFilters();
+});
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+/* ---------- Adicionar cenário ---------- */
+function setupAddForm() {
+  const form = document.getElementById('add-form');
+  const titleInput = document.getElementById('add-title');
+  const categoryInput = document.getElementById('add-category');
+  const filesInput = document.getElementById('add-photos');
+  const submitBtn = document.getElementById('add-submit');
+  const progress = document.getElementById('add-progress');
+  const msg = document.getElementById('add-msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = titleInput.value.trim();
+    const category = categoryInput.value;
+    const files = Array.from(filesInput.files || []);
+
+    if (!title || !files.length) return;
+
+    submitBtn.disabled = true;
+    msg.textContent = '';
+    msg.className = 'admin-msg';
+
+    try {
+      for (let i = 0; i < files.length; i += 1) {
+        progress.textContent = `Enviando foto ${i + 1} de ${files.length}...`;
+        await uploadAndSave(title, category, files[i]);
+      }
+      progress.textContent = '';
+      msg.textContent = 'Cenário salvo com sucesso!';
+      msg.classList.add('admin-msg--success');
+      form.reset();
+      loadList();
+    } catch (err) {
+      progress.textContent = '';
+      msg.textContent = 'Ocorreu um erro ao salvar. Tente novamente.';
+      msg.classList.add('admin-msg--error');
+      console.error(err);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+}
+
+async function uploadToCloudinary(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', window.CLOUDINARY_UPLOAD_PRESET);
+  formData.append('folder', 'cenarios');
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${window.CLOUDINARY_CLOUD_NAME}/image/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+  const json = await res.json();
+  if (!json.secure_url) throw new Error('Falha no upload da imagem para o Cloudinary');
+  return json.secure_url;
+}
+
+async function uploadAndSave(title, category, file) {
+  const imageUrl = await uploadToCloudinary(file);
+
+  await window.db.collection('cenarios').add({
+    title,
+    category,
+    imageUrl,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  });
+}
+
+/* ---------- Importar cenários já existentes no site ---------- */
+function setupImport() {
+  const btn = document.getElementById('import-btn');
+  const msg = document.getElementById('import-msg');
+
+  btn.addEventListener('click', async () => {
+    const confirmed = confirm('Importar os cenários fixos do site para o painel? Clique OK apenas se ainda não fez isso antes.');
+    if (!confirmed) return;
+
+    btn.disabled = true;
+    msg.textContent = 'Importando...';
+    msg.className = 'admin-msg';
+
+    try {
+      const batchSize = 400; // limite de segurança por lote
+      for (let i = 0; i < EXISTING_SITE_ITEMS.length; i += batchSize) {
+        const batch = window.db.batch();
+        EXISTING_SITE_ITEMS.slice(i, i + batchSize).forEach((item) => {
+          const ref = window.db.collection('cenarios').doc();
+          batch.set(ref, {
+            title: item.title,
+            category: item.category,
+            imageUrl: item.imageUrl,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+        });
+        await batch.commit();
+      }
+      msg.textContent = 'Cenários importados com sucesso!';
+      msg.classList.add('admin-msg--success');
+      loadList();
+    } catch (err) {
+      msg.textContent = 'Ocorreu um erro ao importar.';
+      msg.classList.add('admin-msg--error');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+/* ---------- Lista, edição e exclusão ---------- */
+let currentFilter = 'all';
+let cachedItems = [];
+
+function setupFilters() {
+  document.querySelectorAll('.admin-filter button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.admin-filter button').forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      currentFilter = btn.dataset.filter;
+      renderList();
+    });
+  });
+}
+
+async function loadList() {
+  const listEl = document.getElementById('admin-list');
+  listEl.innerHTML = '<p class="admin-empty">Carregando...</p>';
+
+  try {
+    const snapshot = await window.db.collection('cenarios').orderBy('createdAt', 'desc').get();
+    cachedItems = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    renderList();
+  } catch (err) {
+    listEl.innerHTML = '<p class="admin-empty">Não foi possível carregar os cenários.</p>';
+    console.error(err);
+  }
+}
+
+function renderList() {
+  const listEl = document.getElementById('admin-list');
+  const items = currentFilter === 'all' ? cachedItems : cachedItems.filter((i) => i.category === currentFilter);
+
+  if (!items.length) {
+    listEl.innerHTML = '<p class="admin-empty">Nenhum cenário cadastrado ainda.</p>';
+    return;
+  }
+
+  listEl.innerHTML = items.map((item) => `
+    <div class="admin-item" data-id="${item.id}">
+      <img src="${item.imageUrl}" alt="${escapeHtml(item.title)}">
+      <p class="admin-item__category">${item.category === 'cha-de-bebe' ? 'Chá de Bebê' : 'Nossos cenários'}</p>
+      <p class="admin-item__title">${escapeHtml(item.title)}</p>
+      <div class="admin-item__actions">
+        <button type="button" class="admin-btn-edit js-edit">Editar</button>
+        <button type="button" class="admin-btn-delete js-delete">Excluir</button>
+      </div>
+    </div>
+  `).join('');
+
+  listEl.querySelectorAll('.js-edit').forEach((btn) => {
+    btn.addEventListener('click', () => openEdit(btn.closest('.admin-item'), items));
+  });
+  listEl.querySelectorAll('.js-delete').forEach((btn) => {
+    btn.addEventListener('click', () => deleteItem(btn.closest('.admin-item').dataset.id));
+  });
+}
+
+function openEdit(itemEl, items) {
+  const id = itemEl.dataset.id;
+  const item = items.find((i) => i.id === id);
+  if (!item) return;
+
+  itemEl.innerHTML = `
+    <form class="admin-edit-form js-edit-form">
+      <div class="admin-field">
+        <label>Título</label>
+        <input type="text" class="js-edit-title" value="${escapeHtml(item.title)}" required>
+      </div>
+      <div class="admin-field">
+        <label>Onde aparece</label>
+        <select class="js-edit-category">
+          <option value="cenarios" ${item.category === 'cenarios' ? 'selected' : ''}>Nossos cenários</option>
+          <option value="cha-de-bebe" ${item.category === 'cha-de-bebe' ? 'selected' : ''}>Chá de Bebê</option>
+        </select>
+      </div>
+      <div class="admin-field">
+        <label>Substituir foto (opcional)</label>
+        <input type="file" class="js-edit-photo" accept="image/*">
+      </div>
+      <div class="admin-item__actions">
+        <button type="submit" class="admin-btn-edit">Salvar</button>
+        <button type="button" class="admin-btn-delete js-cancel">Cancelar</button>
+      </div>
+      <p class="admin-msg js-edit-msg"></p>
+    </form>
+  `;
+
+  itemEl.querySelector('.js-cancel').addEventListener('click', () => renderList());
+
+  itemEl.querySelector('.js-edit-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msgEl = itemEl.querySelector('.js-edit-msg');
+    const newTitle = itemEl.querySelector('.js-edit-title').value.trim();
+    const newCategory = itemEl.querySelector('.js-edit-category').value;
+    const newFile = itemEl.querySelector('.js-edit-photo').files[0];
+
+    try {
+      const updates = { title: newTitle, category: newCategory };
+
+      if (newFile) {
+        updates.imageUrl = await uploadToCloudinary(newFile);
+      }
+
+      await window.db.collection('cenarios').doc(id).update(updates);
+      loadList();
+    } catch (err) {
+      msgEl.textContent = 'Erro ao salvar as alterações.';
+      msgEl.classList.add('admin-msg--error');
+      console.error(err);
+    }
+  });
+}
+
+async function deleteItem(id) {
+  const item = cachedItems.find((i) => i.id === id);
+  if (!item) return;
+  if (!confirm(`Excluir "${item.title}"? Essa ação não pode ser desfeita.`)) return;
+
+  try {
+    await window.db.collection('cenarios').doc(id).delete();
+    loadList();
+  } catch (err) {
+    alert('Não foi possível excluir este cenário.');
+    console.error(err);
+  }
+}

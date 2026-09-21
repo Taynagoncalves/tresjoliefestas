@@ -816,6 +816,27 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 .card--item .card__icon { width: 50px; height: 50px; }
 .card--item .card__icon svg { width: 24px; height: 24px; }
 
+.locamos__divider {
+  width: 60px;
+  height: 3px;
+  margin: clamp(2.5rem, 6vw, 3.5rem) auto clamp(1.5rem, 4vw, 2rem);
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--color-rose-gold), var(--color-taupe));
+  opacity: 0.5;
+}
+
+.section__header--sub { margin-bottom: clamp(1.5rem, 4vw, 2.5rem); }
+.section__title--sm { font-size: clamp(1.3rem, 3.2vw, 1.8rem); }
+
+.card--compact { padding: 1.3rem 1rem; }
+.card--compact .card__title { font-size: 0.95rem; margin-bottom: 0.4rem; }
+.card--compact .card__text { font-size: 0.8rem; }
+.card--compact .card__icon { width: 46px; height: 46px; margin-bottom: 0.9rem; }
+.card--compact .card__icon svg { width: 22px; height: 22px; }
+.card--compact .card__step { font-size: 1.3rem; top: 10px; right: 12px; }
+
+.steps--compact { gap: 1rem; }
+
 /* ---------- Conheça nosso espaço ---------- */
 .espaco {
   background: linear-gradient(180deg, var(--color-pink-bg-soft) 0%, var(--color-pink-bg) 100%);
