@@ -187,6 +187,30 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
 
 .header__actions { display: flex; align-items: center; gap: 1rem; }
 
+.header__instagram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-pink-bg-soft);
+  color: var(--color-rose-gold-dark);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.header__instagram .icon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+.header__instagram:hover {
+  background: var(--color-rose-gold);
+  color: var(--color-white);
+  transform: translateY(-2px);
+}
+
 /* Hamburger */
 .hamburger {
   display: flex;
