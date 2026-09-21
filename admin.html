@@ -65,8 +65,13 @@
             <select id="add-category" required>
               <option value="cenarios">Nossos cenários</option>
               <option value="cha-de-bebe">Chá de Bebê</option>
+              <option value="__new__">+ Criar nova categoria</option>
             </select>
           </div>
+        </div>
+        <div class="admin-field admin-hidden" id="add-new-category-wrap">
+          <label for="add-new-category">Nome da nova categoria</label>
+          <input type="text" id="add-new-category" placeholder="Ex.: Aniversário Adulto">
         </div>
         <div class="admin-field">
           <label for="add-photos">Fotos (pode escolher várias de uma vez)</label>
@@ -81,7 +86,7 @@
         <p class="admin-msg" id="add-msg"></p>
       </form>
 
-      <div class="admin-import">
+      <div class="admin-import" id="admin-import-box">
         <svg class="admin-import__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
         <div>
           <p>Primeira vez usando o painel? Este botão importa, uma única vez, os cenários que já estão fixos no site para dentro do Firebase, para você poder editá-los e excluí-los por aqui. Clique só uma vez — clicar de novo duplica os itens.</p>

@@ -369,6 +369,10 @@ body.admin-body {
   stroke-linejoin: round;
 }
 .admin-import > div { min-width: 0; }
+.admin-import #import-btn {
+  width: 100%;
+  white-space: normal;
+}
 .admin-import p {
   font-size: 0.85rem;
   color: var(--color-taupe);

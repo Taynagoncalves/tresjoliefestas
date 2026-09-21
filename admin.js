@@ -146,16 +146,54 @@ function showAlert(title, text) {
   return showModal({ title, text, alertOnly: true });
 }
 
+/* ---------- Categorias ---------- */
+function getKnownCategories() {
+  const set = new Set(['cenarios', 'cha-de-bebe']);
+  cachedItems.forEach((i) => set.add(i.category));
+  return Array.from(set);
+}
+
+function categoryOptionsHtml(selected) {
+  const options = getKnownCategories().map((cat) =>
+    `<option value="${escapeHtml(cat)}" ${cat === selected ? 'selected' : ''}>${escapeHtml(CATEGORY_LABELS[cat] || cat)}</option>`
+  ).join('');
+  return `${options}<option value="__new__">+ Criar nova categoria</option>`;
+}
+
+function refreshAddCategoryOptions() {
+  const select = document.getElementById('add-category');
+  const current = select.value;
+  select.innerHTML = categoryOptionsHtml();
+  if (Array.from(select.options).some((o) => o.value === current)) select.value = current;
+}
+
+function setupCategoryToggle(selectEl, newCategoryWrap, newCategoryInput) {
+  selectEl.addEventListener('change', () => {
+    const isNew = selectEl.value === '__new__';
+    newCategoryWrap.classList.toggle('admin-hidden', !isNew);
+    if (isNew) newCategoryInput.focus();
+  });
+}
+
+function resolveCategory(selectEl, newCategoryInput) {
+  if (selectEl.value === '__new__') return newCategoryInput.value.trim();
+  return selectEl.value;
+}
+
 /* ---------- Adicionar cenário ---------- */
 function setupAddForm() {
   const form = document.getElementById('add-form');
   const titleInput = document.getElementById('add-title');
   const categoryInput = document.getElementById('add-category');
+  const newCategoryWrap = document.getElementById('add-new-category-wrap');
+  const newCategoryInput = document.getElementById('add-new-category');
   const filesInput = document.getElementById('add-photos');
   const submitBtn = document.getElementById('add-submit');
   const progress = document.getElementById('add-progress');
   const msg = document.getElementById('add-msg');
   const filesLabel = document.getElementById('add-photos-label');
+
+  setupCategoryToggle(categoryInput, newCategoryWrap, newCategoryInput);
 
   filesInput.addEventListener('change', () => {
     const count = filesInput.files.length;
@@ -171,10 +209,10 @@ function setupAddForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const title = titleInput.value.trim();
-    const category = categoryInput.value;
+    const category = resolveCategory(categoryInput, newCategoryInput);
     const files = Array.from(filesInput.files || []);
 
-    if (!title || !files.length) return;
+    if (!title || !category || !files.length) return;
 
     submitBtn.disabled = true;
     msg.textContent = '';
@@ -190,6 +228,7 @@ function setupAddForm() {
       msg.classList.add('admin-msg--success');
       form.reset();
       filesLabel.textContent = 'Clique para escolher as fotos';
+      newCategoryWrap.classList.add('admin-hidden');
       loadList();
     } catch (err) {
       progress.textContent = '';
@@ -277,14 +316,22 @@ function setupImport() {
 let currentFilter = 'all';
 let cachedItems = [];
 
+function renderFilterButtons() {
+  const filterEl = document.querySelector('.admin-filter');
+  const buttons = [{ key: 'all', label: 'Todos' }, ...getKnownCategories().map((c) => ({ key: c, label: CATEGORY_LABELS[c] || c }))];
+  filterEl.innerHTML = buttons.map((b) =>
+    `<button type="button" class="${b.key === currentFilter ? 'is-active' : ''}" data-filter="${escapeHtml(b.key)}">${escapeHtml(b.label)}</button>`
+  ).join('');
+}
+
 function setupFilters() {
-  document.querySelectorAll('.admin-filter button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.admin-filter button').forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      currentFilter = btn.dataset.filter;
-      renderList();
-    });
+  document.querySelector('.admin-filter').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    document.querySelectorAll('.admin-filter button').forEach((b) => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    currentFilter = btn.dataset.filter;
+    renderList();
   });
 }
 
@@ -295,11 +342,43 @@ async function loadList() {
   try {
     const snapshot = await window.db.collection('cenarios').orderBy('createdAt', 'desc').get();
     cachedItems = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    renderFilterButtons();
     renderList();
+    refreshAddCategoryOptions();
+    document.getElementById('admin-import-box').classList.toggle('admin-hidden', cachedItems.length > 0);
   } catch (err) {
     listEl.innerHTML = '<p class="admin-empty">Não foi possível carregar os cenários.</p>';
     console.error(err);
   }
+}
+
+const CATEGORY_LABELS = { cenarios: 'Nossos cenários', 'cha-de-bebe': 'Chá de Bebê' };
+
+function renderItemCard(item) {
+  return `
+    <div class="admin-item" data-id="${item.id}">
+      <img src="${item.imageUrl}" alt="${escapeHtml(item.title)}">
+      <p class="admin-item__category">${CATEGORY_LABELS[item.category] || item.category}</p>
+      <p class="admin-item__title">${escapeHtml(item.title)}</p>
+      <div class="admin-item__actions">
+        <button type="button" class="admin-btn-edit js-edit">Editar</button>
+        <button type="button" class="admin-btn-delete js-delete">Excluir</button>
+      </div>
+    </div>
+  `;
+}
+
+function wireItemButtons(container) {
+  container.querySelectorAll('.js-edit').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const itemEl = btn.closest('.admin-item');
+      const item = cachedItems.find((i) => i.id === itemEl.dataset.id);
+      if (item) openEdit(itemEl, item);
+    });
+  });
+  container.querySelectorAll('.js-delete').forEach((btn) => {
+    btn.addEventListener('click', () => deleteItem(btn.closest('.admin-item').dataset.id));
+  });
 }
 
 function renderList() {
@@ -311,31 +390,25 @@ function renderList() {
     return;
   }
 
-  listEl.innerHTML = items.map((item) => `
-    <div class="admin-item" data-id="${item.id}">
-      <img src="${item.imageUrl}" alt="${escapeHtml(item.title)}">
-      <p class="admin-item__category">${item.category === 'cha-de-bebe' ? 'Chá de Bebê' : 'Nossos cenários'}</p>
-      <p class="admin-item__title">${escapeHtml(item.title)}</p>
-      <div class="admin-item__actions">
-        <button type="button" class="admin-btn-edit js-edit">Editar</button>
-        <button type="button" class="admin-btn-delete js-delete">Excluir</button>
-      </div>
-    </div>
-  `).join('');
+  if (currentFilter === 'all') {
+    listEl.innerHTML = Object.keys(CATEGORY_LABELS).map((categoryKey) => {
+      const groupItems = items.filter((i) => i.category === categoryKey);
+      if (!groupItems.length) return '';
+      return `
+        <div class="admin-list-group">
+          <h3 class="admin-list-group__title">${CATEGORY_LABELS[categoryKey]}</h3>
+          <div class="admin-list-grid">${groupItems.map(renderItemCard).join('')}</div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    listEl.innerHTML = `<div class="admin-list-grid">${items.map(renderItemCard).join('')}</div>`;
+  }
 
-  listEl.querySelectorAll('.js-edit').forEach((btn) => {
-    btn.addEventListener('click', () => openEdit(btn.closest('.admin-item'), items));
-  });
-  listEl.querySelectorAll('.js-delete').forEach((btn) => {
-    btn.addEventListener('click', () => deleteItem(btn.closest('.admin-item').dataset.id));
-  });
+  wireItemButtons(listEl);
 }
 
-function openEdit(itemEl, items) {
-  const id = itemEl.dataset.id;
-  const item = items.find((i) => i.id === id);
-  if (!item) return;
-
+function openEdit(itemEl, item) {
   itemEl.innerHTML = `
     <form class="admin-edit-form js-edit-form">
       <div class="admin-field">

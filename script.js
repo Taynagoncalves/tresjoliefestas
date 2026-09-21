@@ -9,9 +9,9 @@ const WHATSAPP_MESSAGE = 'Olá! Vim pelo site da Très Jolie Festas e gostaria d
 document.addEventListener('DOMContentLoaded', async () => {
   setupWhatsappLinks();
   setupHeaderScroll();
+  await loadDynamicGalleries();
   setupMobileMenu();
   setupSmoothScrollAndActiveMenu();
-  await loadDynamicGalleries();
   setupScrollAnimations();
   setupImagePlaceholders();
   setupGalleryLightbox();
@@ -28,6 +28,8 @@ function escapeHtml(str) {
 }
 
 /* ---------- Cenários gerenciados pelo admin (Firebase) ---------- */
+const KNOWN_CATEGORY_GRIDS = { cenarios: 'gallery-grid', 'cha-de-bebe': 'cha-de-bebe-grid' };
+
 async function loadDynamicGalleries() {
   if (!window.db) return; // Firebase ainda não configurado: mantém o HTML fixo
 
@@ -35,17 +37,73 @@ async function loadDynamicGalleries() {
     const snapshot = await window.db.collection('cenarios').orderBy('createdAt', 'asc').get();
     if (snapshot.empty) return; // nenhum cenário cadastrado ainda: mantém o HTML fixo
 
-    const byCategory = { cenarios: [], 'cha-de-bebe': [] };
+    const byCategory = {};
     snapshot.forEach((doc) => {
       const data = doc.data();
-      if (byCategory[data.category]) byCategory[data.category].push(data);
+      if (!byCategory[data.category]) byCategory[data.category] = [];
+      byCategory[data.category].push(data);
     });
 
-    renderGalleryGrid('gallery-grid', byCategory.cenarios);
-    renderGalleryGrid('cha-de-bebe-grid', byCategory['cha-de-bebe']);
+    Object.keys(byCategory).forEach((category) => {
+      const gridId = KNOWN_CATEGORY_GRIDS[category];
+      if (gridId) {
+        renderGalleryGrid(gridId, byCategory[category]);
+      } else {
+        renderExtraCategorySection(category, byCategory[category]);
+      }
+    });
   } catch (err) {
     console.error('Não foi possível carregar os cenários do Firebase:', err);
   }
+}
+
+function slugify(str) {
+  return str
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '') || 'cenarios-extra';
+}
+
+function renderExtraCategorySection(category, items) {
+  if (!items.length) return;
+  const anchor = document.getElementById('cha-de-bebe');
+  if (!anchor) return;
+
+  const sectionId = `cat-${slugify(category)}`;
+  if (document.getElementById(sectionId)) return; // já criada
+
+  const section = document.createElement('section');
+  section.className = 'section cenarios';
+  section.id = sectionId;
+  section.innerHTML = `
+    <div class="container">
+      <div class="section__header fade-in-up">
+        <span class="badge">Locação</span>
+        <h2 class="section__title">${escapeHtml(category)}</h2>
+      </div>
+      <div class="gallery-grid" id="${sectionId}-grid"></div>
+    </div>
+  `;
+  anchor.after(section);
+  renderGalleryGrid(`${sectionId}-grid`, items);
+  addNavLink(sectionId, category);
+}
+
+function addNavLink(anchorId, label) {
+  document.querySelectorAll('.nav__list, .mobile-menu__list').forEach((list) => {
+    const contatoLink = Array.from(list.querySelectorAll('a')).find((a) => a.getAttribute('href') === '#contato');
+    const contatoItem = contatoLink && contatoLink.closest('li');
+    if (!contatoItem) return;
+
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = `#${anchorId}`;
+    a.className = contatoLink.className.replace('active', '').trim();
+    a.textContent = label;
+    li.appendChild(a);
+    contatoItem.before(li);
+  });
 }
 
 function renderGalleryGrid(containerId, items) {
