@@ -45,27 +45,36 @@
   <!-- ===== DASHBOARD ===== -->
   <div class="admin-wrap admin-hidden" id="admin-dashboard">
     <div class="admin-header">
-      <h1>Painel de cenários</h1>
+      <div>
+        <h1>Painel de cenários</h1>
+        <p class="admin-header__subtitle">Gerencie as fotos e títulos exibidos no site</p>
+      </div>
       <button type="button" class="btn btn--outline" id="logout-btn">Sair</button>
     </div>
 
     <section class="admin-card">
-      <h2>Adicionar cenário</h2>
+      <h2><span class="admin-card__icon admin-card__icon--add" aria-hidden="true">+</span>Adicionar cenário</h2>
       <form id="add-form">
-        <div class="admin-field">
-          <label for="add-title">Título (aparece no site)</label>
-          <input type="text" id="add-title" required placeholder="Ex.: Fadinhas">
-        </div>
-        <div class="admin-field">
-          <label for="add-category">Onde aparece</label>
-          <select id="add-category" required>
-            <option value="cenarios">Nossos cenários</option>
-            <option value="cha-de-bebe">Chá de Bebê</option>
-          </select>
+        <div class="admin-field-row">
+          <div class="admin-field">
+            <label for="add-title">Título (aparece no site)</label>
+            <input type="text" id="add-title" required placeholder="Ex.: Fadinhas">
+          </div>
+          <div class="admin-field">
+            <label for="add-category">Onde aparece</label>
+            <select id="add-category" required>
+              <option value="cenarios">Nossos cenários</option>
+              <option value="cha-de-bebe">Chá de Bebê</option>
+            </select>
+          </div>
         </div>
         <div class="admin-field">
           <label for="add-photos">Fotos (pode escolher várias de uma vez)</label>
-          <input type="file" id="add-photos" accept="image/*" multiple required>
+          <label class="admin-file-picker" for="add-photos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+            <span id="add-photos-label">Clique para escolher as fotos</span>
+          </label>
+          <input type="file" id="add-photos" accept="image/*" multiple required class="admin-file-input">
         </div>
         <button type="submit" class="btn btn--primary" id="add-submit">Salvar cenário</button>
         <p class="admin-progress" id="add-progress"></p>
@@ -73,14 +82,17 @@
       </form>
 
       <div class="admin-import">
-        <p>Primeira vez usando o painel? Este botão importa, uma única vez, os cenários que já estão fixos no site para dentro do Firebase, para você poder editá-los e excluí-los por aqui. Clique só uma vez — clicar de novo duplica os itens.</p>
-        <button type="button" class="btn btn--outline" id="import-btn">Importar cenários já existentes no site</button>
-        <p class="admin-msg" id="import-msg"></p>
+        <svg class="admin-import__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <div>
+          <p>Primeira vez usando o painel? Este botão importa, uma única vez, os cenários que já estão fixos no site para dentro do Firebase, para você poder editá-los e excluí-los por aqui. Clique só uma vez — clicar de novo duplica os itens.</p>
+          <button type="button" class="btn btn--outline" id="import-btn">Importar cenários já existentes no site</button>
+          <p class="admin-msg" id="import-msg"></p>
+        </div>
       </div>
     </section>
 
     <section class="admin-card">
-      <h2>Cenários cadastrados</h2>
+      <h2><span class="admin-card__icon admin-card__icon--list" aria-hidden="true">☰</span>Cenários cadastrados</h2>
       <div class="admin-filter">
         <button type="button" class="is-active" data-filter="all">Todos</button>
         <button type="button" data-filter="cenarios">Nossos cenários</button>
@@ -90,6 +102,21 @@
         <p class="admin-empty">Carregando...</p>
       </div>
     </section>
+  </div>
+
+  <!-- ===== MODAL DE CONFIRMAÇÃO/ALERTA ===== -->
+  <div class="admin-modal-overlay admin-hidden" id="admin-modal-overlay">
+    <div class="admin-modal" id="admin-modal" role="alertdialog" aria-modal="true" aria-labelledby="admin-modal-title">
+      <span class="admin-modal__icon" id="admin-modal-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 9v4M12 16.5h.01M12 3l9 16.5H3z"/></svg>
+      </span>
+      <h3 class="admin-modal__title" id="admin-modal-title"></h3>
+      <p class="admin-modal__text" id="admin-modal-text"></p>
+      <div class="admin-modal__actions">
+        <button type="button" class="btn btn--outline" id="admin-modal-cancel">Cancelar</button>
+        <button type="button" class="btn btn--primary" id="admin-modal-confirm">Confirmar</button>
+      </div>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>

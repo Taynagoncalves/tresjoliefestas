@@ -107,6 +107,45 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+/* ---------- Modal de confirmação/alerta ---------- */
+function showModal({ title, text, confirmLabel = 'Confirmar', cancelLabel = 'Cancelar', danger = false, alertOnly = false }) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('admin-modal-overlay');
+    const modal = document.getElementById('admin-modal');
+    const titleEl = document.getElementById('admin-modal-title');
+    const textEl = document.getElementById('admin-modal-text');
+    const confirmBtn = document.getElementById('admin-modal-confirm');
+    const cancelBtn = document.getElementById('admin-modal-cancel');
+
+    titleEl.textContent = title;
+    textEl.textContent = text;
+    confirmBtn.textContent = alertOnly ? 'OK' : confirmLabel;
+    cancelBtn.textContent = cancelLabel;
+    modal.classList.toggle('admin-modal--danger', danger);
+    modal.classList.toggle('admin-modal--alert', alertOnly);
+    overlay.classList.remove('admin-hidden');
+
+    function cleanup(result) {
+      overlay.classList.add('admin-hidden');
+      confirmBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      overlay.removeEventListener('click', onOverlay);
+      resolve(result);
+    }
+    function onConfirm() { cleanup(true); }
+    function onCancel() { cleanup(false); }
+    function onOverlay(e) { if (e.target === overlay) cleanup(false); }
+
+    confirmBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onOverlay);
+  });
+}
+
+function showAlert(title, text) {
+  return showModal({ title, text, alertOnly: true });
+}
+
 /* ---------- Adicionar cenário ---------- */
 function setupAddForm() {
   const form = document.getElementById('add-form');
@@ -116,6 +155,18 @@ function setupAddForm() {
   const submitBtn = document.getElementById('add-submit');
   const progress = document.getElementById('add-progress');
   const msg = document.getElementById('add-msg');
+  const filesLabel = document.getElementById('add-photos-label');
+
+  filesInput.addEventListener('change', () => {
+    const count = filesInput.files.length;
+    if (!count) {
+      filesLabel.textContent = 'Clique para escolher as fotos';
+    } else if (count === 1) {
+      filesLabel.textContent = filesInput.files[0].name;
+    } else {
+      filesLabel.textContent = `${count} fotos selecionadas`;
+    }
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -138,6 +189,7 @@ function setupAddForm() {
       msg.textContent = 'Cenário salvo com sucesso!';
       msg.classList.add('admin-msg--success');
       form.reset();
+      filesLabel.textContent = 'Clique para escolher as fotos';
       loadList();
     } catch (err) {
       progress.textContent = '';
@@ -182,7 +234,11 @@ function setupImport() {
   const msg = document.getElementById('import-msg');
 
   btn.addEventListener('click', async () => {
-    const confirmed = confirm('Importar os cenários fixos do site para o painel? Clique OK apenas se ainda não fez isso antes.');
+    const confirmed = await showModal({
+      title: 'Importar cenários do site',
+      text: 'Isso importa os cenários fixos do site para o painel. Confirme apenas se ainda não fez isso antes — clicar de novo depois duplica os itens.',
+      confirmLabel: 'Importar',
+    });
     if (!confirmed) return;
 
     btn.disabled = true;
@@ -334,13 +390,20 @@ function openEdit(itemEl, items) {
 async function deleteItem(id) {
   const item = cachedItems.find((i) => i.id === id);
   if (!item) return;
-  if (!confirm(`Excluir "${item.title}"? Essa ação não pode ser desfeita.`)) return;
+
+  const confirmed = await showModal({
+    title: 'Excluir cenário',
+    text: `Excluir "${item.title}"? Essa ação não pode ser desfeita.`,
+    confirmLabel: 'Excluir',
+    danger: true,
+  });
+  if (!confirmed) return;
 
   try {
     await window.db.collection('cenarios').doc(id).delete();
     loadList();
   } catch (err) {
-    alert('Não foi possível excluir este cenário.');
+    await showAlert('Erro ao excluir', 'Não foi possível excluir este cenário. Tente novamente.');
     console.error(err);
   }
 }
