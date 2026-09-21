@@ -72,9 +72,27 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await window.auth.signInWithEmailAndPassword(email, password);
     } catch (err) {
-      loginMsg.textContent = 'Não foi possível entrar: e-mail ou senha incorretos.';
+      const messages = {
+        'auth/user-not-found': 'Não existe nenhum usuário com esse e-mail.',
+        'auth/wrong-password': 'Senha incorreta.',
+        'auth/invalid-credential': 'E-mail ou senha incorretos.',
+        'auth/invalid-email': 'E-mail inválido.',
+        'auth/too-many-requests': 'Muitas tentativas erradas. Aguarde um pouco e tente de novo.',
+      };
+      loginMsg.textContent = messages[err.code] || `Não foi possível entrar (${err.code || err.message}).`;
     }
   });
+
+  const passwordInput = document.getElementById('login-password');
+  const passwordToggle = document.getElementById('login-password-toggle');
+  if (passwordToggle && passwordInput) {
+    passwordToggle.addEventListener('click', () => {
+      const isVisible = passwordInput.type === 'text';
+      passwordInput.type = isVisible ? 'password' : 'text';
+      passwordToggle.classList.toggle('is-visible', !isVisible);
+      passwordToggle.setAttribute('aria-label', isVisible ? 'Mostrar senha' : 'Ocultar senha');
+    });
+  }
 
   logoutBtn.addEventListener('click', () => window.auth.signOut());
 
