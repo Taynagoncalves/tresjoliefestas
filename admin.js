@@ -405,12 +405,18 @@ function wireItemButtons(container) {
     btn.addEventListener('click', () => {
       const itemEl = btn.closest('.admin-item');
       const item = cachedItems.find((i) => i.id === itemEl.dataset.id);
-      if (item) openEdit(itemEl, item);
+      if (item) showEditOnly(item);
     });
   });
   container.querySelectorAll('.js-delete').forEach((btn) => {
     btn.addEventListener('click', () => deleteItem(btn.closest('.admin-item').dataset.id));
   });
+}
+
+function showEditOnly(item) {
+  const listEl = document.getElementById('admin-list');
+  listEl.innerHTML = `<div class="admin-item admin-item--editing" data-id="${item.id}"></div>`;
+  openEdit(listEl.querySelector('.admin-item'), item);
 }
 
 function renderList() {
