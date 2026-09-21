@@ -113,7 +113,7 @@ function renderGalleryGrid(containerId, items) {
   container.innerHTML = items.map((item) => {
     const photos = item.photos && item.photos.length ? item.photos : [item.imageUrl];
     const cover = photos[0];
-    const photosAttr = escapeHtml(JSON.stringify(photos));
+    const photosAttr = encodeURIComponent(JSON.stringify(photos));
     return `
     <div class="gallery-card fade-in-up">
       <div class="gallery-item">
@@ -362,7 +362,7 @@ function setupGalleryLightbox() {
       const photosAttr = item.dataset.photos;
       if (photosAttr) {
         try {
-          const photos = JSON.parse(photosAttr);
+          const photos = JSON.parse(decodeURIComponent(photosAttr));
           if (photos.length > 1) {
             openScopedLightbox(photos, item.querySelector('img')?.alt || '');
             return;
