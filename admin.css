@@ -247,13 +247,15 @@ body.admin-body {
 .admin-edit-photos {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
-  margin-bottom: 1rem;
+  gap: 0.9rem;
+  margin: 0.4rem 0 1.4rem;
 }
 .admin-edit-photo {
   position: relative;
+  flex: 0 0 76px;
   width: 76px;
   height: 76px;
+  overflow: visible;
 }
 .admin-edit-photo img {
   width: 100%;
