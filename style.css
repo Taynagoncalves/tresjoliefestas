@@ -1254,6 +1254,13 @@ h1, h2, h3 { font-family: var(--font-title); color: var(--color-charcoal); margi
   transform: translateY(0);
 }
 
+@media (max-width: 767px) {
+  .hero__content-wrap { text-align: center; }
+  .hero__content { margin: 0 auto; }
+  .hero__subtitle { margin-left: auto; margin-right: auto; }
+  .hero__actions { align-items: center; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .fade-in-up { opacity: 1; transform: none; transition: none; }
