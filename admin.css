@@ -342,13 +342,13 @@ body.admin-body {
   border-color: var(--color-rose-gold);
 }
 
-.admin-list {
+.admin-list-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.8rem;
 }
 @media (min-width: 560px) {
-  .admin-list { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; }
+  .admin-list-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; }
 }
 
 .admin-item {
