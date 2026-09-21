@@ -16,7 +16,7 @@
    Upload presets > Add upload preset > Signing Mode: "Unsigned" > Save.
    ========================================================= */
 const firebaseConfig = {
-  apiKey: "AIzaSyA1vn3iDmz7sf5FRG4r48Lok3Zaq8yZnNs",
+  apiKey: "AIzaSyA1vn3iDmz7sf5FRG4r48lok3Zaq8yZnNs",
   authDomain: "tresjolie-f386d.firebaseapp.com",
   projectId: "tresjolie-f386d",
   storageBucket: "tresjolie-f386d.firebasestorage.app",
