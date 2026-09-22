@@ -35,6 +35,21 @@ const EXISTING_SITE_ITEMS = [
   { title: 'Chá de Bebê', category: 'cha-de-bebe', imageUrl: 'imagens/cha%20de%20bebe/cha%20de%20bebe%207.jpeg' },
 ];
 
+/* Fotos da "Montagem de festa" já fixas no HTML, usadas apenas pelo
+   botão "Importar fotos já existentes" para trazê-las para o Firebase
+   na primeira vez que essa seção do painel for usada. */
+const EXISTING_MONTAGEM_PHOTOS = [
+  'imagens/imagem%201.jpeg',
+  'imagens/imagem%202.jpeg',
+  'imagens/imagem%203.jpeg',
+  'imagens/imagem%207.jpeg',
+  'imagens/imagem%209.jpeg',
+  'imagens/imagem%2011.jpeg',
+  'imagens/imagem%2012.jpeg',
+  'imagens/cenarios/monatgem1.jpeg',
+  'imagens/cenarios/moantagem%202.jpeg',
+];
+
 document.addEventListener('DOMContentLoaded', () => {
   if (!window.auth || !window.db) {
     document.getElementById('login-msg').textContent =
@@ -58,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loginSection.classList.add('admin-hidden');
       dashboard.classList.remove('admin-hidden');
       loadList();
+      loadMontagemList();
     } else {
       loginSection.classList.remove('admin-hidden');
       dashboard.classList.add('admin-hidden');
@@ -100,12 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
   setupImport();
   setupFilters();
   setupAddToggle();
+  setupMontagemAdd();
+  setupMontagemImport();
 });
 
-/* ---------- Colapsar/expandir "Adicionar cenário" ---------- */
+/* ---------- Colapsar/expandir cards com toggle ---------- */
 function setupAddToggle() {
-  const toggle = document.getElementById('add-cenario-toggle');
-  const content = document.getElementById('add-cenario-content');
+  setupCardToggle('add-cenario-toggle', 'add-cenario-content');
+  setupCardToggle('montagem-toggle', 'montagem-content');
+}
+
+function setupCardToggle(toggleId, contentId) {
+  const toggle = document.getElementById(toggleId);
+  const content = document.getElementById(contentId);
   toggle.addEventListener('click', () => {
     const isOpen = toggle.getAttribute('aria-expanded') === 'true';
     toggle.setAttribute('aria-expanded', String(!isOpen));
@@ -552,6 +575,184 @@ async function deleteItem(id) {
     loadList();
   } catch (err) {
     await showAlert('Erro ao excluir', 'Não foi possível excluir este cenário. Tente novamente.');
+    console.error(err);
+  }
+}
+
+/* ---------- Fotos da Montagem de festa ---------- */
+let cachedMontagemPhotos = [];
+
+async function uploadToCloudinaryFolder(file, folder) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', window.CLOUDINARY_UPLOAD_PRESET);
+  formData.append('folder', folder);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${window.CLOUDINARY_CLOUD_NAME}/image/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+  const json = await res.json();
+  if (!json.secure_url) throw new Error('Falha no upload da imagem para o Cloudinary');
+  return json.secure_url;
+}
+
+function setupMontagemAdd() {
+  const filesInput = document.getElementById('montagem-add-photos');
+  const label = document.getElementById('montagem-add-label');
+  const progress = document.getElementById('montagem-add-progress');
+  const msg = document.getElementById('montagem-add-msg');
+
+  filesInput.addEventListener('change', async () => {
+    const files = Array.from(filesInput.files || []);
+    if (!files.length) return;
+
+    filesInput.disabled = true;
+    msg.textContent = '';
+    msg.className = 'admin-msg';
+
+    try {
+      for (let i = 0; i < files.length; i += 1) {
+        progress.textContent = `Enviando foto ${i + 1} de ${files.length}...`;
+        const imageUrl = await uploadToCloudinaryFolder(files[i], 'montagem');
+        await window.db.collection('montagem').add({
+          imageUrl,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      }
+      progress.textContent = '';
+      msg.textContent = 'Foto(s) salva(s) com sucesso!';
+      msg.classList.add('admin-msg--success');
+      label.textContent = 'Clique para escolher as fotos';
+      filesInput.value = '';
+      loadMontagemList();
+    } catch (err) {
+      progress.textContent = '';
+      msg.textContent = 'Ocorreu um erro ao salvar. Tente novamente.';
+      msg.classList.add('admin-msg--error');
+      console.error(err);
+    } finally {
+      filesInput.disabled = false;
+    }
+  });
+}
+
+async function loadMontagemList() {
+  const listEl = document.getElementById('montagem-list');
+  listEl.innerHTML = '<p class="admin-empty">Carregando...</p>';
+
+  try {
+    const snapshot = await window.db.collection('montagem').orderBy('createdAt', 'asc').get();
+    cachedMontagemPhotos = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    renderMontagemList();
+    document.getElementById('montagem-import-box').classList.toggle('admin-hidden', cachedMontagemPhotos.length > 0);
+  } catch (err) {
+    listEl.innerHTML = '<p class="admin-empty">Não foi possível carregar as fotos.</p>';
+    console.error(err);
+  }
+}
+
+function setupMontagemImport() {
+  const btn = document.getElementById('montagem-import-btn');
+  const msg = document.getElementById('montagem-import-msg');
+
+  btn.addEventListener('click', async () => {
+    const confirmed = await showModal({
+      title: 'Importar fotos da montagem',
+      text: 'Isso importa as fotos fixas do site para o painel. Confirme apenas se ainda não fez isso antes — clicar de novo depois duplica as fotos.',
+      confirmLabel: 'Importar',
+    });
+    if (!confirmed) return;
+
+    btn.disabled = true;
+    msg.textContent = 'Importando...';
+    msg.className = 'admin-msg';
+
+    try {
+      const batch = window.db.batch();
+      EXISTING_MONTAGEM_PHOTOS.forEach((imageUrl) => {
+        const ref = window.db.collection('montagem').doc();
+        batch.set(ref, { imageUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      });
+      await batch.commit();
+      msg.textContent = 'Fotos importadas com sucesso!';
+      msg.classList.add('admin-msg--success');
+      loadMontagemList();
+    } catch (err) {
+      msg.textContent = 'Ocorreu um erro ao importar.';
+      msg.classList.add('admin-msg--error');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function renderMontagemList() {
+  const listEl = document.getElementById('montagem-list');
+
+  if (!cachedMontagemPhotos.length) {
+    listEl.innerHTML = '<p class="admin-empty">Nenhuma foto cadastrada ainda.</p>';
+    return;
+  }
+
+  listEl.innerHTML = `<div class="admin-list-grid">${cachedMontagemPhotos.map((photo) => `
+    <div class="admin-item" data-id="${photo.id}">
+      <div class="admin-item__thumb">
+        <img src="${photo.imageUrl}" alt="Foto da montagem de festa">
+      </div>
+      <div class="admin-item__actions">
+        <label class="admin-btn-edit js-montagem-replace-label">
+          Trocar foto
+          <input type="file" accept="image/*" class="js-montagem-replace admin-file-input">
+        </label>
+        <button type="button" class="admin-btn-delete js-montagem-delete">Excluir</button>
+      </div>
+    </div>
+  `).join('')}</div>`;
+
+  wireMontagemButtons(listEl);
+}
+
+function wireMontagemButtons(container) {
+  container.querySelectorAll('.js-montagem-replace').forEach((input) => {
+    input.addEventListener('change', async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const id = input.closest('.admin-item').dataset.id;
+
+      input.disabled = true;
+      try {
+        const imageUrl = await uploadToCloudinaryFolder(file, 'montagem');
+        await window.db.collection('montagem').doc(id).update({ imageUrl });
+        loadMontagemList();
+      } catch (err) {
+        await showAlert('Erro ao trocar foto', 'Não foi possível trocar essa foto. Tente novamente.');
+        console.error(err);
+        input.disabled = false;
+      }
+    });
+  });
+
+  container.querySelectorAll('.js-montagem-delete').forEach((btn) => {
+    btn.addEventListener('click', () => deleteMontagemPhoto(btn.closest('.admin-item').dataset.id));
+  });
+}
+
+async function deleteMontagemPhoto(id) {
+  const confirmed = await showModal({
+    title: 'Excluir foto',
+    text: 'Excluir esta foto da montagem de festa? Essa ação não pode ser desfeita.',
+    confirmLabel: 'Excluir',
+    danger: true,
+  });
+  if (!confirmed) return;
+
+  try {
+    await window.db.collection('montagem').doc(id).delete();
+    loadMontagemList();
+  } catch (err) {
+    await showAlert('Erro ao excluir', 'Não foi possível excluir esta foto. Tente novamente.');
     console.error(err);
   }
 }

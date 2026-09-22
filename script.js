@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupWhatsappLinks();
   setupHeaderScroll();
   await loadDynamicGalleries();
+  await loadMontagemPhotos();
   setupMobileMenu();
   setupSmoothScrollAndActiveMenu();
   setupScrollAnimations();
@@ -131,6 +132,27 @@ function renderGalleryGrid(containerId, items) {
     </div>
   `;
   }).join('');
+}
+
+/* ---------- Fotos da Montagem de festa (Firebase) ---------- */
+async function loadMontagemPhotos() {
+  const grid = document.getElementById('montagem-grid');
+  if (!window.db || !grid) return; // Firebase ainda não configurado: mantém o HTML fixo
+
+  try {
+    const snapshot = await window.db.collection('montagem').orderBy('createdAt', 'asc').get();
+    if (snapshot.empty) return; // nenhuma foto cadastrada ainda: mantém o HTML fixo
+
+    const photos = snapshot.docs.map((doc) => doc.data().imageUrl);
+    grid.innerHTML = photos.map((url) => `
+      <button class="gallery-item js-gallery-item" aria-label="Ampliar foto: montagem de festa">
+        <img class="js-photo" data-src="${url}" alt="Montagem de festa" loading="lazy">
+        <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
+      </button>
+    `).join('');
+  } catch (err) {
+    console.error('Não foi possível carregar as fotos de montagem do Firebase:', err);
+  }
 }
 
 /* ---------- WhatsApp ---------- */

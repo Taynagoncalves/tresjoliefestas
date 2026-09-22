@@ -102,6 +102,39 @@
     </section>
 
     <section class="admin-card">
+      <button type="button" class="admin-card__toggle" id="montagem-toggle" aria-expanded="false" aria-controls="montagem-content">
+        <h2><span class="admin-card__icon admin-card__icon--add" aria-hidden="true">+</span>Fotos da Montagem de festa</h2>
+        <svg class="admin-card__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="admin-card__content admin-hidden" id="montagem-content">
+        <p class="admin-header__subtitle">Essas fotos aparecem na seção "Montagem de festa" do site.</p>
+        <div class="admin-field">
+          <label for="montagem-add-photos">Adicionar fotos (pode escolher várias de uma vez)</label>
+          <label class="admin-file-picker" for="montagem-add-photos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+            <span id="montagem-add-label">Clique para escolher as fotos</span>
+          </label>
+          <input type="file" id="montagem-add-photos" accept="image/*" multiple class="admin-file-input">
+        </div>
+        <p class="admin-progress" id="montagem-add-progress"></p>
+        <p class="admin-msg" id="montagem-add-msg"></p>
+
+        <div class="admin-import" id="montagem-import-box">
+          <svg class="admin-import__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          <div>
+            <p>Primeira vez usando essa seção? Este botão importa, uma única vez, as fotos que já estão fixas no site para dentro do Firebase, para você poder trocá-las e excluí-las por aqui. Clique só uma vez — clicar de novo duplica as fotos.</p>
+            <button type="button" class="btn btn--outline" id="montagem-import-btn">Importar fotos já existentes no site</button>
+            <p class="admin-msg" id="montagem-import-msg"></p>
+          </div>
+        </div>
+
+        <div class="admin-list" id="montagem-list">
+          <p class="admin-empty">Carregando...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-card">
       <h2><span class="admin-card__icon admin-card__icon--list" aria-hidden="true">☰</span>Cenários cadastrados</h2>
       <div class="admin-filter">
         <button type="button" class="is-active" data-filter="all">Todos</button>
