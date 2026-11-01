@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Très Jolie Festas | Locação de Móveis, Louças e Painéis em Brasília</title>
 <meta name="description" content="Très Jolie Festas: locação de móveis, louças, painéis e cenários personalizados para festas na Asa Sul, Brasília - DF. Monte o cenário dos seus sonhos com atendimento exclusivo.">
+<meta name="theme-color" content="#FBF7F4">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -19,7 +20,7 @@
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
 
@@ -63,48 +64,51 @@
 
 <!-- Símbolos SVG reutilizáveis -->
 <svg style="display:none" aria-hidden="true">
-  <symbol id="icon-balloon" viewBox="0 0 100 150">
-    <path d="M50 2C26 2 9 24 9 51c0 25 15 45 33 50l-2 9h20l-2-9c18-5 33-25 33-50C91 24 74 2 50 2z" fill="currentColor"/>
-    <path d="M50 101l-5 12h10l-5-12z" fill="currentColor"/>
-    <path d="M50 113c-9 14-9 16 0 30" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <symbol id="icon-whatsapp" viewBox="0 0 24 24">
+    <path fill="currentColor" stroke="none" d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.62 0-3.14-.44-4.44-1.2l-.32-.19-3 .79.8-2.92-.2-.3A7.94 7.94 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.38-5.62c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/>
   </symbol>
-  <symbol id="icon-heart" viewBox="0 0 24 24">
-    <path d="M12 21s-8-4.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6.5-8 11-8 11z" fill="currentColor"/>
-  </symbol>
-  <symbol id="icon-zoom" viewBox="0 0 24 24">
-    <circle cx="11" cy="11" r="7"/>
-    <path d="M21 21l-4.3-4.3"/>
-  </symbol>
+  <symbol id="icon-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="icon-zoom" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></symbol>
+  <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="icon-instagram" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></symbol>
+  <symbol id="icon-pin" viewBox="0 0 24 24"><path d="M12 22s8-6.5 8-12a8 8 0 1 0-16 0c0 5.5 8 12 8 12z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="icon-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
 </svg>
 
 <!-- ===== HEADER ===== -->
 <header class="header" id="header">
   <div class="container header__inner">
     <a href="#inicio" class="header__logo" aria-label="Très Jolie Festas - Início">
-      <img src="imagens/logo/logo-tresjolie.png" alt="Logo Très Jolie Festas" width="200" height="200">
+      <img src="imagens/logo/logo-tresjolie.png" alt="Très Jolie Festas" width="200" height="200">
     </a>
 
-    <nav class="nav" id="nav" aria-label="Navegação principal">
+    <nav class="nav" aria-label="Navegação principal">
       <ul class="nav__list">
         <li><a href="#inicio" class="nav__link active">Início</a></li>
         <li><a href="#locamos" class="nav__link">O que locamos</a></li>
-        <li><a href="#cenarios" class="nav__link">Nossos cenários</a></li>
         <li><a href="#como-funciona" class="nav__link">Como funciona</a></li>
-        <li><a href="#montagem" class="nav__link">Montagem de festa</a></li>
+        <li><a href="#cenarios" class="nav__link">Cenários</a></li>
+        <li><a href="#montagem" class="nav__link">Montagem</a></li>
         <li><a href="#contato" class="nav__link">Contato</a></li>
       </ul>
     </nav>
 
     <div class="header__actions">
-      <a href="https://instagram.com/tresjoliefestas" target="_blank" rel="noopener" class="header__instagram" aria-label="Seguir no Instagram">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+      <a href="https://instagram.com/tresjoliefestas" target="_blank" rel="noopener" class="header__icon-btn header__instagram" aria-label="Seguir no Instagram">
+        <svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-instagram"/></svg>
       </a>
-
-      <a href="#" class="btn btn--whatsapp btn--header js-whatsapp" target="_blank" rel="noopener">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.62 0-3.14-.44-4.44-1.2l-.32-.19-3 .79.8-2.92-.2-.3A7.94 7.94 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.38-5.62c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>
-        Fale no WhatsApp
+      <button type="button" class="header__icon-btn header__cart" id="cart-float" aria-label="Abrir meu pedido">
+        <svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-bag"/></svg>
+        <span class="header__cart-label">Meu pedido</span>
+        <span class="cart-float__badge" id="cart-badge" hidden>0</span>
+      </button>
+      <a href="#" class="btn btn--primary btn--sm header__cta js-whatsapp" target="_blank" rel="noopener">
+        <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+        Orçamento
       </a>
-
       <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span><span></span>
       </button>
@@ -117,12 +121,15 @@
       <ul class="mobile-menu__list">
         <li><a href="#inicio" class="mobile-menu__link">Início</a></li>
         <li><a href="#locamos" class="mobile-menu__link">O que locamos</a></li>
-        <li><a href="#cenarios" class="mobile-menu__link">Nossos cenários</a></li>
         <li><a href="#como-funciona" class="mobile-menu__link">Como funciona</a></li>
+        <li><a href="#cenarios" class="mobile-menu__link">Cenários</a></li>
         <li><a href="#montagem" class="mobile-menu__link">Montagem de festa</a></li>
         <li><a href="#contato" class="mobile-menu__link">Contato</a></li>
       </ul>
-      <a href="#" class="btn btn--whatsapp js-whatsapp mobile-menu__cta" target="_blank" rel="noopener">Fale no WhatsApp</a>
+      <a href="#" class="btn btn--primary js-whatsapp mobile-menu__cta" target="_blank" rel="noopener">
+        <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+        Fale no WhatsApp
+      </a>
     </nav>
   </div>
   <div class="mobile-menu__overlay" id="mobile-menu-overlay"></div>
@@ -132,640 +139,215 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero" id="inicio">
-    <div class="hero__bg" id="hero-carousel" aria-roledescription="carrossel" aria-label="Fotos de cenários">
-      <div class="hero__bg-track" id="hero-carousel-track">
-        <div class="hero__slide">
-          <img class="js-photo" data-src="imagens/imagem%20inicio.jpeg" alt="Cenário elegante em branco com arco decorativo e pedestais" loading="eager">
-        </div>
-        <div class="hero__slide">
-          <img class="js-photo" data-src="imagens/imagem%204.jpeg" alt="Cenário tema fazendinha com painel redondo e cercadinho de madeira" loading="lazy">
-        </div>
-        <div class="hero__slide">
-          <img class="js-photo" data-src="imagens/imagem%205.jpeg" alt="Cenário decorado com painel redondo tema unicórnio" loading="lazy">
-        </div>
-        <div class="hero__slide">
-          <img class="js-photo" data-src="imagens/imagem%206.jpeg" alt="Cenário rosa com laço decorativo e número em neon" loading="lazy">
-        </div>
-        <div class="hero__slide">
-          <img class="js-photo" data-src="imagens/imagem%208.jpeg" alt="Cenário tema Pequena Sereia com painel redondo" loading="lazy">
-        </div>
-        <div class="hero__slide">
-          <img class="js-photo" data-src="imagens/imagem%2010.jpeg" alt="Cenário tema capivara Feliz Aniversário com número em neon" loading="lazy">
-        </div>
-      </div>
-      <div class="hero__overlay" aria-hidden="true"></div>
-    </div>
-
-    <div class="container hero__content-wrap">
-      <div class="hero__content fade-in-up">
-        <h1 class="hero__title">Locação de móveis, louças<br><em>e painéis para festas</em></h1>
-        <p class="hero__subtitle">Cenários personalizados para tornar a sua festa inesquecível.</p>
+    <div class="container hero__inner">
+      <div class="hero__content">
+        <p class="eyebrow">Asa Sul · Brasília</p>
+        <h1 class="hero__title">Locação de móveis, louças <em>e painéis para festas</em></h1>
+        <p class="hero__subtitle">Cenários personalizados para tornar a sua festa inesquecível — escolha as peças, veja tudo montado no nosso espaço e celebre sem preocupação.</p>
         <div class="hero__actions">
           <a href="#" class="btn btn--primary js-whatsapp" target="_blank" rel="noopener">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.62 0-3.14-.44-4.44-1.2l-.32-.19-3 .79.8-2.92-.2-.3A7.94 7.94 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.38-5.62c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>
+            <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
             Fale no WhatsApp
           </a>
-          <a href="#cenarios" class="btn btn--outline btn--outline-light">Veja nossos cenários</a>
+          <a href="#cenarios" class="btn btn--ghost">
+            Ver cenários
+            <svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-arrow"/></svg>
+          </a>
+        </div>
+        <ul class="hero__trust">
+          <li><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-check"/></svg>Atendimento personalizado</li>
+          <li><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-check"/></svg>Mesa de testes no showroom</li>
+          <li><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-check"/></svg>Montagem completa</li>
+        </ul>
+      </div>
+
+      <div class="hero__media">
+        <div class="hero__frame" id="hero-carousel" aria-roledescription="carrossel" aria-label="Fotos de cenários">
+          <div class="hero__track" id="hero-carousel-track">
+            <div class="hero__slide">
+              <img class="js-photo" data-src="imagens/imagem%20inicio.jpeg" alt="Cenário elegante em branco com arco decorativo e pedestais" loading="eager">
+            </div>
+            <div class="hero__slide">
+              <img class="js-photo" data-src="imagens/imagem%204.jpeg" alt="Cenário tema fazendinha com painel redondo e cercadinho de madeira" loading="lazy">
+            </div>
+            <div class="hero__slide">
+              <img class="js-photo" data-src="imagens/imagem%205.jpeg" alt="Cenário decorado com painel redondo tema unicórnio" loading="lazy">
+            </div>
+            <div class="hero__slide">
+              <img class="js-photo" data-src="imagens/imagem%206.jpeg" alt="Cenário rosa com laço decorativo e número em neon" loading="lazy">
+            </div>
+            <div class="hero__slide">
+              <img class="js-photo" data-src="imagens/imagem%208.jpeg" alt="Cenário tema Pequena Sereia com painel redondo" loading="lazy">
+            </div>
+            <div class="hero__slide">
+              <img class="js-photo" data-src="imagens/imagem%2010.jpeg" alt="Cenário tema capivara Feliz Aniversário com número em neon" loading="lazy">
+            </div>
+          </div>
+        </div>
+        <div class="hero__carousel-dots" id="hero-carousel-dots"></div>
+        <div class="hero__note" aria-hidden="true">
+          <span class="hero__note-script">Très jolie</span>
+          <span>cada detalhe pensado para você</span>
         </div>
       </div>
-    </div>
-
-    <div class="hero__carousel-dots" id="hero-carousel-dots"></div>
-
-    <button class="hero__scroll" id="hero-scroll" aria-label="Rolar para a próxima seção">
-      <span>Role</span>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"/></svg>
-    </button>
-
-    <div class="wave-divider" aria-hidden="true">
-      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,50 L1440,100 L0,100 Z"></path></svg>
     </div>
   </section>
 
   <!-- ===== O QUE LOCAMOS ===== -->
-  <section class="section locamos" id="locamos">
+  <section class="section" id="locamos">
     <div class="container">
       <div class="section__header fade-in-up">
-        <h2 class="section__title">O que locamos</h2>
-        <p class="section__subtitle">Tudo para você montar o cenário perfeito</p>
+        <p class="eyebrow">O que locamos</p>
+        <h2 class="section__title">Tudo para montar o cenário perfeito</h2>
+        <p class="section__subtitle">Peças selecionadas para combinar entre si e deixar a sua mesa com a cara da festa.</p>
       </div>
 
-      <div class="cards-grid cards-grid--3">
-        <div class="card card--item fade-in-up">
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-          </div>
-          <h3 class="card__title">Painéis</h3>
-          <p class="card__text">Painéis decorativos para compor o fundo do seu cenário de festa.</p>
+      <div class="features">
+        <div class="feature fade-in-up">
+          <span class="feature__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+          <h3 class="feature__title">Painéis</h3>
+          <p class="feature__text">Painéis decorativos para compor o fundo do seu cenário.</p>
         </div>
-
-        <div class="card card--item fade-in-up">
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v9H4zM4 10l2-6h12l2 6"/></svg>
-          </div>
-          <h3 class="card__title">Móveis</h3>
-          <p class="card__text">Mesas e demais peças para compor a estrutura da decoração.</p>
+        <div class="feature fade-in-up">
+          <span class="feature__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v9H4zM4 10l2-6h12l2 6"/></svg></span>
+          <h3 class="feature__title">Móveis</h3>
+          <p class="feature__text">Mesas, cilindros e peças para a estrutura da decoração.</p>
         </div>
-
-        <div class="card card--item fade-in-up">
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
-          </div>
-          <h3 class="card__title">Louças</h3>
-          <p class="card__text">Louças de cerâmica delicadas para deixar a mesa ainda mais elegante.</p>
+        <div class="feature fade-in-up">
+          <span class="feature__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span>
+          <h3 class="feature__title">Louças</h3>
+          <p class="feature__text">Louças de cerâmica delicadas para uma mesa elegante.</p>
         </div>
-
-        <div class="card card--item fade-in-up">
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M2 12h20"/></svg>
-          </div>
-          <h3 class="card__title">Números em neon</h3>
-          <p class="card__text">Números iluminados para destacar a idade ou o tema da festa.</p>
+        <div class="feature fade-in-up">
+          <span class="feature__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
+          <h3 class="feature__title">Números em neon</h3>
+          <p class="feature__text">Números iluminados para destacar a idade ou o tema.</p>
         </div>
-
-        <div class="card card--item fade-in-up">
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-4.5-8-11a4 4 0 0 1 8-2 4 4 0 0 1 8 2c0 6.5-8 11-8 11z"/></svg>
-          </div>
-          <h3 class="card__title">Itens decorativos</h3>
-          <p class="card__text">Detalhes decorativos que completam e personalizam o cenário.</p>
-        </div>
-      </div>
-
-      <div class="locamos__divider" aria-hidden="true"></div>
-
-      <div class="section__header section__header--sub fade-in-up" id="como-funciona">
-        <h3 class="section__title section__title--sm">Quer saber como funciona?</h3>
-        <p class="section__highlight">Todo nosso atendimento é personalizado para sua festa!</p>
-      </div>
-
-      <div class="cards-grid cards-grid--4 steps steps--compact">
-        <div class="card card--compact fade-in-up">
-          <span class="card__step">01</span>
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-5h14l2 5M8 4v5m8-5v5"/></svg>
-          </div>
-          <h3 class="card__title">Mesa de testes</h3>
-          <p class="card__text">Monte uma mesa de testes para ver a combinação das peças antes de decidir.</p>
-        </div>
-
-        <div class="card card--compact fade-in-up">
-          <span class="card__step">02</span>
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          </div>
-          <h3 class="card__title">Escolha livre</h3>
-          <p class="card__text">Escolha livremente painéis, mesas, suportes e itens decorativos do seu jeito.</p>
-        </div>
-
-        <div class="card card--compact fade-in-up">
-          <span class="card__step">03</span>
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg>
-          </div>
-          <h3 class="card__title">Veja pronto</h3>
-          <p class="card__text">Veja o cenário pronto no nosso espaço antes de fechar a locação.</p>
-        </div>
-
-        <div class="card card--compact fade-in-up">
-          <span class="card__step">04</span>
-          <div class="card__icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 16.4l-6.3 4.6 2.3-7.2-6-4.6h7.6z"/></svg>
-          </div>
-          <h3 class="card__title">100% personalizado</h3>
-          <p class="card__text">Tudo planejado do seu jeito, com atendimento exclusivo do início ao fim.</p>
+        <div class="feature fade-in-up">
+          <span class="feature__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-4.5-8-11a4 4 0 0 1 8-2 4 4 0 0 1 8 2c0 6.5-8 11-8 11z"/></svg></span>
+          <h3 class="feature__title">Itens decorativos</h3>
+          <p class="feature__text">Detalhes que completam e personalizam o cenário.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== NOSSOS CENÁRIOS (LOCAÇÃO) ===== -->
-  <section class="section cenarios" id="cenarios">
+  <!-- ===== COMO FUNCIONA ===== -->
+  <section class="section section--tinted" id="como-funciona">
     <div class="container">
       <div class="section__header fade-in-up">
-        <span class="badge">Locação</span>
-        <h2 class="section__title">Nossos cenários de locação</h2>
-        <p class="section__subtitle">Peças e painéis disponíveis para você alugar e montar do seu jeito</p>
+        <p class="eyebrow">Como funciona</p>
+        <h2 class="section__title">Do primeiro contato à festa pronta</h2>
+        <p class="section__script">Todo nosso atendimento é personalizado para a sua festa!</p>
       </div>
 
-      <div class="gallery-grid" id="gallery-grid">
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="10" aria-label="Ampliar foto: cenário Fadinhas">
-              <img class="js-photo" data-src="imagens/cenarios/fadinhas2.png" alt="Cenário tema Fadinhas com fada, veado e letreiro Happy Birthday, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Fadinhas</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Fadinhas" data-image="imagens/cenarios/fadinhas2.png" aria-label="Alugar cenário Fadinhas">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
+      <ol class="steps">
+        <li class="step fade-in-up">
+          <span class="step__number">1</span>
+          <h3 class="step__title">Mesa de testes</h3>
+          <p class="step__text">Montamos uma mesa de testes para você ver a combinação das peças antes de decidir.</p>
+        </li>
+        <li class="step fade-in-up">
+          <span class="step__number">2</span>
+          <h3 class="step__title">Escolha livre</h3>
+          <p class="step__text">Escolha painéis, mesas, suportes e itens decorativos do seu jeito.</p>
+        </li>
+        <li class="step fade-in-up">
+          <span class="step__number">3</span>
+          <h3 class="step__title">Veja pronto</h3>
+          <p class="step__text">Veja o cenário montado no nosso espaço antes de fechar a locação.</p>
+        </li>
+        <li class="step fade-in-up">
+          <span class="step__number">4</span>
+          <h3 class="step__title">100% personalizado</h3>
+          <p class="step__text">Tudo planejado do seu jeito, com atendimento exclusivo do início ao fim.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== NOSSOS CENÁRIOS ===== -->
+  <section class="section cenarios" id="cenarios">
+    <div class="container">
+      <div class="section__header section__header--split fade-in-up">
+        <div>
+          <p class="eyebrow">Locação</p>
+          <h2 class="section__title">Nossos cenários</h2>
+          <p class="section__subtitle">Toque na foto para ver de perto e adicione ao seu pedido os cenários que gostar.</p>
         </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="12" aria-label="Ampliar foto: cenário Hello Kitty">
-              <img class="js-photo" data-src="imagens/cenarios/hello%20kity.png" alt="Cenário tema Hello Kitty com laço rosa e letreiro Happy Birthday, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Hello Kitty</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Hello Kitty" data-image="imagens/cenarios/hello%20kity.png" aria-label="Alugar cenário Hello Kitty">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="14" aria-label="Ampliar foto: cenário Minnie Rosa">
-              <img class="js-photo" data-src="imagens/cenarios/minnie%20rosa.png" alt="Cenário tema Minnie Rosa com mesa de doces e número 1 em neon, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Minnie Rosa</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Minnie Rosa" data-image="imagens/cenarios/minnie%20rosa.png" aria-label="Alugar cenário Minnie Rosa">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="17" aria-label="Ampliar foto: cenário Turma da Mônica">
-              <img class="js-photo" data-src="imagens/cenarios/turma%20da%20monica.png" alt="Cenário tema Turma da Mônica com bolo de melancia, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Turma da Mônica</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Turma da Mônica" data-image="imagens/cenarios/turma%20da%20monica.png" aria-label="Alugar cenário Turma da Mônica">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="18" aria-label="Ampliar foto: cenário Wandinha">
-              <img class="js-photo" data-src="imagens/cenarios/wandinha.png" alt="Cenário tema Wandinha em preto e roxo com caveira, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Wandinha</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Wandinha" data-image="imagens/cenarios/wandinha.png" aria-label="Alugar cenário Wandinha">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="19" aria-label="Ampliar foto: cenário Basquetebol">
-              <img class="js-photo" data-src="imagens/cenarios/basquetebol.jpeg" alt="Cenário tema Basquetebol com painel de bola e cesta, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Basquetebol</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Basquetebol" data-image="imagens/cenarios/basquetebol.jpeg" aria-label="Alugar cenário Basquetebol">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="20" aria-label="Ampliar foto: cenário Borboletas">
-              <img class="js-photo" data-src="imagens/cenarios/borboletas.jpeg" alt="Cenário tema Borboletas em tons pastel, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Borboletas</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Borboletas" data-image="imagens/cenarios/borboletas.jpeg" aria-label="Alugar cenário Borboletas">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="21" aria-label="Ampliar foto: cenário Futebol">
-              <img class="js-photo" data-src="imagens/cenarios/futbol.jpeg" alt="Cenário tema Futebol com bola gigante e arcos coloridos, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Futebol</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Futebol" data-image="imagens/cenarios/futbol.jpeg" aria-label="Alugar cenário Futebol">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="22" aria-label="Ampliar foto: cenário Futebol">
-              <img class="js-photo" data-src="imagens/cenarios/fut%20bol%202.jpeg" alt="Cenário tema Futebol com bola gigante e troféus, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Futebol</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Futebol" data-image="imagens/cenarios/fut%20bol%202.jpeg" aria-label="Alugar cenário Futebol">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="23" aria-label="Ampliar foto de cenário disponível para locação">
-              <img class="js-photo" data-src="imagens/cenarios/cenario1.jpeg" alt="Cenário disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Cenário 1" data-image="imagens/cenarios/cenario1.jpeg" aria-label="Alugar Cenário 1">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="24" aria-label="Ampliar foto de cenário disponível para locação">
-              <img class="js-photo" data-src="imagens/cenarios/cenario2.jpeg" alt="Cenário disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Cenário 2" data-image="imagens/cenarios/cenario2.jpeg" aria-label="Alugar Cenário 2">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="25" aria-label="Ampliar foto de cenário disponível para locação">
-              <img class="js-photo" data-src="imagens/cenarios/cenario%203.jpeg" alt="Cenário disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Cenário 3" data-image="imagens/cenarios/cenario%203.jpeg" aria-label="Alugar Cenário 3">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="26" aria-label="Ampliar foto de cenário disponível para locação">
-              <img class="js-photo" data-src="imagens/cenarios/cenario4.jpeg" alt="Cenário disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Cenário 4" data-image="imagens/cenarios/cenario4.jpeg" aria-label="Alugar Cenário 4">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="27" aria-label="Ampliar foto de cenário disponível para locação">
-              <img class="js-photo" data-src="imagens/cenarios/cenario%205.jpeg" alt="Cenário disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Cenário 5" data-image="imagens/cenarios/cenario%205.jpeg" aria-label="Alugar Cenário 5">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="28" aria-label="Ampliar foto de cenário disponível para locação">
-              <img class="js-photo" data-src="imagens/cenarios/cenario%206.jpeg" alt="Cenário disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Cenário 6" data-image="imagens/cenarios/cenario%206.jpeg" aria-label="Alugar Cenário 6">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="32" aria-label="Ampliar foto: cenário rosa com laço e número em neon">
-              <img class="js-photo" data-src="imagens/imagem%206.jpeg" alt="Cenário rosa com laço decorativo e número em neon, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Laço e Neon" data-image="imagens/imagem%206.jpeg" aria-label="Alugar cenário com laço e número em neon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="33" aria-label="Ampliar foto: cenário Capivara">
-              <img class="js-photo" data-src="imagens/cenarios/capivara.jpeg" alt="Cenário tema Capivara Feliz Aniversário com número 8 em neon, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Capivara</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Capivara" data-image="imagens/cenarios/capivara.jpeg" aria-label="Alugar cenário Capivara">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="34" aria-label="Ampliar foto: cenário Fazendinha">
-              <img class="js-photo" data-src="imagens/cenarios/fazendinha.jpeg" alt="Cenário tema Fazendinha com painel redondo e cercadinho de madeira, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Fazendinha</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Fazendinha" data-image="imagens/cenarios/fazendinha.jpeg" aria-label="Alugar cenário Fazendinha">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="35" aria-label="Ampliar foto: cenário Unicórnio">
-              <img class="js-photo" data-src="imagens/cenarios/unicorinho.jpeg" alt="Cenário tema Unicórnio em tons pastel, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Unicórnio</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Unicórnio" data-image="imagens/cenarios/unicorinho.jpeg" aria-label="Alugar cenário Unicórnio">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="36" aria-label="Ampliar foto: cenário Pequena Sereia">
-              <img class="js-photo" data-src="imagens/cenarios/pequena%20sereia.jpeg" alt="Cenário tema Pequena Sereia com pedestais coloridos, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Pequena Sereia</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Pequena Sereia" data-image="imagens/cenarios/pequena%20sereia.jpeg" aria-label="Alugar cenário Pequena Sereia">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
+        <div class="howto">
+          <span class="howto__step"><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-plus"/></svg>Adicione</span>
+          <span class="howto__line" aria-hidden="true"></span>
+          <span class="howto__step"><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-bag"/></svg>Revise o pedido</span>
+          <span class="howto__line" aria-hidden="true"></span>
+          <span class="howto__step"><svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>Envie no WhatsApp</span>
         </div>
       </div>
 
+      <div class="gallery-grid" id="gallery-grid" data-collapse="8"></div>
     </div>
   </section>
 
   <!-- ===== CHÁ DE BEBÊ ===== -->
-  <section class="section cenarios cenarios--cha" id="cha-de-bebe">
+  <section class="section cenarios section--tinted" id="cha-de-bebe">
     <div class="container">
       <div class="section__header fade-in-up">
-        <span class="badge">Locação</span>
+        <p class="eyebrow">Locação</p>
         <h2 class="section__title">Chá de Bebê</h2>
-        <p class="section__subtitle">Cenários delicados para celebrar a chegada do bebê</p>
+        <p class="section__subtitle">Cenários delicados para celebrar a chegada do bebê.</p>
       </div>
 
-      <div class="gallery-grid gallery-grid--cha" id="cha-de-bebe-grid">
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="7" aria-label="Ampliar foto: Chá de Bebê">
-              <img class="js-photo" data-src="imagens/cha%20de%20bebe/cha%20de%20bebe%203.jpeg" alt="Cenário Chá de Bebê em tons rosa com arco branco, blocos BABY e ursinho, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Chá de Bebê</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Chá de Bebê" data-image="imagens/cha%20de%20bebe/cha%20de%20bebe%203.jpeg" aria-label="Alugar cenário Chá de Bebê">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="8" aria-label="Ampliar foto: Chá de Bebê">
-              <img class="js-photo" data-src="imagens/cha%20de%20bebe/cha%20de%20bebe%204.jpeg" alt="Cenário Chá de Bebê em tons azuis com arco branco, letreiro Boy e ursinho, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Chá de Bebê</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Chá de Bebê" data-image="imagens/cha%20de%20bebe/cha%20de%20bebe%204.jpeg" aria-label="Alugar cenário Chá de Bebê">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="29" aria-label="Ampliar foto: Chá de Bebê">
-              <img class="js-photo" data-src="imagens/cha%20de%20bebe/cha%20de%20bebe.png" alt="Cenário Chá de Bebê neutro com arco branco e rosa, blocos BABY e urso de pelúcia, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Chá de Bebê</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Chá de Bebê" data-image="imagens/cha%20de%20bebe/cha%20de%20bebe.png" aria-label="Alugar cenário Chá de Bebê">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="30" aria-label="Ampliar foto: Chá de Bebê">
-              <img class="js-photo" data-src="imagens/cha%20de%20bebe/cha%20de%20bebe2.png" alt="Cenário Chá de Bebê em tons lilás com pedestais e ursinhos, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Chá de Bebê</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Chá de Bebê" data-image="imagens/cha%20de%20bebe/cha%20de%20bebe2.png" aria-label="Alugar cenário Chá de Bebê">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-
-        <div class="gallery-card fade-in-up">
-          <div class="gallery-item">
-            <button class="gallery-item__photo js-gallery-item" data-index="31" aria-label="Ampliar foto: Chá de Bebê">
-              <img class="js-photo" data-src="imagens/cha%20de%20bebe/cha%20de%20bebe%207.jpeg" alt="Cenário Chá de Bebê com detalhes dourados, urso grande e blocos BABY, disponível para locação" loading="lazy">
-              <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-            </button>
-          </div>
-          <p class="gallery-item__title">Chá de Bebê</p>
-          <button class="gallery-item__rent js-add-to-cart" data-name="Chá de Bebê" data-image="imagens/cha%20de%20bebe/cha%20de%20bebe%207.jpeg" aria-label="Alugar cenário Chá de Bebê">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-              Alugar
-            </button>
-        </div>
-      </div>
+      <div class="gallery-grid" id="cha-de-bebe-grid" data-collapse="8"></div>
     </div>
   </section>
 
   <!-- ===== MONTAGEM DE FESTA ===== -->
   <section class="section montagem" id="montagem">
-    <div class="montagem__blob montagem__blob--1" aria-hidden="true"></div>
-    <div class="montagem__blob montagem__blob--2" aria-hidden="true"></div>
-
     <div class="container montagem__inner">
       <div class="montagem__content fade-in-up">
-        <span class="badge">Serviço exclusivo</span>
+        <p class="eyebrow eyebrow--light">Serviço exclusivo</p>
         <h2 class="section__title">Montagem de festa</h2>
-        <p class="section__subtitle">Conhece o nosso serviço de montagem de festa?</p>
-
-        <blockquote class="montagem__quote">
-          Tranquilidade e sofisticação para o seu evento.
-        </blockquote>
+        <p class="montagem__quote">Tranquilidade e sofisticação para o seu evento.</p>
 
         <ul class="montagem__benefits">
-          <li>
-            <span class="montagem__check" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-            </span>
-            <span>Montagem completa e sob medida, feita no seu evento.</span>
-          </li>
-          <li>
-            <span class="montagem__check" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-            </span>
-            <span>A sua festa personalizada alinhada ao seu planejamento.</span>
-          </li>
-          <li>
-            <span class="montagem__check" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-            </span>
-            <span>A comodidade de receber sua festa pronta, no seu endereço.</span>
-          </li>
+          <li><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-check"/></svg>Montagem completa e sob medida, feita no seu evento.</li>
+          <li><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-check"/></svg>A sua festa personalizada alinhada ao seu planejamento.</li>
+          <li><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-check"/></svg>A comodidade de receber sua festa pronta, no seu endereço.</li>
         </ul>
 
-        <a href="#" class="btn btn--primary js-whatsapp" target="_blank" rel="noopener">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.62 0-3.14-.44-4.44-1.2l-.32-.19-3 .79.8-2.92-.2-.3A7.94 7.94 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.38-5.62c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>
+        <a href="#" class="btn btn--light js-whatsapp" target="_blank" rel="noopener">
+          <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
           Solicitar montagem completa
         </a>
       </div>
 
-      <div class="montagem__showcase fade-in-up">
-        <div class="gallery-grid gallery-grid--compact" id="montagem-grid">
-          <button class="gallery-item js-gallery-item" data-index="0" aria-label="Ampliar foto: montagem tema Harry Potter com balões">
-            <img class="js-photo" data-src="imagens/imagem%201.jpeg" alt="Montagem de festa tema Harry Potter com arco de balões e painel do Expresso de Hogwarts" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-          <button class="gallery-item js-gallery-item" data-index="1" aria-label="Ampliar foto: montagem tema gatinhos com balões">
-            <img class="js-photo" data-src="imagens/imagem%202.jpeg" alt="Montagem de festa tema gatinhos em rosa e lilás com arco de balões" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-          <button class="gallery-item js-gallery-item" data-index="2" aria-label="Ampliar foto: montagem elegante verde e dourado com balões">
-            <img class="js-photo" data-src="imagens/imagem%203.jpeg" alt="Montagem de festa elegante em verde e dourado com arco de balões e letreiro Happy Birthday" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-          <button class="gallery-item js-gallery-item" data-index="3" aria-label="Ampliar foto: montagem rosa com arco de balões e número em neon">
-            <img class="js-photo" data-src="imagens/imagem%207.jpeg" alt="Montagem de festa com arco de balões rosa, mesa branca e número 10 em neon" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-          <button class="gallery-item js-gallery-item" data-index="4" aria-label="Ampliar foto: montagem tema circo com balões">
-            <img class="js-photo" data-src="imagens/imagem%209.jpeg" alt="Montagem de festa tema circo com arco de balões coloridas" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-          <button class="gallery-item js-gallery-item" data-index="5" aria-label="Ampliar foto: montagem tema futebol com balões">
-            <img class="js-photo" data-src="imagens/imagem%2011.jpeg" alt="Montagem de festa tema futebol com arco de balões verdes e brancas" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-          <button class="gallery-item js-gallery-item" data-index="6" aria-label="Ampliar foto: montagem tema games com balões e número em neon">
-            <img class="js-photo" data-src="imagens/imagem%2012.jpeg" alt="Montagem de festa tema games em azul e preto com arco de balões e número em neon" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-          <button class="gallery-item js-gallery-item" data-index="7" aria-label="Ampliar foto: mesa de doces com arco de balões dourados e pretos">
-            <img class="js-photo" data-src="imagens/cenarios/monatgem1.jpeg" alt="Montagem de festa com mesa de doces branca e arco de balões dourados e pretos" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-          <button class="gallery-item js-gallery-item" data-index="8" aria-label="Ampliar foto: mesa de doces com arco de balões rosa, laranja e dourado">
-            <img class="js-photo" data-src="imagens/cenarios/moantagem%202.jpeg" alt="Montagem de festa com mesas de doces e arco de balões rosa, laranja e dourado" loading="lazy">
-            <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-          </button>
-        </div>
-      </div>
+      <div class="montagem__grid fade-in-up" id="montagem-grid"></div>
     </div>
   </section>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visualização ampliada da foto">
-    <button class="lightbox__close" id="lightbox-close" aria-label="Fechar">&times;</button>
-    <button class="lightbox__nav lightbox__nav--prev" id="lightbox-prev" aria-label="Foto anterior">&#10094;</button>
-    <img class="lightbox__img" id="lightbox-img" src="" alt="">
-    <button class="lightbox__nav lightbox__nav--next" id="lightbox-next" aria-label="Próxima foto">&#10095;</button>
-  </div>
-
   <!-- ===== CONHEÇA NOSSO ESPAÇO ===== -->
-  <section class="section espaco" id="espaco">
-    <div class="montagem__blob montagem__blob--1" aria-hidden="true"></div>
-    <div class="montagem__blob montagem__blob--2" aria-hidden="true"></div>
-
-    <div class="container espaco__inner">
+  <section class="section" id="espaco">
+    <div class="container espaco">
       <div class="espaco__info fade-in-up">
-        <span class="badge">Visite-nos</span>
+        <p class="eyebrow">Visite-nos</p>
         <h2 class="section__title">Conheça nosso espaço</h2>
-        <p class="section__text">Venha nos visitar e ver de perto o cenário pronto! Adoramos receber você para planejar juntos cada detalhe da sua festa.</p>
+        <p class="section__subtitle">Venha ver de perto o cenário pronto! Adoramos receber você para planejar juntos cada detalhe da sua festa.</p>
 
-        <ul class="espaco__list">
+        <ul class="info-list">
           <li>
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-6.5 8-12a8 8 0 1 0-16 0c0 5.5 8 12 8 12z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>CLS 411, Bloco A, Loja 16, Asa Sul, Brasília - DF, CEP 70277-510</span>
+            <span class="info-list__icon"><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-pin"/></svg></span>
+            <div><strong>Endereço</strong>CLS 411, Bloco A, Loja 16 — Asa Sul, Brasília - DF<br>CEP 70277-510</div>
           </li>
           <li>
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-            <span>Segunda a sexta, das 9h às 18h, Sábado, das 9h às 13h</span>
+            <span class="info-list__icon"><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-clock"/></svg></span>
+            <div><strong>Horário</strong>Segunda a sexta, das 9h às 18h<br>Sábado, das 9h às 13h</div>
           </li>
         </ul>
 
-        <a href="https://www.google.com/maps/search/?api=1&query=CLS+411+Bloco+A+Loja+16+Asa+Sul+Bras%C3%ADlia+DF" target="_blank" rel="noopener" class="btn btn--outline">Como chegar</a>
+        <div class="espaco__actions">
+          <a href="https://www.google.com/maps/search/?api=1&query=CLS+411+Bloco+A+Loja+16+Asa+Sul+Bras%C3%ADlia+DF" target="_blank" rel="noopener" class="btn btn--primary">Como chegar</a>
+          <a href="#" class="btn btn--ghost js-whatsapp" target="_blank" rel="noopener">Agendar visita</a>
+        </div>
       </div>
 
       <div class="espaco__map fade-in-up">
@@ -780,16 +362,15 @@
 
   <!-- ===== CTA FINAL ===== -->
   <section class="cta">
-    <svg class="cta__balloon cta__balloon--1" viewBox="0 0 100 150" aria-hidden="true"><use href="#icon-balloon"></use></svg>
-    <svg class="cta__balloon cta__balloon--2" viewBox="0 0 100 150" aria-hidden="true"><use href="#icon-balloon"></use></svg>
     <div class="container">
       <div class="cta__card fade-in-up">
-        <h2 class="cta__title">Vamos montar a festa dos seus sonhos?</h2>
+        <p class="cta__script">Vamos celebrar?</p>
+        <h2 class="cta__title">Vamos montar a festa dos seus sonhos</h2>
+        <p class="cta__text">Conte a data e o tema — a gente responde rapidinho pelo WhatsApp.</p>
         <a href="#" class="btn btn--primary btn--large js-whatsapp" target="_blank" rel="noopener">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.62 0-3.14-.44-4.44-1.2l-.32-.19-3 .79.8-2.92-.2-.3A7.94 7.94 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.38-5.62c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>
+          <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
           Falar no WhatsApp agora
         </a>
-        <p class="cta__note">Resposta rápida, direto pelo WhatsApp.</p>
       </div>
     </div>
   </section>
@@ -800,49 +381,69 @@
 <footer class="footer" id="contato">
   <div class="container footer__inner">
     <div class="footer__brand">
-      <img src="imagens/logo/logo-final.png" alt="Logo Très Jolie Festas" class="footer__logo" width="240" height="160">
-      <a href="https://instagram.com/tresjoliefestas" target="_blank" rel="noopener" class="footer__instagram">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+      <img src="imagens/logo/logo-final.png" alt="Très Jolie Festas" class="footer__logo" width="240" height="160">
+      <p>Locação de móveis, louças e painéis para festas em Brasília.</p>
+      <a href="https://instagram.com/tresjoliefestas" target="_blank" rel="noopener" class="footer__social">
+        <svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-instagram"/></svg>
         @tresjoliefestas
       </a>
     </div>
 
-    <div class="footer__info">
-      <p><strong>WhatsApp:</strong> <a href="#" class="js-whatsapp footer__link">(61) 99237-8041</a></p>
-      <p><strong>Endereço:</strong> CLS 411, Bloco A, Loja 16, Asa Sul, Brasília - DF, CEP 70277-510</p>
-      <p><strong>Atendimento:</strong> Segunda a sexta, das 9h às 18h, Sábado, das 9h às 13h</p>
+    <div class="footer__col">
+      <h3 class="footer__heading">Navegue</h3>
+      <ul class="footer__links">
+        <li><a href="#locamos">O que locamos</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#cenarios">Cenários</a></li>
+        <li><a href="#cha-de-bebe">Chá de Bebê</a></li>
+        <li><a href="#montagem">Montagem de festa</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h3 class="footer__heading">Contato</h3>
+      <ul class="footer__links">
+        <li><a href="#" class="js-whatsapp" target="_blank" rel="noopener">WhatsApp: (61) 99237-8041</a></li>
+        <li>CLS 411, Bloco A, Loja 16<br>Asa Sul, Brasília - DF</li>
+        <li>Seg a sex, 9h às 18h<br>Sábado, 9h às 13h</li>
+      </ul>
     </div>
   </div>
 
-  <div class="footer__bottom">
+  <div class="container footer__bottom">
     <p>&copy; <span id="year"></span> Très Jolie Festas. Todos os direitos reservados.</p>
   </div>
 </footer>
 
 <!-- Botão flutuante WhatsApp -->
 <a href="#" class="whatsapp-float js-whatsapp" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
-  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.62 0-3.14-.44-4.44-1.2l-.32-.19-3 .79.8-2.92-.2-.3A7.94 7.94 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.38-5.62c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>
+  <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
 </a>
 
-<!-- Botão flutuante do carrinho -->
-<button class="cart-float" id="cart-float" aria-label="Abrir carrinho de locação">
-  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-  <span class="cart-float__badge" id="cart-badge" hidden>0</span>
-</button>
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visualização ampliada da foto">
+  <button class="lightbox__close" id="lightbox-close" aria-label="Fechar"><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-close"/></svg></button>
+  <button class="lightbox__nav lightbox__nav--prev" id="lightbox-prev" aria-label="Foto anterior">&#10094;</button>
+  <img class="lightbox__img" id="lightbox-img" src="" alt="">
+  <button class="lightbox__nav lightbox__nav--next" id="lightbox-next" aria-label="Próxima foto">&#10095;</button>
+</div>
 
-<!-- Painel do carrinho -->
-<div class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Carrinho de locação">
+<!-- Painel do pedido -->
+<div class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Meu pedido">
   <div class="cart-drawer__header">
-    <h2>Seu carrinho</h2>
-    <button class="cart-drawer__close" id="cart-drawer-close" aria-label="Fechar carrinho">&times;</button>
+    <div>
+      <h2>Meu pedido</h2>
+      <p>Cenários que você quer alugar</p>
+    </div>
+    <button class="cart-drawer__close" id="cart-drawer-close" aria-label="Fechar"><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-close"/></svg></button>
   </div>
 
   <div class="cart-drawer__body" id="cart-items">
-    <p class="cart-drawer__empty" id="cart-empty">Seu carrinho está vazio. Clique em "Alugar" nos cenários para adicionar aqui.</p>
+    <p class="cart-drawer__empty" id="cart-empty">Seu pedido está vazio. Toque em "Adicionar" nos cenários para montar sua lista.</p>
   </div>
 
   <div class="cart-drawer__footer">
-    <p class="cart-drawer__hint">Isso não é uma compra online — ao finalizar, montamos seu pedido e abrimos o WhatsApp da loja para você enviar.</p>
+    <p class="cart-drawer__hint">Não é uma compra online — ao finalizar, abrimos o WhatsApp da loja com a sua lista pronta para enviar.</p>
     <button class="btn btn--primary cart-drawer__checkout" id="cart-checkout-btn" disabled>Finalizar pedido</button>
   </div>
 </div>
@@ -851,10 +452,10 @@
 <!-- Modal de finalização do pedido -->
 <div class="checkout-modal" id="checkout-modal" role="dialog" aria-modal="true" aria-label="Finalizar pedido">
   <div class="checkout-modal__card">
-    <button class="checkout-modal__close" id="checkout-close" aria-label="Fechar">&times;</button>
+    <button class="checkout-modal__close" id="checkout-close" aria-label="Fechar"><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-close"/></svg></button>
     <h2 class="checkout-modal__title">Finalizar pedido</h2>
     <p class="checkout-modal__notice">
-      ⚠️ Ao confirmar, vamos <strong>abrir o WhatsApp da Très Jolie Festas</strong> com o seu pedido já pronto — você só precisa apertar enviar por lá.
+      Ao confirmar, vamos <strong>abrir o WhatsApp da Très Jolie Festas</strong> com o seu pedido já pronto — é só apertar enviar por lá.
     </p>
 
     <form id="checkout-form" novalidate>
@@ -874,7 +475,7 @@
       </label>
 
       <button type="submit" class="btn btn--primary checkout-modal__submit">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.62 0-3.14-.44-4.44-1.2l-.32-.19-3 .79.8-2.92-.2-.3A7.94 7.94 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.38-5.62c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>
+        <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
         Enviar pedido pelo WhatsApp
       </button>
     </form>

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupWhatsappLinks();
   setupHeaderScroll();
   await Promise.all([loadHeroSlides(), loadDynamicGalleries(), loadMontagemPhotos()]);
+  setupGalleryCollapse();
   setupMobileMenu();
   setupSmoothScrollAndActiveMenu();
   setupScrollAnimations();
@@ -30,31 +31,78 @@ function escapeHtml(str) {
 /* ---------- Cenários gerenciados pelo admin (Firebase) ---------- */
 const KNOWN_CATEGORY_GRIDS = { cenarios: 'gallery-grid', 'cha-de-bebe': 'cha-de-bebe-grid' };
 
+/* Usados quando o Firebase não está disponível ou ainda não tem cenários. */
+const FALLBACK_CENARIOS = [
+  { title: 'Fadinhas', category: 'cenarios', photos: ['imagens/cenarios/fadinhas2.png'] },
+  { title: 'Hello Kitty', category: 'cenarios', photos: ['imagens/cenarios/hello%20kity.png'] },
+  { title: 'Minnie Rosa', category: 'cenarios', photos: ['imagens/cenarios/minnie%20rosa.png'] },
+  { title: 'Turma da Mônica', category: 'cenarios', photos: ['imagens/cenarios/turma%20da%20monica.png'] },
+  { title: 'Wandinha', category: 'cenarios', photos: ['imagens/cenarios/wandinha.png'] },
+  { title: 'Basquetebol', category: 'cenarios', photos: ['imagens/cenarios/basquetebol.jpeg'] },
+  { title: 'Borboletas', category: 'cenarios', photos: ['imagens/cenarios/borboletas.jpeg'] },
+  { title: 'Futebol', category: 'cenarios', photos: ['imagens/cenarios/futbol.jpeg', 'imagens/cenarios/fut%20bol%202.jpeg'] },
+  { title: 'Capivara', category: 'cenarios', photos: ['imagens/cenarios/capivara.jpeg'] },
+  { title: 'Fazendinha', category: 'cenarios', photos: ['imagens/cenarios/fazendinha.jpeg'] },
+  { title: 'Unicórnio', category: 'cenarios', photos: ['imagens/cenarios/unicorinho.jpeg'] },
+  { title: 'Pequena Sereia', category: 'cenarios', photos: ['imagens/cenarios/pequena%20sereia.jpeg'] },
+  { title: 'Laço e Neon', category: 'cenarios', photos: ['imagens/imagem%206.jpeg'] },
+  { title: 'Cenário 1', category: 'cenarios', photos: ['imagens/cenarios/cenario1.jpeg'] },
+  { title: 'Cenário 2', category: 'cenarios', photos: ['imagens/cenarios/cenario2.jpeg'] },
+  { title: 'Cenário 3', category: 'cenarios', photos: ['imagens/cenarios/cenario%203.jpeg'] },
+  { title: 'Cenário 4', category: 'cenarios', photos: ['imagens/cenarios/cenario4.jpeg'] },
+  { title: 'Cenário 5', category: 'cenarios', photos: ['imagens/cenarios/cenario%205.jpeg'] },
+  { title: 'Cenário 6', category: 'cenarios', photos: ['imagens/cenarios/cenario%206.jpeg'] },
+  {
+    title: 'Chá de Bebê',
+    category: 'cha-de-bebe',
+    photos: [
+      'imagens/cha%20de%20bebe/cha%20de%20bebe%203.jpeg',
+      'imagens/cha%20de%20bebe/cha%20de%20bebe%204.jpeg',
+      'imagens/cha%20de%20bebe/cha%20de%20bebe.png',
+      'imagens/cha%20de%20bebe/cha%20de%20bebe2.png',
+      'imagens/cha%20de%20bebe/cha%20de%20bebe%207.jpeg',
+    ],
+  },
+];
+
+const FALLBACK_MONTAGEM = [
+  'imagens/imagem%201.jpeg',
+  'imagens/imagem%202.jpeg',
+  'imagens/imagem%203.jpeg',
+  'imagens/imagem%207.jpeg',
+  'imagens/imagem%209.jpeg',
+  'imagens/imagem%2011.jpeg',
+  'imagens/imagem%2012.jpeg',
+  'imagens/cenarios/monatgem1.jpeg',
+  'imagens/cenarios/moantagem%202.jpeg',
+];
+
 async function loadDynamicGalleries() {
-  if (!window.db) return; // Firebase ainda não configurado: mantém o HTML fixo
+  let items = FALLBACK_CENARIOS;
 
-  try {
-    const snapshot = await window.db.collection('cenarios').orderBy('createdAt', 'asc').get();
-    if (snapshot.empty) return; // nenhum cenário cadastrado ainda: mantém o HTML fixo
-
-    const byCategory = {};
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      if (!byCategory[data.category]) byCategory[data.category] = [];
-      byCategory[data.category].push(data);
-    });
-
-    Object.keys(byCategory).forEach((category) => {
-      const gridId = KNOWN_CATEGORY_GRIDS[category];
-      if (gridId) {
-        renderGalleryGrid(gridId, byCategory[category]);
-      } else {
-        renderExtraCategorySection(category, byCategory[category]);
-      }
-    });
-  } catch (err) {
-    console.error('Não foi possível carregar os cenários do Firebase:', err);
+  if (window.db) {
+    try {
+      const snapshot = await window.db.collection('cenarios').orderBy('createdAt', 'asc').get();
+      if (!snapshot.empty) items = snapshot.docs.map((doc) => doc.data());
+    } catch (err) {
+      console.error('Não foi possível carregar os cenários do Firebase:', err);
+    }
   }
+
+  const byCategory = {};
+  items.forEach((item) => {
+    if (!byCategory[item.category]) byCategory[item.category] = [];
+    byCategory[item.category].push(item);
+  });
+
+  Object.keys(byCategory).forEach((category) => {
+    const gridId = KNOWN_CATEGORY_GRIDS[category];
+    if (gridId) {
+      renderGalleryGrid(gridId, byCategory[category]);
+    } else {
+      renderExtraCategorySection(category, byCategory[category]);
+    }
+  });
 }
 
 function slugify(str) {
@@ -79,10 +127,10 @@ function renderExtraCategorySection(category, items) {
   section.innerHTML = `
     <div class="container">
       <div class="section__header fade-in-up">
-        <span class="badge">Locação</span>
+        <p class="eyebrow">Locação</p>
         <h2 class="section__title">${escapeHtml(category)}</h2>
       </div>
-      <div class="gallery-grid" id="${sectionId}-grid"></div>
+      <div class="gallery-grid" id="${sectionId}-grid" data-collapse="8"></div>
     </div>
   `;
   anchor.after(section);
@@ -112,25 +160,47 @@ function renderGalleryGrid(containerId, items) {
 
   container.innerHTML = items.map((item) => {
     const photos = item.photos && item.photos.length ? item.photos : [item.imageUrl];
-    const cover = photos[0];
+    const cover = escapeHtml(photos[0]);
+    const title = escapeHtml(item.title);
     const photosAttr = encodeURIComponent(JSON.stringify(photos));
     return `
-    <div class="gallery-card fade-in-up">
-      <div class="gallery-item">
-        <button class="gallery-item__photo js-gallery-item" data-photos="${photosAttr}" aria-label="Ampliar foto: cenário ${escapeHtml(item.title)}">
-          <img class="js-photo" data-src="${cover}" alt="Cenário ${escapeHtml(item.title)}, disponível para locação" loading="lazy">
-          ${photos.length > 1 ? `<span class="gallery-item__count">${photos.length} fotos</span>` : ''}
-          <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
+    <article class="gallery-card fade-in-up">
+      <button class="gallery-card__media js-gallery-item" data-photos="${photosAttr}" aria-label="Ver fotos do cenário ${title}">
+        <img class="js-photo" data-src="${cover}" alt="Cenário ${title}, disponível para locação" loading="lazy">
+        ${photos.length > 1 ? `<span class="gallery-card__count">${photos.length} fotos</span>` : ''}
+        <span class="gallery-card__zoom" aria-hidden="true"><svg class="icon icon--stroke"><use href="#icon-zoom"/></svg></span>
+      </button>
+      <div class="gallery-card__body">
+        <h3 class="gallery-card__title">${title}</h3>
+        <button type="button" class="gallery-card__add js-add-to-cart" data-name="${title}" data-image="${cover}" aria-label="Adicionar ${title} ao pedido">
+          <svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-plus"/></svg>
+          <span>Adicionar</span>
         </button>
       </div>
-      <p class="gallery-item__title">${escapeHtml(item.title)}</p>
-      <button class="gallery-item__rent js-add-to-cart" data-name="${escapeHtml(item.title)}" data-image="${cover}" aria-label="Alugar cenário ${escapeHtml(item.title)}">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2l2.6 12.6a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6"/></svg>
-        Alugar
-      </button>
-    </div>
+    </article>
   `;
   }).join('');
+}
+
+/* Mostra só os primeiros cenários de cada galeria, com botão para ver o resto */
+function setupGalleryCollapse() {
+  document.querySelectorAll('.gallery-grid[data-collapse]').forEach((grid) => {
+    const limit = Number(grid.dataset.collapse);
+    const total = grid.children.length;
+    if (total <= limit) return;
+
+    grid.classList.add('is-collapsed');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn btn--ghost gallery-more';
+    btn.textContent = `Ver todos os ${total} cenários`;
+    btn.addEventListener('click', () => {
+      const collapsed = grid.classList.toggle('is-collapsed');
+      btn.textContent = collapsed ? `Ver todos os ${total} cenários` : 'Mostrar menos';
+      if (collapsed) grid.closest('section').scrollIntoView({ behavior: 'smooth' });
+    });
+    grid.after(btn);
+  });
 }
 
 /* ---------- Fotos do carrossel do topo (Firebase) ---------- */
@@ -158,22 +228,23 @@ async function loadHeroSlides() {
 /* ---------- Fotos da Montagem de festa (Firebase) ---------- */
 async function loadMontagemPhotos() {
   const grid = document.getElementById('montagem-grid');
-  if (!window.db || !grid) return; // Firebase ainda não configurado: mantém o HTML fixo
+  if (!grid) return;
+  let photos = FALLBACK_MONTAGEM;
 
-  try {
-    const snapshot = await window.db.collection('montagem').orderBy('createdAt', 'asc').get();
-    if (snapshot.empty) return; // nenhuma foto cadastrada ainda: mantém o HTML fixo
-
-    const photos = snapshot.docs.map((doc) => doc.data().imageUrl);
-    grid.innerHTML = photos.map((url) => `
-      <button class="gallery-item js-gallery-item" aria-label="Ampliar foto: montagem de festa">
-        <img class="js-photo" data-src="${url}" alt="Montagem de festa" loading="lazy">
-        <svg class="gallery-item__zoom" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-zoom"></use></svg>
-      </button>
-    `).join('');
-  } catch (err) {
-    console.error('Não foi possível carregar as fotos de montagem do Firebase:', err);
+  if (window.db) {
+    try {
+      const snapshot = await window.db.collection('montagem').orderBy('createdAt', 'asc').get();
+      if (!snapshot.empty) photos = snapshot.docs.map((doc) => doc.data().imageUrl);
+    } catch (err) {
+      console.error('Não foi possível carregar as fotos de montagem do Firebase:', err);
+    }
   }
+
+  grid.innerHTML = photos.map((url) => `
+    <button class="montagem__item js-gallery-item" aria-label="Ampliar foto: montagem de festa">
+      <img class="js-photo" data-src="${escapeHtml(url)}" alt="Montagem de festa feita pela Très Jolie" loading="lazy">
+    </button>
+  `).join('');
 }
 
 /* ---------- WhatsApp ---------- */
@@ -451,7 +522,6 @@ function setupHeroCarousel() {
   const carousel = document.getElementById('hero-carousel');
   const track = document.getElementById('hero-carousel-track');
   const dotsWrap = document.getElementById('hero-carousel-dots');
-  const scrollBtn = document.getElementById('hero-scroll');
 
   if (!carousel || !track || !dotsWrap) return;
 
@@ -472,7 +542,7 @@ function setupHeroCarousel() {
   });
 
   function update() {
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    slides.forEach((slide, index) => slide.classList.toggle('is-active', index === currentIndex));
     dots.forEach((dot, index) => dot.classList.toggle('is-active', index === currentIndex));
   }
 
@@ -512,13 +582,6 @@ function setupHeroCarousel() {
     }
     startAutoplay();
   }, { passive: true });
-
-  if (scrollBtn) {
-    scrollBtn.addEventListener('click', () => {
-      const nextSection = document.getElementById('como-funciona');
-      if (nextSection) nextSection.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-    });
-  }
 
   update();
   startAutoplay();
@@ -565,16 +628,16 @@ function setupCart() {
 
   function renderCart() {
     if (!cart.length) {
-      cartItemsWrap.innerHTML = '<p class="cart-drawer__empty" id="cart-empty">Seu carrinho está vazio. Clique em "Alugar" nos cenários para adicionar aqui.</p>';
+      cartItemsWrap.innerHTML = '<p class="cart-drawer__empty" id="cart-empty">Seu pedido está vazio. Toque em "Adicionar" nos cenários para montar sua lista.</p>';
     } else {
       cartItemsWrap.innerHTML = cart.map((item) => `
         <div class="cart-item">
-          <img class="cart-item__thumb" src="${item.image}" alt="${escapeHtml(item.name)}">
+          <img class="cart-item__thumb" src="${escapeHtml(item.image)}" alt="">
           <div class="cart-item__info">
             <p class="cart-item__name">${escapeHtml(item.name)}</p>
             <p class="cart-item__qty">Quantidade: ${item.qty}</p>
           </div>
-          <button type="button" class="cart-item__remove js-cart-remove" data-name="${escapeHtml(item.name)}" aria-label="Remover ${escapeHtml(item.name)} do carrinho">&times;</button>
+          <button type="button" class="cart-item__remove js-cart-remove" data-name="${escapeHtml(item.name)}" aria-label="Remover ${escapeHtml(item.name)} do pedido">Remover</button>
         </div>
       `).join('');
 
@@ -671,8 +734,13 @@ function setupCart() {
       const img = card ? card.querySelector('img') : null;
       flyToCart(img);
 
+      const label = btn.querySelector('span');
       btn.classList.add('is-added');
-      setTimeout(() => btn.classList.remove('is-added'), 900);
+      if (label) label.textContent = 'Adicionado';
+      setTimeout(() => {
+        btn.classList.remove('is-added');
+        if (label) label.textContent = 'Adicionar';
+      }, 1400);
     });
   });
 
