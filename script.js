@@ -2,14 +2,17 @@
    Très Jolie Festas — script.js
    ========================================================= */
 
-// Troque aqui o número do WhatsApp (formato: 55 + DDD + número, só dígitos)
-const WHATSAPP_NUMBER = '5561992378041';
+// Número padrão do WhatsApp (55 + DDD + número, só dígitos).
+// Pode ser trocado pelo painel admin, na aba "Site".
+let WHATSAPP_NUMBER = '5561992378041';
 const WHATSAPP_MESSAGE = 'Olá! Vim pelo site da Très Jolie Festas e gostaria de mais informações sobre locação.';
 
 document.addEventListener('DOMContentLoaded', async () => {
   setupWhatsappLinks();
   setupHeaderScroll();
-  await Promise.all([loadHeroSlides(), loadDynamicGalleries(), loadMontagemPhotos()]);
+  const [siteConfig] = await Promise.all([loadSiteConfig(), loadHeroSlides(), loadDynamicGalleries(), loadMontagemPhotos()]);
+  applySiteConfig(siteConfig);
+  setupWhatsappLinks();
   setupGalleryCollapse();
   setupMobileMenu();
   setupSmoothScrollAndActiveMenu();
@@ -28,7 +31,120 @@ function escapeHtml(str) {
   }[c]));
 }
 
+/* ---------- Textos e contato editáveis pelo admin (Firebase: config/site) ---------- */
+const SITE_ICONS = {
+  painel: '<rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
+  movel: '<path d="M4 10h16v9H4zM4 10l2-6h12l2 6"/>',
+  louca: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+  neon: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  coracao: '<path d="M12 21s-8-4.5-8-11a4 4 0 0 1 8-2 4 4 0 0 1 8 2c0 6.5-8 11-8 11z"/>',
+  estrela: '<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',
+  balao: '<path d="M12 3a6 6 0 0 0-6 6c0 4 3 7 6 7s6-3 6-7a6 6 0 0 0-6-6z"/><path d="M12 16v2c0 2-2 2-2 4"/>',
+  presente: '<rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 12h18M12 8v13M12 8c-2-4-6-4-6-1s6 1 6 1zm0 0c2-4 6-4 6-1s-6 1-6 1z"/>',
+  bolo: '<path d="M4 21v-9h16v9M4 16c2 1 4 1 6 0s4-1 6 0 2 1 4 0M12 12V8M12 5v.01"/>',
+};
+
+async function loadSiteConfig() {
+  if (!window.db) return null;
+  try {
+    const doc = await window.db.collection('config').doc('site').get();
+    return doc.exists ? doc.data() : null;
+  } catch (err) {
+    console.error('Não foi possível carregar os textos do site do Firebase:', err);
+    return null;
+  }
+}
+
+/* "5561992378041" -> "(61) 99237-8041" */
+function formatPhone(digits) {
+  const local = String(digits).replace(/\D/g, '').replace(/^55/, '');
+  if (local.length < 10) return local;
+  const ddd = local.slice(0, 2);
+  const rest = local.slice(2);
+  return `(${ddd}) ${rest.slice(0, rest.length - 4)}-${rest.slice(-4)}`;
+}
+
+/* Só troca o que estiver preenchido no painel; o resto continua com o texto do HTML */
+function applySiteConfig(config) {
+  if (!config) return;
+
+  const setText = (selector, value) => {
+    if (!value) return;
+    document.querySelectorAll(selector).forEach((el) => { el.textContent = value; });
+  };
+
+  if (config.whatsapp) {
+    WHATSAPP_NUMBER = config.whatsapp;
+    setText('.js-phone', formatPhone(config.whatsapp));
+  }
+
+  if (config.instagram) {
+    const handle = config.instagram.replace(/^@/, '').trim();
+    document.querySelectorAll('.js-instagram').forEach((a) => { a.href = `https://instagram.com/${encodeURIComponent(handle)}`; });
+    setText('.js-instagram-handle', handle);
+  }
+
+  setText('.js-address-1', config.addressLine1);
+  setText('.js-address-2', config.addressLine2);
+  setText('.js-cep', config.cep);
+  if (config.addressLine1 || config.addressLine2) {
+    const full = [config.addressLine1, config.addressLine2].filter(Boolean).join(' — ');
+    setText('.js-address-full', full);
+    const query = encodeURIComponent(full.replace(' — ', ' '));
+    document.querySelectorAll('.js-maps-link').forEach((a) => { a.href = `https://www.google.com/maps/search/?api=1&query=${query}`; });
+    const map = document.getElementById('cfg-map');
+    if (map) map.src = `https://www.google.com/maps?q=${query}&output=embed`;
+  }
+  setText('.js-hours-week', config.hoursWeek);
+  setText('.js-hours-saturday', config.hoursSaturday);
+
+  setText('#cfg-hero-title', config.heroTitle);
+  setText('#cfg-hero-highlight', config.heroTitleHighlight);
+  setText('#cfg-hero-subtitle', config.heroSubtitle);
+  setText('#cfg-montagem-quote', config.montagemQuote);
+
+  const locamos = document.getElementById('cfg-locamos');
+  if (locamos && Array.isArray(config.locamos) && config.locamos.length) {
+    locamos.innerHTML = config.locamos.map((item) => `
+      <div class="feature fade-in-up">
+        <span class="feature__icon"><svg viewBox="0 0 24 24" aria-hidden="true">${SITE_ICONS[item.icon] || SITE_ICONS.estrela}</svg></span>
+        <h3 class="feature__title">${escapeHtml(item.title)}</h3>
+        <p class="feature__text">${escapeHtml(item.text)}</p>
+      </div>
+    `).join('');
+  }
+
+  const steps = document.getElementById('cfg-steps');
+  if (steps && Array.isArray(config.steps) && config.steps.length) {
+    steps.innerHTML = config.steps.map((step, i) => `
+      <li class="step fade-in-up">
+        <span class="step__number">${i + 1}</span>
+        <h3 class="step__title">${escapeHtml(step.title)}</h3>
+        <p class="step__text">${escapeHtml(step.text)}</p>
+      </li>
+    `).join('');
+  }
+
+  const benefits = document.getElementById('cfg-montagem-benefits');
+  if (benefits && Array.isArray(config.montagemBenefits) && config.montagemBenefits.length) {
+    benefits.innerHTML = config.montagemBenefits.map((text) => `
+      <li><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-check"/></svg>${escapeHtml(text)}</li>
+    `).join('');
+  }
+}
+
 /* ---------- Cenários gerenciados pelo admin (Firebase) ---------- */
+const BADGE_LABELS = { novo: 'Novo', 'mais-pedido': 'Mais pedido' };
+
+/* Ordem escolhida no painel; cenários sem ordem vão para o fim, por data de cadastro */
+function byOrder(a, b) {
+  const oa = a.order ?? Infinity;
+  const ob = b.order ?? Infinity;
+  if (oa !== ob) return oa - ob;
+  const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+  const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+  return ta - tb;
+}
 const KNOWN_CATEGORY_GRIDS = { cenarios: 'gallery-grid', 'cha-de-bebe': 'cha-de-bebe-grid' };
 
 /* Usados quando o Firebase não está disponível ou ainda não tem cenários. */
@@ -82,8 +198,10 @@ async function loadDynamicGalleries() {
 
   if (window.db) {
     try {
-      const snapshot = await window.db.collection('cenarios').orderBy('createdAt', 'asc').get();
-      if (!snapshot.empty) items = snapshot.docs.map((doc) => doc.data());
+      const snapshot = await window.db.collection('cenarios').get();
+      if (!snapshot.empty) {
+        items = snapshot.docs.map((doc) => doc.data()).filter((item) => !item.hidden).sort(byOrder);
+      }
     } catch (err) {
       console.error('Não foi possível carregar os cenários do Firebase:', err);
     }
@@ -167,6 +285,7 @@ function renderGalleryGrid(containerId, items) {
     <article class="gallery-card fade-in-up">
       <button class="gallery-card__media js-gallery-item" data-photos="${photosAttr}" aria-label="Ver fotos do cenário ${title}">
         <img class="js-photo" data-src="${cover}" alt="Cenário ${title}, disponível para locação" loading="lazy">
+        ${BADGE_LABELS[item.badge] ? `<span class="gallery-card__badge gallery-card__badge--${item.badge}">${BADGE_LABELS[item.badge]}</span>` : ''}
         ${photos.length > 1 ? `<span class="gallery-card__count">${photos.length} fotos</span>` : ''}
         <span class="gallery-card__zoom" aria-hidden="true"><svg class="icon icon--stroke"><use href="#icon-zoom"/></svg></span>
       </button>
@@ -522,6 +641,7 @@ function setupHeroCarousel() {
   const carousel = document.getElementById('hero-carousel');
   const track = document.getElementById('hero-carousel-track');
   const dotsWrap = document.getElementById('hero-carousel-dots');
+  const scrollBtn = document.getElementById('hero-scroll');
 
   if (!carousel || !track || !dotsWrap) return;
 
@@ -542,7 +662,7 @@ function setupHeroCarousel() {
   });
 
   function update() {
-    slides.forEach((slide, index) => slide.classList.toggle('is-active', index === currentIndex));
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
     dots.forEach((dot, index) => dot.classList.toggle('is-active', index === currentIndex));
   }
 
@@ -582,6 +702,13 @@ function setupHeroCarousel() {
     }
     startAutoplay();
   }, { passive: true });
+
+  if (scrollBtn) {
+    scrollBtn.addEventListener('click', () => {
+      const nextSection = document.getElementById('locamos');
+      if (nextSection) nextSection.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    });
+  }
 
   update();
   startAutoplay();
