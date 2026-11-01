@@ -9,8 +9,7 @@ const WHATSAPP_MESSAGE = 'Olá! Vim pelo site da Très Jolie Festas e gostaria d
 document.addEventListener('DOMContentLoaded', async () => {
   setupWhatsappLinks();
   setupHeaderScroll();
-  await loadDynamicGalleries();
-  await loadMontagemPhotos();
+  await Promise.all([loadHeroSlides(), loadDynamicGalleries(), loadMontagemPhotos()]);
   setupMobileMenu();
   setupSmoothScrollAndActiveMenu();
   setupScrollAnimations();
@@ -23,9 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 /* ---------- Util ---------- */
 function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str ?? '';
-  return div.innerHTML;
+  return String(str ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
 }
 
 /* ---------- Cenários gerenciados pelo admin (Firebase) ---------- */
@@ -132,6 +131,28 @@ function renderGalleryGrid(containerId, items) {
     </div>
   `;
   }).join('');
+}
+
+/* ---------- Fotos do carrossel do topo (Firebase) ---------- */
+async function loadHeroSlides() {
+  const track = document.getElementById('hero-carousel-track');
+  if (!window.db || !track) return; // Firebase ainda não configurado: mantém o HTML fixo
+
+  try {
+    const snapshot = await window.db.collection('carrossel').orderBy('order', 'asc').get();
+    if (snapshot.empty) return; // nenhuma foto cadastrada ainda: mantém o HTML fixo
+
+    track.innerHTML = snapshot.docs.map((doc, i) => {
+      const { imageUrl, alt } = doc.data();
+      return `
+        <div class="hero__slide">
+          <img class="js-photo" data-src="${escapeHtml(imageUrl)}" alt="${escapeHtml(alt || 'Cenário decorado para festa')}" loading="${i === 0 ? 'eager' : 'lazy'}">
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error('Não foi possível carregar as fotos do carrossel do Firebase:', err);
+  }
 }
 
 /* ---------- Fotos da Montagem de festa (Firebase) ---------- */

@@ -5,22 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Admin — Très Jolie Festas</title>
+  <link rel="icon" type="image/png" href="imagens/logo/logo-tresjolie.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="admin.css">
 </head>
 <body class="admin-body">
 
+  <!-- Ícones (sprite) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-slides" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M10 9l4 2-4 2z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 16l-4-4 4-4M6 12h10"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4M12 16.5h.01M12 3l9 16.5H3z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></symbol>
+    <symbol id="i-drag" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+  </svg>
+
   <!-- ===== LOGIN ===== -->
   <div class="admin-login-page" id="admin-login">
+    <div class="admin-login-blob admin-login-blob--1" aria-hidden="true"></div>
+    <div class="admin-login-blob admin-login-blob--2" aria-hidden="true"></div>
     <div class="admin-login-card">
       <div class="admin-login-brand">
-        <span class="admin-login-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 16.4l-6.3 4.6 2.3-7.2-6-4.6h7.6z"/></svg>
-        </span>
-        <p class="admin-login-title">Très Jolie Festas</p>
-        <p class="admin-login-subtitle">Painel de cenários</p>
+        <img class="admin-login-logo" src="imagens/logo/logo-tresjolie.png" alt="Très Jolie Festas" width="88" height="88">
+        <p class="admin-login-title">Que bom ter você aqui</p>
+        <p class="admin-login-subtitle">Entre para gerenciar o site da Très Jolie Festas</p>
       </div>
       <form id="login-form">
         <div class="admin-field">
@@ -32,127 +57,206 @@
           <div class="admin-password-wrap">
             <input type="password" id="login-password" autocomplete="current-password" required placeholder="••••••••">
             <button type="button" class="admin-password-toggle" id="login-password-toggle" aria-label="Mostrar senha">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg aria-hidden="true"><use href="#i-eye"/></svg>
             </button>
           </div>
         </div>
-        <button type="submit" class="btn btn--primary admin-login-submit">Entrar</button>
+        <button type="submit" class="btn btn--primary admin-login-submit" id="login-submit">Entrar</button>
         <p class="admin-msg admin-msg--error" id="login-msg"></p>
       </form>
     </div>
   </div>
 
   <!-- ===== DASHBOARD ===== -->
-  <div class="admin-wrap admin-hidden" id="admin-dashboard">
-    <div class="admin-header">
-      <div>
-        <h1>Painel de cenários</h1>
-        <p class="admin-header__subtitle">Gerencie as fotos e títulos exibidos no site</p>
-      </div>
-      <button type="button" class="btn btn--outline" id="logout-btn">Sair</button>
-    </div>
+  <div class="admin-app admin-hidden" id="admin-dashboard">
 
-    <section class="admin-card">
-      <button type="button" class="admin-card__toggle" id="add-cenario-toggle" aria-expanded="false" aria-controls="add-cenario-content">
-        <h2><span class="admin-card__icon admin-card__icon--add" aria-hidden="true">+</span>Adicionar cenário</h2>
-        <svg class="admin-card__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="admin-card__content admin-hidden" id="add-cenario-content">
-      <form id="add-form">
-        <div class="admin-field-row">
-          <div class="admin-field">
-            <label for="add-title">Título (aparece no site)</label>
-            <input type="text" id="add-title" required placeholder="Ex.: Fadinhas">
-          </div>
-          <div class="admin-field">
-            <label for="add-category">Onde aparece</label>
-            <select id="add-category" required>
-              <option value="cenarios">Nossos cenários</option>
-              <option value="cha-de-bebe">Chá de Bebê</option>
-              <option value="__new__">+ Criar nova categoria</option>
-            </select>
-          </div>
-        </div>
-        <div class="admin-field admin-hidden" id="add-new-category-wrap">
-          <label for="add-new-category">Nome da nova categoria</label>
-          <input type="text" id="add-new-category" placeholder="Ex.: Aniversário Adulto">
-        </div>
-        <div class="admin-field">
-          <label for="add-photos">Fotos (pode escolher várias de uma vez)</label>
-          <label class="admin-file-picker" for="add-photos">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-            <span id="add-photos-label">Clique para escolher as fotos</span>
-          </label>
-          <input type="file" id="add-photos" accept="image/*" multiple required class="admin-file-input">
-        </div>
-        <button type="submit" class="btn btn--primary" id="add-submit">Salvar cenário</button>
-        <p class="admin-progress" id="add-progress"></p>
-        <p class="admin-msg" id="add-msg"></p>
-      </form>
-
-      <div class="admin-import" id="admin-import-box">
-        <svg class="admin-import__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-        <div>
-          <p>Primeira vez usando o painel? Este botão importa, uma única vez, os cenários que já estão fixos no site para dentro do Firebase, para você poder editá-los e excluí-los por aqui. Clique só uma vez — clicar de novo duplica os itens.</p>
-          <button type="button" class="btn btn--outline" id="import-btn">Importar cenários já existentes no site</button>
-          <p class="admin-msg" id="import-msg"></p>
+    <aside class="admin-sidebar">
+      <a class="admin-sidebar__brand" href="#inicio">
+        <img src="imagens/logo/logo-tresjolie.png" alt="" width="40" height="40">
+        <span>Très Jolie<small>Painel</small></span>
+      </a>
+      <nav class="admin-nav" aria-label="Seções do painel">
+        <a href="#inicio" class="admin-nav__link" data-view="inicio"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Início</span></a>
+        <a href="#carrossel" class="admin-nav__link" data-view="carrossel"><svg aria-hidden="true"><use href="#i-slides"/></svg><span>Carrossel</span></a>
+        <a href="#cenarios" class="admin-nav__link" data-view="cenarios"><svg aria-hidden="true"><use href="#i-grid"/></svg><span>Cenários</span></a>
+        <a href="#montagem" class="admin-nav__link" data-view="montagem"><svg aria-hidden="true"><use href="#i-camera"/></svg><span>Montagem</span></a>
+      </nav>
+      <div class="admin-sidebar__footer">
+        <a class="admin-sidebar__site" href="index.html" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-external"/></svg>Ver site</a>
+        <div class="admin-user">
+          <span class="admin-user__avatar" id="user-avatar" aria-hidden="true">T</span>
+          <span class="admin-user__email" id="user-email"></span>
+          <button type="button" class="admin-icon-btn" id="logout-btn" aria-label="Sair" title="Sair"><svg aria-hidden="true"><use href="#i-logout"/></svg></button>
         </div>
       </div>
-      </div>
-    </section>
+    </aside>
 
-    <section class="admin-card">
-      <button type="button" class="admin-card__toggle" id="montagem-toggle" aria-expanded="false" aria-controls="montagem-content">
-        <h2><span class="admin-card__icon admin-card__icon--add" aria-hidden="true">+</span>Fotos da Montagem de festa</h2>
-        <svg class="admin-card__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="admin-card__content admin-hidden" id="montagem-content">
-        <p class="admin-header__subtitle">Essas fotos aparecem na seção "Montagem de festa" do site.</p>
-        <div class="admin-field">
-          <label for="montagem-add-photos">Adicionar fotos (pode escolher várias de uma vez)</label>
-          <label class="admin-file-picker" for="montagem-add-photos">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-            <span id="montagem-add-label">Clique para escolher as fotos</span>
-          </label>
-          <input type="file" id="montagem-add-photos" accept="image/*" multiple class="admin-file-input">
-        </div>
-        <p class="admin-progress" id="montagem-add-progress"></p>
-        <p class="admin-msg" id="montagem-add-msg"></p>
+    <main class="admin-main">
 
-        <div class="admin-import" id="montagem-import-box">
-          <svg class="admin-import__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <!-- ===== INÍCIO ===== -->
+      <section class="admin-view" data-view="inicio">
+        <header class="admin-view__header">
           <div>
-            <p>Primeira vez usando essa seção? Este botão importa, uma única vez, as fotos que já estão fixas no site para dentro do Firebase, para você poder trocá-las e excluí-las por aqui. Clique só uma vez — clicar de novo duplica as fotos.</p>
-            <button type="button" class="btn btn--outline" id="montagem-import-btn">Importar fotos já existentes no site</button>
-            <p class="admin-msg" id="montagem-import-msg"></p>
+            <p class="admin-eyebrow" id="greeting">Olá!</p>
+            <h1>Seu site em um só lugar</h1>
+            <p class="admin-view__subtitle">Troque fotos, organize cenários e mantenha tudo bonito — as mudanças aparecem no site na hora.</p>
+          </div>
+        </header>
+
+        <div class="admin-stats">
+          <a href="#carrossel" class="admin-stat">
+            <span class="admin-stat__icon"><svg aria-hidden="true"><use href="#i-slides"/></svg></span>
+            <span class="admin-stat__value" id="stat-slides">–</span>
+            <span class="admin-stat__label">fotos no carrossel</span>
+          </a>
+          <a href="#cenarios" class="admin-stat">
+            <span class="admin-stat__icon"><svg aria-hidden="true"><use href="#i-grid"/></svg></span>
+            <span class="admin-stat__value" id="stat-cenarios">–</span>
+            <span class="admin-stat__label">cenários cadastrados</span>
+          </a>
+          <a href="#cenarios" class="admin-stat">
+            <span class="admin-stat__icon"><svg aria-hidden="true"><use href="#i-star"/></svg></span>
+            <span class="admin-stat__value" id="stat-categorias">–</span>
+            <span class="admin-stat__label">categorias</span>
+          </a>
+          <a href="#montagem" class="admin-stat">
+            <span class="admin-stat__icon"><svg aria-hidden="true"><use href="#i-camera"/></svg></span>
+            <span class="admin-stat__value" id="stat-montagem">–</span>
+            <span class="admin-stat__label">fotos de montagem</span>
+          </a>
+        </div>
+
+        <div class="admin-panel admin-overview">
+          <div class="admin-overview__preview js-hero-preview" aria-label="Prévia do carrossel"></div>
+          <div class="admin-overview__text">
+            <p class="admin-eyebrow">Primeira impressão</p>
+            <h2>O carrossel é a primeira coisa que as clientes veem</h2>
+            <p>Mantenha ali as fotos mais bonitas e atuais. A primeira foto é a capa do site.</p>
+            <a href="#carrossel" class="btn btn--primary">Gerenciar carrossel</a>
           </div>
         </div>
 
-        <div class="admin-list" id="montagem-list">
-          <p class="admin-empty">Carregando...</p>
+        <div class="admin-quick">
+          <a href="#cenarios" class="admin-quick__item" data-action="new-cenario"><svg aria-hidden="true"><use href="#i-plus"/></svg>Novo cenário</a>
+          <a href="#carrossel" class="admin-quick__item"><svg aria-hidden="true"><use href="#i-upload"/></svg>Foto no carrossel</a>
+          <a href="#montagem" class="admin-quick__item"><svg aria-hidden="true"><use href="#i-camera"/></svg>Foto de montagem</a>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="admin-card">
-      <h2><span class="admin-card__icon admin-card__icon--list" aria-hidden="true">☰</span>Cenários cadastrados</h2>
-      <div class="admin-filter">
-        <button type="button" class="is-active" data-filter="all">Todos</button>
-        <button type="button" data-filter="cenarios">Nossos cenários</button>
-        <button type="button" data-filter="cha-de-bebe">Chá de Bebê</button>
-      </div>
-      <div class="admin-list" id="admin-list">
-        <p class="admin-empty">Carregando...</p>
-      </div>
-    </section>
+      <!-- ===== CARROSSEL ===== -->
+      <section class="admin-view" data-view="carrossel">
+        <header class="admin-view__header">
+          <div>
+            <p class="admin-eyebrow">Topo do site</p>
+            <h1>Carrossel</h1>
+            <p class="admin-view__subtitle">As fotos que passam no fundo do topo do site. Arraste para mudar a ordem — a primeira é a capa.</p>
+          </div>
+        </header>
+
+        <div class="admin-panel admin-carousel-top">
+          <div class="admin-carousel-top__preview js-hero-preview" aria-label="Prévia do carrossel"></div>
+          <label class="admin-dropzone" data-dropzone="carrossel">
+            <input type="file" id="carrossel-add-photos" accept="image/*" multiple class="admin-file-input">
+            <svg aria-hidden="true"><use href="#i-upload"/></svg>
+            <strong>Adicionar fotos ao carrossel</strong>
+            <span>Arraste aqui ou clique para escolher. Prefira fotos deitadas (horizontais).</span>
+            <span class="admin-dropzone__progress" aria-hidden="true"><span></span></span>
+          </label>
+        </div>
+
+        <div class="admin-import admin-hidden" id="carrossel-import-box">
+          <svg class="admin-import__icon" aria-hidden="true"><use href="#i-info"/></svg>
+          <div>
+            <p><strong>Primeira vez aqui?</strong> Importe as fotos que já estão fixas no carrossel do site para poder trocá-las e excluí-las por aqui. Faça isso uma única vez.</p>
+            <button type="button" class="btn btn--outline" id="carrossel-import-btn">Importar fotos atuais do carrossel</button>
+          </div>
+        </div>
+
+        <div class="admin-slides" id="carrossel-list">
+          <div class="admin-skeleton"></div><div class="admin-skeleton"></div><div class="admin-skeleton"></div>
+        </div>
+      </section>
+
+      <!-- ===== CENÁRIOS ===== -->
+      <section class="admin-view" data-view="cenarios">
+        <header class="admin-view__header">
+          <div>
+            <p class="admin-eyebrow">Galerias</p>
+            <h1>Cenários</h1>
+            <p class="admin-view__subtitle">Os cenários das seções “Nossos cenários”, “Chá de Bebê” e outras categorias.</p>
+          </div>
+          <button type="button" class="btn btn--primary" id="new-cenario-btn"><svg class="admin-btn-icon" aria-hidden="true"><use href="#i-plus"/></svg>Novo cenário</button>
+        </header>
+
+        <div class="admin-toolbar">
+          <div class="admin-search">
+            <svg aria-hidden="true"><use href="#i-search"/></svg>
+            <input type="search" id="cenarios-search" placeholder="Buscar cenário..." aria-label="Buscar cenário">
+          </div>
+          <div class="admin-filter" role="tablist" aria-label="Categorias"></div>
+        </div>
+
+        <div class="admin-import admin-hidden" id="admin-import-box">
+          <svg class="admin-import__icon" aria-hidden="true"><use href="#i-info"/></svg>
+          <div>
+            <p><strong>Primeira vez aqui?</strong> Importe os cenários que já estão fixos no site para poder editá-los e excluí-los por aqui. Faça isso uma única vez — repetir duplica os itens.</p>
+            <button type="button" class="btn btn--outline" id="import-btn">Importar cenários do site</button>
+          </div>
+        </div>
+
+        <div id="admin-list">
+          <div class="admin-cards"><div class="admin-skeleton admin-skeleton--card"></div><div class="admin-skeleton admin-skeleton--card"></div><div class="admin-skeleton admin-skeleton--card"></div></div>
+        </div>
+      </section>
+
+      <!-- ===== MONTAGEM ===== -->
+      <section class="admin-view" data-view="montagem">
+        <header class="admin-view__header">
+          <div>
+            <p class="admin-eyebrow">Galeria</p>
+            <h1>Montagem de festa</h1>
+            <p class="admin-view__subtitle">As fotos da seção “Montagem de festa” do site.</p>
+          </div>
+        </header>
+
+        <label class="admin-dropzone admin-dropzone--wide" data-dropzone="montagem">
+          <input type="file" id="montagem-add-photos" accept="image/*" multiple class="admin-file-input">
+          <svg aria-hidden="true"><use href="#i-upload"/></svg>
+          <strong>Adicionar fotos de montagem</strong>
+          <span>Arraste aqui ou clique para escolher — pode ser várias de uma vez.</span>
+          <span class="admin-dropzone__progress" aria-hidden="true"><span></span></span>
+        </label>
+
+        <div class="admin-import admin-hidden" id="montagem-import-box">
+          <svg class="admin-import__icon" aria-hidden="true"><use href="#i-info"/></svg>
+          <div>
+            <p><strong>Primeira vez aqui?</strong> Importe as fotos que já estão fixas no site para poder trocá-las e excluí-las por aqui. Faça isso uma única vez — repetir duplica as fotos.</p>
+            <button type="button" class="btn btn--outline" id="montagem-import-btn">Importar fotos do site</button>
+          </div>
+        </div>
+
+        <div id="montagem-list">
+          <div class="admin-photos"><div class="admin-skeleton"></div><div class="admin-skeleton"></div><div class="admin-skeleton"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== PAINEL LATERAL (edição) ===== -->
+  <div class="admin-drawer-overlay admin-hidden" id="admin-drawer-overlay">
+    <aside class="admin-drawer" role="dialog" aria-modal="true" aria-labelledby="admin-drawer-title">
+      <header class="admin-drawer__header">
+        <h2 id="admin-drawer-title"></h2>
+        <button type="button" class="admin-icon-btn" id="admin-drawer-close" aria-label="Fechar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </header>
+      <div class="admin-drawer__body" id="admin-drawer-body"></div>
+    </aside>
   </div>
 
   <!-- ===== MODAL DE CONFIRMAÇÃO/ALERTA ===== -->
   <div class="admin-modal-overlay admin-hidden" id="admin-modal-overlay">
     <div class="admin-modal" id="admin-modal" role="alertdialog" aria-modal="true" aria-labelledby="admin-modal-title">
-      <span class="admin-modal__icon" id="admin-modal-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M12 9v4M12 16.5h.01M12 3l9 16.5H3z"/></svg>
-      </span>
+      <span class="admin-modal__icon" aria-hidden="true"><svg><use href="#i-alert"/></svg></span>
       <h3 class="admin-modal__title" id="admin-modal-title"></h3>
       <p class="admin-modal__text" id="admin-modal-text"></p>
       <div class="admin-modal__actions">
@@ -161,6 +265,9 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== AVISOS (toasts) ===== -->
+  <div class="admin-toasts" id="admin-toasts" aria-live="polite"></div>
 
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
