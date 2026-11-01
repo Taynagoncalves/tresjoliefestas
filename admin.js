@@ -60,13 +60,63 @@ const EXISTING_CAROUSEL_SLIDES = [
   { imageUrl: 'imagens/imagem%2010.jpeg', alt: 'Cenário tema capivara Feliz Aniversário com número em neon' },
 ];
 
+/* Textos e contato que o site mostra hoje; usados quando config/site ainda não existe. */
+const DEFAULT_SITE_CONFIG = {
+  whatsapp: '5561992378041',
+  instagram: 'tresjoliefestas',
+  addressLine1: 'CLS 411, Bloco A, Loja 16',
+  addressLine2: 'Asa Sul, Brasília - DF',
+  cep: '70277-510',
+  hoursWeek: 'Segunda a sexta, das 9h às 18h',
+  hoursSaturday: 'Sábado, das 9h às 13h',
+  heroTitle: 'Locação de móveis, louças',
+  heroTitleHighlight: 'e painéis para festas',
+  heroSubtitle: 'Cenários personalizados para tornar a sua festa inesquecível.',
+  locamos: [
+    { icon: 'painel', title: 'Painéis', text: 'Painéis decorativos para compor o fundo do seu cenário.' },
+    { icon: 'movel', title: 'Móveis', text: 'Mesas, cilindros e peças para a estrutura da decoração.' },
+    { icon: 'louca', title: 'Louças', text: 'Louças de cerâmica delicadas para uma mesa elegante.' },
+    { icon: 'neon', title: 'Números em neon', text: 'Números iluminados para destacar a idade ou o tema.' },
+    { icon: 'coracao', title: 'Itens decorativos', text: 'Detalhes que completam e personalizam o cenário.' },
+  ],
+  steps: [
+    { title: 'Mesa de testes', text: 'Montamos uma mesa de testes para você ver a combinação das peças antes de decidir.' },
+    { title: 'Escolha livre', text: 'Escolha painéis, mesas, suportes e itens decorativos do seu jeito.' },
+    { title: 'Veja pronto', text: 'Veja o cenário montado no nosso espaço antes de fechar a locação.' },
+    { title: '100% personalizado', text: 'Tudo planejado do seu jeito, com atendimento exclusivo do início ao fim.' },
+  ],
+  montagemQuote: 'Tranquilidade e sofisticação para o seu evento.',
+  montagemBenefits: [
+    'Montagem completa e sob medida, feita no seu evento.',
+    'A sua festa personalizada alinhada ao seu planejamento.',
+    'A comodidade de receber sua festa pronta, no seu endereço.',
+  ],
+};
+
+/* Ícones que podem ser escolhidos em "O que locamos" (os desenhos ficam em script.js) */
+const ICON_OPTIONS = {
+  painel: 'Painel',
+  movel: 'Móvel',
+  louca: 'Louça',
+  neon: 'Neon / raio',
+  coracao: 'Coração',
+  estrela: 'Estrela',
+  balao: 'Balão',
+  presente: 'Presente',
+  bolo: 'Bolo',
+};
+
+const BADGE_OPTIONS = { '': 'Nenhuma', novo: 'Novo', 'mais-pedido': 'Mais pedido' };
+
 const CATEGORY_LABELS = { cenarios: 'Nossos cenários', 'cha-de-bebe': 'Chá de Bebê' };
-const VIEWS = ['inicio', 'carrossel', 'cenarios', 'montagem'];
+const VIEWS = ['inicio', 'carrossel', 'cenarios', 'montagem', 'site'];
 
 let cachedItems = [];
 let cachedMontagemPhotos = [];
 let cachedSlides = [];
 let currentFilter = 'cenarios';
+let siteConfig = null;
+let siteDirty = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   const loginMsg = document.getElementById('login-msg');
@@ -94,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadList();
       loadMontagemList();
       loadCarouselList();
+      loadSiteConfig();
     } else {
       loginSection.classList.remove('admin-hidden');
       dashboard.classList.add('admin-hidden');
@@ -115,6 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMontagemImport();
   setupCarousel();
   setupCarouselImport();
+  setupSiteForm();
+  setupSiteTabs();
+  setupSitePreview();
+  setupTours();
 });
 
 /* ---------- Login ---------- */
@@ -158,9 +213,8 @@ function setupLogin() {
 }
 
 function setupGreeting() {
-  const hour = new Date().getHours();
-  const text = hour < 12 ? 'Bom dia!' : hour < 18 ? 'Boa tarde!' : 'Boa noite!';
-  document.getElementById('greeting').textContent = text;
+  const date = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+  document.getElementById('today-date').textContent = date;
 }
 
 /* ---------- Navegação entre seções (pelo # da URL) ---------- */
@@ -179,6 +233,9 @@ function showView() {
     if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
   });
   window.scrollTo(0, 0);
+  const loggedIn = window.auth && window.auth.currentUser;
+  if (view === 'carrossel' && !sitePreviewLoaded && loggedIn) refreshSitePreview(true);
+  if (loggedIn) maybeAutoStartTour(view);
 }
 
 /* ---------- Utilitários ---------- */
@@ -345,6 +402,9 @@ function updateStats() {
   document.getElementById('stat-cenarios').textContent = cachedItems.length;
   document.getElementById('stat-categorias').textContent = new Set(cachedItems.map((i) => i.category)).size;
   document.getElementById('stat-montagem').textContent = cachedMontagemPhotos.length;
+  document.getElementById('nav-count-slides').textContent = cachedSlides.length || '';
+  document.getElementById('nav-count-cenarios').textContent = cachedItems.length || '';
+  document.getElementById('nav-count-montagem').textContent = cachedMontagemPhotos.length || '';
 }
 
 /* =========================================================
@@ -419,6 +479,7 @@ async function loadCarouselList() {
     renderCarouselList();
     renderHeroPreviews();
     updateStats();
+    refreshSitePreview();
   } catch (err) {
     document.getElementById('carrossel-list').innerHTML =
       '<p class="admin-empty">Não foi possível carregar o carrossel. Confira se as regras do Firestore liberam a coleção “carrossel”.</p>';
@@ -505,6 +566,7 @@ async function moveSlide(from, to) {
     });
     await batch.commit();
     showToast('Nova ordem salva!');
+    refreshSitePreview();
   } catch (err) {
     showToast('Não foi possível salvar a nova ordem.', 'error');
     console.error(err);
@@ -599,15 +661,64 @@ async function deleteSlide(slide) {
   }
 }
 
-/* Prévia que imita o topo do site, trocando de foto sozinha. */
+/* Prévia de verdade: o próprio site (index.html) dentro de um iframe, reduzido
+   para caber na tela. Desenhamos o site no tamanho real e encolhemos com scale. */
+const PREVIEW_SIZES = {
+  desktop: { width: 1280, height: 800 },
+  mobile: { width: 390, height: 780, shown: 300 },
+};
+let sitePreviewLoaded = false;
+
+function setupSitePreview() {
+  const preview = document.getElementById('site-preview');
+  const stage = preview.querySelector('.admin-site-preview__stage');
+
+  preview.querySelectorAll('.admin-site-preview__toggle button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      preview.dataset.device = btn.dataset.device;
+      preview.querySelectorAll('.admin-site-preview__toggle button').forEach((b) => b.classList.toggle('is-active', b === btn));
+      layoutSitePreview();
+    });
+  });
+
+  new ResizeObserver(layoutSitePreview).observe(stage);
+}
+
+function layoutSitePreview() {
+  const preview = document.getElementById('site-preview');
+  const stage = preview.querySelector('.admin-site-preview__stage');
+  const screen = preview.querySelector('.admin-site-preview__screen');
+  const frame = document.getElementById('site-preview-frame');
+  const size = PREVIEW_SIZES[preview.dataset.device];
+  const shownWidth = Math.min(size.shown || stage.clientWidth, stage.clientWidth);
+  const scale = shownWidth / size.width;
+
+  frame.style.width = `${size.width}px`;
+  frame.style.height = `${size.height}px`;
+  frame.style.transform = `scale(${scale})`;
+  screen.style.width = `${shownWidth}px`;
+  screen.style.height = `${size.height * scale}px`;
+}
+
+/* Carrega a prévia só quando a aba Carrossel é aberta, e recarrega depois de cada mudança */
+function refreshSitePreview(force = false) {
+  if (!sitePreviewLoaded && !force) return;
+  sitePreviewLoaded = true;
+  document.getElementById('site-preview-frame').src = `index.html?previa=${Date.now()}`;
+  layoutSitePreview();
+}
+
+/* Prévia que imita o topo do site, trocando de foto sozinha (tela Início). */
 function renderHeroPreviews() {
   const urls = (cachedSlides.length ? cachedSlides : EXISTING_CAROUSEL_SLIDES).map((s) => s.imageUrl);
+  const heroTitle = (siteConfig && siteConfig.heroTitle) || DEFAULT_SITE_CONFIG.heroTitle;
+  const heroHighlight = (siteConfig && siteConfig.heroTitleHighlight) || DEFAULT_SITE_CONFIG.heroTitleHighlight;
   document.querySelectorAll('.js-hero-preview').forEach((el) => {
     el.innerHTML = `
       ${urls.map((url, i) => `<img src="${escapeHtml(url)}" alt="" class="${i === 0 ? 'is-active' : ''}">`).join('')}
       <div class="admin-hero-preview__overlay"></div>
       <span class="admin-hero-preview__badge"><i></i>Prévia do site</span>
-      <p class="admin-hero-preview__title">Locação de móveis, louças<em>e painéis para festas</em></p>
+      <p class="admin-hero-preview__title">${escapeHtml(heroTitle)}<em>${escapeHtml(heroHighlight)}</em></p>
       <div class="admin-hero-preview__dots">${urls.map((_, i) => `<i class="${i === 0 ? 'is-active' : ''}"></i>`).join('')}</div>
     `;
   });
@@ -666,6 +777,31 @@ function setupCategoryToggle(container) {
   return () => (select.value === '__new__' ? input.value.trim() : select.value);
 }
 
+/* Mesma ordem do site: a escolhida no painel; sem ordem vão para o fim, por data de cadastro */
+function byOrder(a, b) {
+  const oa = a.order ?? Infinity;
+  const ob = b.order ?? Infinity;
+  if (oa !== ob) return oa - ob;
+  const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+  const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+  return ta - tb;
+}
+
+function badgeFieldsHtml(item = {}) {
+  return `
+    <div class="admin-field">
+      <label for="cenario-badge">Etiqueta na foto</label>
+      <select id="cenario-badge" class="js-badge">${Object.entries(BADGE_OPTIONS).map(([key, label]) =>
+        `<option value="${key}" ${(item.badge || '') === key ? 'selected' : ''}>${label}</option>`).join('')}</select>
+    </div>
+    <label class="admin-switch">
+      <input type="checkbox" class="js-visible" ${item.hidden ? '' : 'checked'}>
+      <span class="admin-switch__track" aria-hidden="true"></span>
+      <span><strong>Mostrar no site</strong><small>Desligue para esconder sem apagar (ex.: peça em manutenção).</small></span>
+    </label>
+  `;
+}
+
 function getItemPhotos(item) {
   return item.photos && item.photos.length ? item.photos.slice() : (item.imageUrl ? [item.imageUrl] : []);
 }
@@ -694,6 +830,7 @@ function openNewCenario() {
         <input type="text" id="cenario-title" required placeholder="Ex.: Fadinhas">
       </div>
       ${categoryFieldsHtml(defaultCategory)}
+      ${badgeFieldsHtml()}
       <div class="admin-field">
         <span class="admin-label">Fotos</span>
         <label class="admin-dropzone admin-dropzone--compact">
@@ -755,13 +892,19 @@ function openNewCenario() {
       const photos = await uploadMany(pendingFiles.map((p) => p.file), 'cenarios', (done, total) => {
         submit.textContent = done < total ? `Enviando foto ${done + 1} de ${total}...` : 'Salvando...';
       });
-      await window.db.collection('cenarios').add({
+      const data = {
         title,
         category,
         photos,
         imageUrl: photos[0],
+        badge: body.querySelector('.js-badge').value,
+        hidden: !body.querySelector('.js-visible').checked,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      };
+      // Se a categoria já foi ordenada no painel, o novo cenário entra no fim dela
+      const orders = cachedItems.filter((i) => i.category === category).map((i) => i.order).filter(Number.isFinite);
+      if (orders.length) data.order = Math.max(...orders) + 1;
+      await window.db.collection('cenarios').add(data);
       pendingFiles.forEach((p) => URL.revokeObjectURL(p.preview));
       showToast(`Cenário “${title}” salvo!`);
       currentFilter = category;
@@ -797,6 +940,7 @@ function openEditCenario(item) {
         <input type="text" id="cenario-title" value="${escapeHtml(item.title)}" required>
       </div>
       ${categoryFieldsHtml(item.category)}
+      ${badgeFieldsHtml(item)}
       <div class="admin-drawer__actions">
         <button type="button" class="btn admin-btn-danger js-delete">${icon('trash')}Excluir</button>
         <button type="submit" class="btn btn--primary">Salvar alterações</button>
@@ -865,6 +1009,8 @@ function openEditCenario(item) {
         category,
         photos,
         imageUrl: photos[0],
+        badge: body.querySelector('.js-badge').value,
+        hidden: !body.querySelector('.js-visible').checked,
       });
       showToast('Alterações salvas!');
       closeDrawer();
@@ -919,8 +1065,8 @@ function setupImport() {
 
 async function loadList() {
   try {
-    const snapshot = await window.db.collection('cenarios').orderBy('createdAt', 'desc').get();
-    cachedItems = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const snapshot = await window.db.collection('cenarios').get();
+    cachedItems = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })).sort(byOrder);
     renderFilterButtons();
     renderList();
     updateStats();
@@ -953,12 +1099,22 @@ function renderList() {
     return;
   }
 
-  listEl.innerHTML = `<div class="admin-cards">${items.map((item) => {
+  // Durante uma busca a lista fica incompleta, então não dá para reordenar
+  const canReorder = !query;
+  const last = items.length - 1;
+
+  listEl.innerHTML = `
+    ${canReorder && items.length > 1 ? '<p class="admin-hint admin-reorder-hint">Arraste os cards ou use as setas para escolher a ordem em que aparecem no site.</p>' : ''}
+    <div class="admin-cards">${items.map((item, i) => {
     const photos = getItemPhotos(item);
+    const badge = BADGE_OPTIONS[item.badge] && item.badge ? BADGE_OPTIONS[item.badge] : '';
     return `
-      <article class="admin-cenario" data-id="${escapeHtml(item.id)}">
+      <article class="admin-cenario ${item.hidden ? 'is-hidden' : ''}" data-id="${escapeHtml(item.id)}" data-index="${i}" ${canReorder ? 'draggable="true"' : ''}>
         <button type="button" class="admin-cenario__media js-edit" aria-label="Editar ${escapeHtml(item.title)}">
-          <img src="${escapeHtml(photos[0] || '')}" alt="" loading="lazy">
+          <img src="${escapeHtml(photos[0] || '')}" alt="" loading="lazy" draggable="false">
+          ${canReorder ? `<span class="admin-cenario__pos">${i + 1}</span>` : ''}
+          ${badge ? `<span class="admin-cenario__badge admin-cenario__badge--${item.badge}">${badge}</span>` : ''}
+          ${item.hidden ? `<span class="admin-cenario__hidden">${icon('eye-off')}Oculto no site</span>` : ''}
           ${photos.length > 1 ? `<span class="admin-cenario__count">${icon('camera')}${photos.length}</span>` : ''}
         </button>
         <div class="admin-cenario__body">
@@ -967,6 +1123,11 @@ function renderList() {
             <p class="admin-cenario__category">${escapeHtml(CATEGORY_LABELS[item.category] || item.category)}</p>
           </div>
           <div class="admin-cenario__actions">
+            ${canReorder ? `
+              <button type="button" class="admin-icon-btn js-move" data-dir="-1" aria-label="Mover para antes" title="Mover para antes" ${i === 0 ? 'disabled' : ''}>${icon('left')}</button>
+              <button type="button" class="admin-icon-btn js-move" data-dir="1" aria-label="Mover para depois" title="Mover para depois" ${i === last ? 'disabled' : ''}>${icon('right')}</button>` : ''}
+            <span class="admin-spacer"></span>
+            <button type="button" class="admin-icon-btn js-toggle-hidden" aria-label="${item.hidden ? 'Mostrar no site' : 'Esconder do site'}" title="${item.hidden ? 'Mostrar no site' : 'Esconder do site'}">${icon(item.hidden ? 'eye-off' : 'eye')}</button>
             <button type="button" class="admin-icon-btn js-edit" aria-label="Editar" title="Editar">${icon('edit')}</button>
             <button type="button" class="admin-icon-btn admin-icon-btn--danger js-delete" aria-label="Excluir" title="Excluir">${icon('trash')}</button>
           </div>
@@ -975,11 +1136,76 @@ function renderList() {
     `;
   }).join('')}</div>`;
 
+  let dragIndex = null;
   listEl.querySelectorAll('.admin-cenario').forEach((card) => {
     const item = cachedItems.find((i) => i.id === card.dataset.id);
+    const index = Number(card.dataset.index);
     card.querySelectorAll('.js-edit').forEach((btn) => btn.addEventListener('click', () => openEditCenario(item)));
     card.querySelector('.js-delete').addEventListener('click', () => deleteItem(item.id));
+    card.querySelector('.js-toggle-hidden').addEventListener('click', () => toggleCenarioHidden(item));
+    card.querySelectorAll('.js-move').forEach((btn) => {
+      btn.addEventListener('click', () => moveCenario(items, index, index + Number(btn.dataset.dir)));
+    });
+
+    if (!canReorder) return;
+    card.addEventListener('dragstart', (e) => {
+      dragIndex = index;
+      card.classList.add('is-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(index));
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('is-dragging');
+      listEl.querySelectorAll('.is-over').forEach((el) => el.classList.remove('is-over'));
+    });
+    card.addEventListener('dragover', (e) => {
+      if (dragIndex === null) return;
+      e.preventDefault();
+      card.classList.add('is-over');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('is-over'));
+    card.addEventListener('drop', (e) => {
+      e.preventDefault();
+      card.classList.remove('is-over');
+      if (dragIndex !== null) moveCenario(items, dragIndex, index);
+      dragIndex = null;
+    });
   });
+}
+
+/* Reordena os cenários de uma categoria e grava a posição de todos eles */
+async function moveCenario(items, from, to) {
+  if (from === to || to < 0 || to >= items.length) return;
+  const ordered = items.slice();
+  const [moved] = ordered.splice(from, 1);
+  ordered.splice(to, 0, moved);
+  ordered.forEach((item, i) => { item.order = i; });
+  cachedItems.sort(byOrder);
+  renderList();
+
+  try {
+    const batch = window.db.batch();
+    ordered.forEach((item) => batch.update(window.db.collection('cenarios').doc(item.id), { order: item.order }));
+    await batch.commit();
+    showToast('Nova ordem salva!');
+  } catch (err) {
+    showToast('Não foi possível salvar a nova ordem.', 'error');
+    console.error(err);
+    loadList();
+  }
+}
+
+async function toggleCenarioHidden(item) {
+  const hidden = !item.hidden;
+  try {
+    await window.db.collection('cenarios').doc(item.id).update({ hidden });
+    item.hidden = hidden;
+    renderList();
+    showToast(hidden ? `“${item.title}” está oculto no site.` : `“${item.title}” voltou a aparecer no site.`);
+  } catch (err) {
+    showToast('Não foi possível alterar a visibilidade.', 'error');
+    console.error(err);
+  }
 }
 
 async function deleteItem(id) {
@@ -1134,4 +1360,424 @@ async function deleteMontagemPhoto(id) {
     showToast('Não foi possível excluir esta foto.', 'error');
     console.error(err);
   }
+}
+
+/* =========================================================
+   SITE: TEXTOS E CONTATO (documento config/site)
+   ========================================================= */
+function cloneConfig(config) {
+  return JSON.parse(JSON.stringify(config));
+}
+
+/* "61 99237-8041" -> "5561992378041" */
+function normalizeWhatsapp(value) {
+  const digits = String(value || '').replace(/\D/g, '');
+  return digits.length === 10 || digits.length === 11 ? `55${digits}` : digits;
+}
+
+/* "5561992378041" -> "(61) 99237-8041" */
+function formatPhone(digits) {
+  const local = String(digits || '').replace(/\D/g, '').replace(/^55/, '');
+  if (local.length < 10) return local;
+  const rest = local.slice(2);
+  return `(${local.slice(0, 2)}) ${rest.slice(0, rest.length - 4)}-${rest.slice(-4)}`;
+}
+
+async function loadSiteConfig() {
+  try {
+    const doc = await window.db.collection('config').doc('site').get();
+    siteConfig = { ...cloneConfig(DEFAULT_SITE_CONFIG), ...(doc.exists ? doc.data() : {}) };
+  } catch (err) {
+    siteConfig = cloneConfig(DEFAULT_SITE_CONFIG);
+    showToast('Não foi possível carregar os textos do site. Confira se as regras do Firestore liberam a coleção “config”.', 'error');
+    console.error(err);
+  }
+  renderSiteForm();
+  renderHeroPreviews();
+}
+
+function setSiteDirty(dirty) {
+  siteDirty = dirty;
+  const status = document.getElementById('site-status');
+  status.textContent = dirty ? 'Alterações não salvas' : 'Tudo salvo';
+  status.classList.toggle('is-dirty', dirty);
+}
+
+function renderSiteForm() {
+  const form = document.getElementById('site-form');
+  form.querySelectorAll('[data-field]').forEach((input) => {
+    const value = siteConfig[input.dataset.field] || '';
+    input.value = input.dataset.field === 'whatsapp' ? formatPhone(value) : value;
+  });
+  ['locamos', 'steps', 'montagemBenefits'].forEach(renderSiteRows);
+  setSiteDirty(false);
+}
+
+function renderSiteRows(list) {
+  const container = document.querySelector(`.admin-rows[data-list="${list}"]`);
+  const rows = siteConfig[list] || [];
+
+  if (!rows.length) {
+    container.innerHTML = '<p class="admin-empty">Nenhum item. Use o botão acima para adicionar.</p>';
+    return;
+  }
+
+  container.innerHTML = rows.map((row, i) => {
+    let fields;
+    if (list === 'locamos') {
+      fields = `
+        <select data-key="icon" aria-label="Ícone">${Object.entries(ICON_OPTIONS).map(([key, label]) =>
+          `<option value="${key}" ${row.icon === key ? 'selected' : ''}>${label}</option>`).join('')}</select>
+        <input type="text" data-key="title" value="${escapeHtml(row.title)}" placeholder="Título" aria-label="Título">
+        <textarea data-key="text" rows="2" placeholder="Descrição" aria-label="Descrição">${escapeHtml(row.text)}</textarea>`;
+    } else if (list === 'steps') {
+      fields = `
+        <input type="text" data-key="title" value="${escapeHtml(row.title)}" placeholder="Título do passo" aria-label="Título do passo">
+        <textarea data-key="text" rows="2" placeholder="Descrição" aria-label="Descrição">${escapeHtml(row.text)}</textarea>`;
+    } else {
+      fields = `<input type="text" value="${escapeHtml(row)}" placeholder="Benefício" aria-label="Benefício">`;
+    }
+    return `
+      <div class="admin-row admin-row--${list}" data-index="${i}">
+        ${list === 'steps' ? `<span class="admin-row__num">${i + 1}</span>` : ''}
+        <div class="admin-row__fields">${fields}</div>
+        <div class="admin-row__actions">
+          <button type="button" class="admin-icon-btn js-row-move" data-dir="-1" aria-label="Mover para cima" ${i === 0 ? 'disabled' : ''}>${icon('up')}</button>
+          <button type="button" class="admin-icon-btn js-row-move" data-dir="1" aria-label="Mover para baixo" ${i === rows.length - 1 ? 'disabled' : ''}>${icon('down')}</button>
+          <button type="button" class="admin-icon-btn admin-icon-btn--danger js-row-remove" aria-label="Remover">${icon('trash')}</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function setupSiteForm() {
+  const form = document.getElementById('site-form');
+
+  form.addEventListener('input', (e) => {
+    const el = e.target;
+    if (el.dataset.field) {
+      siteConfig[el.dataset.field] = el.value;
+    } else {
+      const row = el.closest('.admin-row');
+      if (!row) return;
+      const list = row.closest('.admin-rows').dataset.list;
+      const index = Number(row.dataset.index);
+      if (list === 'montagemBenefits') siteConfig[list][index] = el.value;
+      else siteConfig[list][index][el.dataset.key] = el.value;
+    }
+    setSiteDirty(true);
+  });
+
+  form.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+
+    if (btn.classList.contains('js-row-add')) {
+      const list = btn.dataset.list;
+      const empty = { locamos: { icon: 'estrela', title: '', text: '' }, steps: { title: '', text: '' }, montagemBenefits: '' }[list];
+      siteConfig[list] = [...(siteConfig[list] || []), empty];
+      renderSiteRows(list);
+      const rows = form.querySelectorAll(`.admin-rows[data-list="${list}"] .admin-row`);
+      const last = rows[rows.length - 1];
+      if (last) last.querySelector('input').focus();
+      setSiteDirty(true);
+      return;
+    }
+
+    const row = btn.closest('.admin-row');
+    if (!row) return;
+    const list = row.closest('.admin-rows').dataset.list;
+    const index = Number(row.dataset.index);
+    const rows = siteConfig[list];
+
+    if (btn.classList.contains('js-row-remove')) {
+      rows.splice(index, 1);
+    } else if (btn.classList.contains('js-row-move')) {
+      const to = index + Number(btn.dataset.dir);
+      if (to < 0 || to >= rows.length) return;
+      [rows[index], rows[to]] = [rows[to], rows[index]];
+    } else {
+      return;
+    }
+    renderSiteRows(list);
+    setSiteDirty(true);
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const whatsapp = normalizeWhatsapp(siteConfig.whatsapp);
+    if (whatsapp.length < 12) {
+      showToast('Confira o número do WhatsApp: coloque o DDD e o número completo.', 'error');
+      document.getElementById('cfg-whatsapp').focus();
+      return;
+    }
+
+    const trim = (s) => String(s || '').trim();
+    const data = {
+      ...Object.fromEntries(Object.keys(DEFAULT_SITE_CONFIG)
+        .filter((key) => !Array.isArray(DEFAULT_SITE_CONFIG[key]))
+        .map((key) => [key, trim(siteConfig[key])])),
+      whatsapp,
+      instagram: trim(siteConfig.instagram).replace(/^@/, ''),
+      locamos: siteConfig.locamos
+        .map((r) => ({ icon: r.icon, title: trim(r.title), text: trim(r.text) }))
+        .filter((r) => r.title),
+      steps: siteConfig.steps
+        .map((r) => ({ title: trim(r.title), text: trim(r.text) }))
+        .filter((r) => r.title),
+      montagemBenefits: siteConfig.montagemBenefits.map(trim).filter(Boolean),
+    };
+
+    const submit = document.getElementById('site-save');
+    submit.disabled = true;
+    try {
+      await window.db.collection('config').doc('site').set({
+        ...data,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      siteConfig = data;
+      renderSiteForm();
+      renderHeroPreviews();
+      refreshSitePreview();
+      showToast('Textos do site salvos!');
+    } catch (err) {
+      showToast('Não foi possível salvar. Confira se as regras do Firestore liberam a coleção “config”.', 'error');
+      console.error(err);
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (!siteDirty) return;
+    e.preventDefault();
+    e.returnValue = '';
+  });
+}
+
+/* =========================================================
+   ABAS DA TELA "TEXTOS E CONTATO"
+   ========================================================= */
+function setupSiteTabs() {
+  const tabs = document.querySelectorAll('.admin-tabs button');
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => {
+        t.classList.toggle('is-active', t === tab);
+        t.setAttribute('aria-selected', String(t === tab));
+      });
+      document.querySelectorAll('.admin-site-section').forEach((section) => {
+        section.classList.toggle('is-active', section.dataset.tab === tab.dataset.tab);
+      });
+    });
+  });
+}
+
+/* =========================================================
+   TUTORIAL GUIADO (destaca cada parte da tela, passo a passo)
+   ========================================================= */
+const TOURS = {
+  inicio: [
+    { target: '.admin-nav', title: 'Este é o menu', text: 'Por aqui você navega pelo painel. Em “Conteúdo do site” ficam as fotos; em “Configurações”, os textos e o contato.' },
+    { target: '.admin-stats', title: 'Resumo do site', text: 'Quantas fotos e cenários estão no site agora. Clique em um quadrinho para ir direto àquela parte.' },
+    { target: '.admin-overview', title: 'Topo do site', text: 'Uma amostra do carrossel, a primeira coisa que as clientes veem. Clique em “Gerenciar carrossel” para trocar as fotos.' },
+    { target: '.admin-quick', title: 'Atalhos', text: 'Caminhos rápidos para as tarefas mais comuns: novo cenário, foto no carrossel e foto de montagem.' },
+    { target: '.admin-help-btn', title: 'Ajuda sempre à mão', text: 'Toda tela tem um botão “Como usar”. Clique nele sempre que quiser rever este tutorial.' },
+  ],
+  carrossel: [
+    { target: '#site-preview', title: 'Prévia real do site', text: 'É exatamente o que as clientes veem. Use “Computador” e “Celular” para ver nos dois tamanhos. Ela se atualiza sozinha depois de cada mudança.' },
+    { target: '[data-dropzone="carrossel"]', title: 'Adicionar fotos', text: 'Arraste fotos para cá ou clique para escolher. Prefira fotos deitadas (horizontais), elas ficam melhores no topo do site.' },
+    { target: '#carrossel-list', title: 'Suas fotos', text: 'A foto 1 é a capa. Arraste os cards ou use as setas ‹ › para mudar a ordem. O lápis troca a foto ou a descrição, e a lixeira exclui.' },
+    { target: '.admin-help-btn', title: 'Pronto!', text: 'Se tiver dúvida, clique em “Como usar” para ver este passo a passo de novo.' },
+  ],
+  cenarios: [
+    { target: '#new-cenario-btn', title: 'Novo cenário', text: 'Cadastre um cenário com título, categoria e fotos. A primeira foto vira a capa.' },
+    { target: '.admin-toolbar', title: 'Buscar e filtrar', text: 'Procure um cenário pelo nome ou troque de categoria (Nossos cenários, Chá de Bebê…).' },
+    { target: '#admin-list', title: 'Seus cenários', text: 'Arraste os cards ou use as setas para escolher a ordem no site. O olho esconde ou mostra o cenário sem apagar. O lápis edita fotos, título e a etiqueta “Novo” ou “Mais pedido”.' },
+    { target: '.admin-help-btn', title: 'Pronto!', text: 'Clique em “Como usar” quando quiser rever este passo a passo.' },
+  ],
+  montagem: [
+    { target: '[data-dropzone="montagem"]', title: 'Adicionar fotos', text: 'Arraste fotos de montagens para cá ou clique para escolher — pode ser várias de uma vez.' },
+    { target: '#montagem-list', title: 'Suas fotos', text: 'Passe o mouse sobre uma foto (ou toque, no celular) para trocá-la ou excluí-la.' },
+    { target: '.admin-help-btn', title: 'Pronto!', text: 'Clique em “Como usar” quando quiser rever este passo a passo.' },
+  ],
+  site: [
+    { target: '.admin-tabs', title: 'Escolha o que editar', text: 'Cada aba é uma parte do site: contato e horários, topo, “O que locamos”, “Como funciona” e montagem.' },
+    { target: '.admin-site-section.is-active', title: 'Edite os campos', text: 'Mude os textos à vontade. Nas listas, use as setas para reordenar, a lixeira para remover e o botão “Adicionar” para criar itens novos.' },
+    { target: '.admin-savebar', title: 'Salvar', text: 'Quando terminar, clique em “Salvar alterações”. O aviso à esquerda mostra se ainda tem algo sem salvar.' },
+  ],
+};
+
+let tourState = null;
+
+function tourSeenKey(view) {
+  return `tj-admin-tour-${view}`;
+}
+
+function tourWasSeen(view) {
+  try { return localStorage.getItem(tourSeenKey(view)) === '1'; } catch (err) { return true; }
+}
+
+function markTourSeen(view) {
+  try { localStorage.setItem(tourSeenKey(view), '1'); } catch (err) { /* sem armazenamento: só não lembra */ }
+}
+
+function currentView() {
+  const active = document.querySelector('.admin-view.is-active');
+  return active ? active.dataset.view : 'inicio';
+}
+
+function setupTours() {
+  // Botão "Como usar" no cabeçalho de cada tela
+  document.querySelectorAll('.admin-view').forEach((view) => {
+    const header = view.querySelector('.admin-view__header');
+    let actions = header.querySelector('.admin-view__actions');
+    if (!actions) {
+      actions = document.createElement('div');
+      actions.className = 'admin-view__actions';
+      header.querySelectorAll(':scope > .btn').forEach((btn) => actions.appendChild(btn));
+      header.appendChild(actions);
+    }
+    const help = document.createElement('button');
+    help.type = 'button';
+    help.className = 'admin-help-btn';
+    help.innerHTML = `${icon('help')}Como usar`;
+    help.addEventListener('click', () => startTour(view.dataset.view));
+    actions.prepend(help);
+  });
+
+  document.getElementById('tour-sidebar-btn').addEventListener('click', () => startTour(currentView()));
+
+  const tour = document.createElement('div');
+  tour.className = 'admin-tour admin-hidden';
+  tour.id = 'admin-tour';
+  tour.innerHTML = `
+    <div class="admin-tour__spot"></div>
+    <div class="admin-tour__card" role="dialog" aria-modal="true" aria-labelledby="admin-tour-title">
+      <div class="admin-tour__progress"></div>
+      <h3 class="admin-tour__title" id="admin-tour-title"></h3>
+      <p class="admin-tour__text"></p>
+      <div class="admin-tour__actions">
+        <button type="button" class="admin-tour__skip">Pular tutorial</button>
+        <span class="admin-spacer"></span>
+        <button type="button" class="btn btn--outline admin-tour__back">Voltar</button>
+        <button type="button" class="btn btn--primary admin-tour__next">Próximo</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(tour);
+
+  tour.querySelector('.admin-tour__skip').addEventListener('click', endTour);
+  tour.querySelector('.admin-tour__back').addEventListener('click', () => showTourStep(tourState.index - 1));
+  tour.querySelector('.admin-tour__next').addEventListener('click', () => {
+    if (tourState.index >= tourState.steps.length - 1) endTour();
+    else showTourStep(tourState.index + 1);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!tourState) return;
+    if (e.key === 'Escape') endTour();
+    if (e.key === 'ArrowRight') tour.querySelector('.admin-tour__next').click();
+    if (e.key === 'ArrowLeft' && tourState.index > 0) showTourStep(tourState.index - 1);
+  });
+  window.addEventListener('resize', () => { if (tourState) positionTour(); });
+}
+
+/* Na primeira vez que cada tela é aberta, o tutorial começa sozinho */
+function maybeAutoStartTour(view) {
+  if (tourWasSeen(view)) return;
+  setTimeout(() => {
+    const drawerOpen = document.getElementById('admin-drawer-overlay').classList.contains('is-open');
+    if (!tourState && !drawerOpen && currentView() === view) startTour(view);
+  }, 900);
+}
+
+function findTourTarget(selector) {
+  const view = document.querySelector('.admin-view.is-active');
+  const candidates = [...(view ? view.querySelectorAll(selector) : []), ...document.querySelectorAll(selector)];
+  return candidates.find((el) => el.getClientRects().length > 0) || null;
+}
+
+function startTour(view) {
+  const steps = (TOURS[view] || []).filter((step) => findTourTarget(step.target));
+  if (!steps.length) return;
+  tourState = { view, steps, index: 0 };
+  document.getElementById('admin-tour').classList.remove('admin-hidden');
+  document.body.classList.add('admin-no-scroll');
+  showTourStep(0);
+}
+
+function showTourStep(index) {
+  const { steps } = tourState;
+  tourState.index = Math.max(0, Math.min(index, steps.length - 1));
+  const step = steps[tourState.index];
+  const tour = document.getElementById('admin-tour');
+
+  tour.querySelector('.admin-tour__progress').innerHTML =
+    `<span>Passo ${tourState.index + 1} de ${steps.length}</span>${steps.map((_, i) => `<i class="${i <= tourState.index ? 'is-done' : ''}"></i>`).join('')}`;
+  tour.querySelector('.admin-tour__title').textContent = step.title;
+  tour.querySelector('.admin-tour__text').textContent = step.text;
+  tour.querySelector('.admin-tour__back').style.visibility = tourState.index === 0 ? 'hidden' : '';
+  tour.querySelector('.admin-tour__next').textContent = tourState.index === steps.length - 1 ? 'Concluir' : 'Próximo';
+
+  const target = findTourTarget(step.target);
+  tourState.target = target;
+  if (target) {
+    document.body.classList.remove('admin-no-scroll');
+    target.scrollIntoView({ block: 'center', behavior: 'auto' });
+    document.body.classList.add('admin-no-scroll');
+  }
+  positionTour();
+  tour.querySelector('.admin-tour__next').focus();
+}
+
+function positionTour() {
+  const tour = document.getElementById('admin-tour');
+  const spot = tour.querySelector('.admin-tour__spot');
+  const card = tour.querySelector('.admin-tour__card');
+  const target = tourState.target;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const pad = 8;
+  const gap = 16;
+
+  if (!target) {
+    spot.style.cssText = 'top:50%;left:50%;width:0;height:0;';
+    card.style.left = `${(vw - card.offsetWidth) / 2}px`;
+    card.style.top = `${(vh - card.offsetHeight) / 2}px`;
+    return;
+  }
+
+  const r = target.getBoundingClientRect();
+  const top = Math.max(r.top - pad, 8);
+  const bottom = Math.min(r.bottom + pad, vh - 8);
+  spot.style.cssText = `top:${top}px;left:${r.left - pad}px;width:${r.width + pad * 2}px;height:${Math.max(bottom - top, 0)}px;`;
+
+  const cw = card.offsetWidth;
+  const ch = card.offsetHeight;
+  let cardTop;
+  let cardLeft;
+  if (bottom + gap + ch <= vh) {
+    cardTop = bottom + gap; // abaixo
+    cardLeft = r.left;
+  } else if (top - gap - ch >= 0) {
+    cardTop = top - gap - ch; // acima
+    cardLeft = r.left;
+  } else if (r.right + pad + gap + cw <= vw) {
+    cardTop = top; // à direita (ex.: menu lateral)
+    cardLeft = r.right + pad + gap;
+  } else {
+    cardTop = vh - ch - gap; // sem espaço: fica no rodapé da tela, por cima
+    cardLeft = (vw - cw) / 2;
+  }
+  card.style.top = `${Math.max(gap, Math.min(cardTop, vh - ch - gap))}px`;
+  card.style.left = `${Math.max(gap, Math.min(cardLeft, vw - cw - gap))}px`;
+}
+
+function endTour() {
+  if (!tourState) return;
+  markTourSeen(tourState.view);
+  tourState = null;
+  document.getElementById('admin-tour').classList.add('admin-hidden');
+  document.body.classList.remove('admin-no-scroll');
 }

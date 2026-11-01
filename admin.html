@@ -35,19 +35,28 @@
     <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></symbol>
     <symbol id="i-drag" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A11 11 0 0 1 12 5c7 0 11 7 11 7a18 18 0 0 1-3.2 4M6.6 6.6C3.4 8.6 1 12 1 12s4 7 11 7a10.6 10.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h13"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
   </svg>
 
   <!-- ===== LOGIN ===== -->
   <div class="admin-login-page" id="admin-login">
-    <div class="admin-login-blob admin-login-blob--1" aria-hidden="true"></div>
-    <div class="admin-login-blob admin-login-blob--2" aria-hidden="true"></div>
     <div class="admin-login-card">
-      <div class="admin-login-brand">
-        <img class="admin-login-logo" src="imagens/logo/logo-tresjolie.png" alt="Très Jolie Festas" width="88" height="88">
-        <p class="admin-login-title">Que bom ter você aqui</p>
-        <p class="admin-login-subtitle">Entre para gerenciar o site da Très Jolie Festas</p>
+      <div class="admin-login-photo" aria-hidden="true">
+        <div class="admin-login-arch">
+          <img src="imagens/imagem%20inicio.jpeg" alt="">
+        </div>
       </div>
-      <form id="login-form">
+
+      <div class="admin-login-form">
+        <div class="admin-login-brand">
+          <img class="admin-login-logo" src="imagens/logo/logo-tresjolie.png" alt="Très Jolie Festas" width="320" height="200">
+          <h1 class="admin-login-title">Olá, Beth</h1>
+        </div>
+        <form id="login-form">
         <div class="admin-field">
           <label for="login-email">E-mail</label>
           <input type="email" id="login-email" autocomplete="username" required placeholder="seu@email.com">
@@ -63,7 +72,8 @@
         </div>
         <button type="submit" class="btn btn--primary admin-login-submit" id="login-submit">Entrar</button>
         <p class="admin-msg admin-msg--error" id="login-msg"></p>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -76,12 +86,19 @@
         <span>Très Jolie<small>Painel</small></span>
       </a>
       <nav class="admin-nav" aria-label="Seções do painel">
+        <p class="admin-nav__group">Visão geral</p>
         <a href="#inicio" class="admin-nav__link" data-view="inicio"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Início</span></a>
-        <a href="#carrossel" class="admin-nav__link" data-view="carrossel"><svg aria-hidden="true"><use href="#i-slides"/></svg><span>Carrossel</span></a>
-        <a href="#cenarios" class="admin-nav__link" data-view="cenarios"><svg aria-hidden="true"><use href="#i-grid"/></svg><span>Cenários</span></a>
-        <a href="#montagem" class="admin-nav__link" data-view="montagem"><svg aria-hidden="true"><use href="#i-camera"/></svg><span>Montagem</span></a>
+
+        <p class="admin-nav__group">Conteúdo do site</p>
+        <a href="#carrossel" class="admin-nav__link" data-view="carrossel"><svg aria-hidden="true"><use href="#i-slides"/></svg><span>Carrossel</span><em class="admin-nav__count" id="nav-count-slides"></em></a>
+        <a href="#cenarios" class="admin-nav__link" data-view="cenarios"><svg aria-hidden="true"><use href="#i-grid"/></svg><span>Cenários</span><em class="admin-nav__count" id="nav-count-cenarios"></em></a>
+        <a href="#montagem" class="admin-nav__link" data-view="montagem"><svg aria-hidden="true"><use href="#i-camera"/></svg><span>Montagem</span><em class="admin-nav__count" id="nav-count-montagem"></em></a>
+
+        <p class="admin-nav__group">Configurações</p>
+        <a href="#site" class="admin-nav__link" data-view="site"><svg aria-hidden="true"><use href="#i-text"/></svg><span>Textos<span class="admin-nav__long"> e contato</span></span></a>
       </nav>
       <div class="admin-sidebar__footer">
+        <button type="button" class="admin-sidebar__help" id="tour-sidebar-btn"><svg aria-hidden="true"><use href="#i-help"/></svg>Tutorial desta tela</button>
         <a class="admin-sidebar__site" href="index.html" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-external"/></svg>Ver site</a>
         <div class="admin-user">
           <span class="admin-user__avatar" id="user-avatar" aria-hidden="true">T</span>
@@ -97,9 +114,8 @@
       <section class="admin-view" data-view="inicio">
         <header class="admin-view__header">
           <div>
-            <p class="admin-eyebrow" id="greeting">Olá!</p>
-            <h1>Seu site em um só lugar</h1>
-            <p class="admin-view__subtitle">Troque fotos, organize cenários e mantenha tudo bonito — as mudanças aparecem no site na hora.</p>
+            <p class="admin-eyebrow" id="today-date"></p>
+            <h1>Olá, Beth</h1>
           </div>
         </header>
 
@@ -153,8 +169,24 @@
           </div>
         </header>
 
+        <div class="admin-site-preview" id="site-preview" data-device="desktop">
+          <div class="admin-site-preview__bar">
+            <span class="admin-site-preview__lights" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="admin-site-preview__url"><svg aria-hidden="true"><use href="#i-eye"/></svg>Prévia do site — é assim que as clientes veem</span>
+            <div class="admin-site-preview__toggle" role="group" aria-label="Tamanho da prévia">
+              <button type="button" class="is-active" data-device="desktop">Computador</button>
+              <button type="button" data-device="mobile">Celular</button>
+            </div>
+            <a class="admin-icon-btn" href="index.html" target="_blank" rel="noopener" title="Abrir o site" aria-label="Abrir o site"><svg aria-hidden="true"><use href="#i-external"/></svg></a>
+          </div>
+          <div class="admin-site-preview__stage">
+            <div class="admin-site-preview__screen">
+              <iframe id="site-preview-frame" title="Prévia do site" tabindex="-1"></iframe>
+            </div>
+          </div>
+        </div>
+
         <div class="admin-panel admin-carousel-top">
-          <div class="admin-carousel-top__preview js-hero-preview" aria-label="Prévia do carrossel"></div>
           <label class="admin-dropzone" data-dropzone="carrossel">
             <input type="file" id="carrossel-add-photos" accept="image/*" multiple class="admin-file-input">
             <svg aria-hidden="true"><use href="#i-upload"/></svg>
@@ -238,6 +270,113 @@
         <div id="montagem-list">
           <div class="admin-photos"><div class="admin-skeleton"></div><div class="admin-skeleton"></div><div class="admin-skeleton"></div></div>
         </div>
+      </section>
+      <!-- ===== SITE (textos e contato) ===== -->
+      <section class="admin-view" data-view="site">
+        <header class="admin-view__header">
+          <div>
+            <p class="admin-eyebrow">Configurações</p>
+            <h1>Textos e contato</h1>
+            <p class="admin-view__subtitle">Escolha uma parte do site nas abas abaixo, edite e clique em “Salvar alterações”.</p>
+          </div>
+        </header>
+
+        <div class="admin-tabs" role="tablist" aria-label="Partes do site">
+          <button type="button" role="tab" class="is-active" data-tab="contato">Contato e horários</button>
+          <button type="button" role="tab" data-tab="topo">Topo do site</button>
+          <button type="button" role="tab" data-tab="locamos">O que locamos</button>
+          <button type="button" role="tab" data-tab="passos">Como funciona</button>
+          <button type="button" role="tab" data-tab="montagem">Montagem de festa</button>
+        </div>
+
+        <form class="admin-site-form" id="site-form" novalidate>
+          <section class="admin-panel admin-site-section is-active" data-tab="contato">
+            <h2>Contato e horários</h2>
+            <div class="admin-grid-2">
+              <div class="admin-field">
+                <label for="cfg-whatsapp">WhatsApp (com DDD)</label>
+                <input type="tel" id="cfg-whatsapp" data-field="whatsapp" placeholder="(61) 99237-8041">
+              </div>
+              <div class="admin-field">
+                <label for="cfg-instagram">Instagram</label>
+                <input type="text" id="cfg-instagram" data-field="instagram" placeholder="tresjoliefestas">
+              </div>
+              <div class="admin-field">
+                <label for="cfg-address1">Endereço</label>
+                <input type="text" id="cfg-address1" data-field="addressLine1" placeholder="CLS 411, Bloco A, Loja 16">
+              </div>
+              <div class="admin-field">
+                <label for="cfg-address2">Bairro e cidade</label>
+                <input type="text" id="cfg-address2" data-field="addressLine2" placeholder="Asa Sul, Brasília - DF">
+              </div>
+              <div class="admin-field">
+                <label for="cfg-cep">CEP</label>
+                <input type="text" id="cfg-cep" data-field="cep" placeholder="70277-510">
+              </div>
+              <div class="admin-field"></div>
+              <div class="admin-field">
+                <label for="cfg-hours-week">Horário durante a semana</label>
+                <input type="text" id="cfg-hours-week" data-field="hoursWeek" placeholder="Segunda a sexta, das 9h às 18h">
+              </div>
+              <div class="admin-field">
+                <label for="cfg-hours-sat">Horário de sábado</label>
+                <input type="text" id="cfg-hours-sat" data-field="hoursSaturday" placeholder="Sábado, das 9h às 13h">
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-panel admin-site-section" data-tab="topo">
+            <h2>Topo do site</h2>
+            <div class="admin-grid-2">
+              <div class="admin-field">
+                <label for="cfg-hero-title">Título</label>
+                <input type="text" id="cfg-hero-title" data-field="heroTitle" placeholder="Locação de móveis, louças">
+              </div>
+              <div class="admin-field">
+                <label for="cfg-hero-highlight">Continuação do título (em destaque)</label>
+                <input type="text" id="cfg-hero-highlight" data-field="heroTitleHighlight" placeholder="e painéis para festas">
+              </div>
+            </div>
+            <div class="admin-field">
+              <label for="cfg-hero-subtitle">Frase abaixo do título</label>
+              <textarea id="cfg-hero-subtitle" data-field="heroSubtitle" rows="2"></textarea>
+            </div>
+          </section>
+
+          <section class="admin-panel admin-site-section" data-tab="locamos">
+            <div class="admin-site-section__head">
+              <h2>O que locamos</h2>
+              <button type="button" class="btn btn--outline js-row-add" data-list="locamos"><svg class="admin-btn-icon" aria-hidden="true"><use href="#i-plus"/></svg>Adicionar item</button>
+            </div>
+            <div class="admin-rows" data-list="locamos"></div>
+          </section>
+
+          <section class="admin-panel admin-site-section" data-tab="passos">
+            <div class="admin-site-section__head">
+              <h2>Como funciona</h2>
+              <button type="button" class="btn btn--outline js-row-add" data-list="steps"><svg class="admin-btn-icon" aria-hidden="true"><use href="#i-plus"/></svg>Adicionar passo</button>
+            </div>
+            <div class="admin-rows" data-list="steps"></div>
+          </section>
+
+          <section class="admin-panel admin-site-section" data-tab="montagem">
+            <div class="admin-site-section__head">
+              <h2>Montagem de festa</h2>
+              <button type="button" class="btn btn--outline js-row-add" data-list="montagemBenefits"><svg class="admin-btn-icon" aria-hidden="true"><use href="#i-plus"/></svg>Adicionar benefício</button>
+            </div>
+            <div class="admin-field">
+              <label for="cfg-montagem-quote">Frase em destaque</label>
+              <input type="text" id="cfg-montagem-quote" data-field="montagemQuote" placeholder="Tranquilidade e sofisticação para o seu evento.">
+            </div>
+            <span class="admin-label">Benefícios</span>
+            <div class="admin-rows" data-list="montagemBenefits"></div>
+          </section>
+
+          <div class="admin-savebar">
+            <span class="admin-savebar__status" id="site-status">Tudo salvo</span>
+            <button type="submit" class="btn btn--primary" id="site-save">Salvar alterações</button>
+          </div>
+        </form>
       </section>
     </main>
   </div>
