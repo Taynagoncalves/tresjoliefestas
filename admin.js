@@ -166,11 +166,14 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMontagemImport();
   setupCarousel();
   setupCarouselImport();
+  setupCarouselDuplicates();
   setupSiteForm();
   setupSiteTabs();
   setupSitePreview();
   setupTours();
 });
+
+setupNoZoom();
 
 /* ---------- Login ---------- */
 function setupLogin() {
@@ -451,6 +454,11 @@ function setupCarouselImport() {
 
     btn.disabled = true;
     try {
+      if (await collectionHasItems('carrossel')) {
+        showToast('As fotos do carrossel já tinham sido importadas — nada foi duplicado.');
+        loadCarouselList();
+        return;
+      }
       const batch = window.db.batch();
       EXISTING_CAROUSEL_SLIDES.forEach((slide, i) => {
         batch.set(window.db.collection('carrossel').doc(), {
@@ -476,6 +484,7 @@ async function loadCarouselList() {
     const snapshot = await window.db.collection('carrossel').orderBy('order', 'asc').get();
     cachedSlides = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     document.getElementById('carrossel-import-box').classList.toggle('admin-hidden', cachedSlides.length > 0);
+    renderCarouselDuplicates();
     renderCarouselList();
     renderHeroPreviews();
     updateStats();
@@ -485,6 +494,57 @@ async function loadCarouselList() {
       '<p class="admin-empty">Não foi possível carregar o carrossel. Confira se as regras do Firestore liberam a coleção “carrossel”.</p>';
     console.error(err);
   }
+}
+
+/* Fotos com o mesmo endereço de imagem; fica a primeira de cada, na ordem atual */
+function findDuplicateSlides() {
+  const seen = new Set();
+  return cachedSlides.filter((slide) => {
+    if (seen.has(slide.imageUrl)) return true;
+    seen.add(slide.imageUrl);
+    return false;
+  });
+}
+
+function renderCarouselDuplicates() {
+  const duplicates = findDuplicateSlides();
+  const box = document.getElementById('carrossel-dup-box');
+  box.classList.toggle('admin-hidden', !duplicates.length);
+  if (!duplicates.length) return;
+  document.getElementById('carrossel-dup-text').innerHTML =
+    `<strong>Encontramos ${duplicates.length} ${duplicates.length > 1 ? 'fotos repetidas' : 'foto repetida'} no carrossel.</strong> Clique abaixo para apagar as cópias — fica uma de cada.`;
+}
+
+function setupCarouselDuplicates() {
+  const btn = document.getElementById('carrossel-dup-btn');
+  btn.addEventListener('click', async () => {
+    const duplicates = findDuplicateSlides();
+    if (!duplicates.length) return;
+    btn.disabled = true;
+    try {
+      const remove = new Set(duplicates.map((s) => s.id));
+      const batch = window.db.batch();
+      duplicates.forEach((s) => batch.delete(window.db.collection('carrossel').doc(s.id)));
+      // Renumera as que ficaram para a ordem continuar 0, 1, 2…
+      cachedSlides.filter((s) => !remove.has(s.id)).forEach((s, i) => {
+        batch.update(window.db.collection('carrossel').doc(s.id), { order: i });
+      });
+      await batch.commit();
+      showToast(`${duplicates.length} ${duplicates.length > 1 ? 'fotos repetidas removidas' : 'foto repetida removida'}!`);
+      loadCarouselList();
+    } catch (err) {
+      showToast('Não foi possível remover as fotos repetidas.', 'error');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+/* Confere no banco, na hora, se a coleção já tem itens — evita importar duas vezes */
+async function collectionHasItems(name) {
+  const snapshot = await window.db.collection(name).limit(1).get();
+  return !snapshot.empty;
 }
 
 function renderCarouselList() {
@@ -507,8 +567,10 @@ function renderCarouselList() {
       <div class="admin-slide__body">
         <p class="admin-slide__alt">${slide.alt ? escapeHtml(slide.alt) : '<em>Sem descrição</em>'}</p>
         <div class="admin-slide__actions">
-          <button type="button" class="admin-icon-btn js-move" data-dir="-1" aria-label="Mover para antes" title="Mover para antes" ${i === 0 ? 'disabled' : ''}>${icon('left')}</button>
-          <button type="button" class="admin-icon-btn js-move" data-dir="1" aria-label="Mover para depois" title="Mover para depois" ${i === last ? 'disabled' : ''}>${icon('right')}</button>
+          <span class="admin-move">
+            <button type="button" class="admin-icon-btn js-move" data-dir="-1" aria-label="Mover para antes" title="Mover para antes" ${i === 0 ? 'disabled' : ''}>${icon('left')}</button>
+            <button type="button" class="admin-icon-btn js-move" data-dir="1" aria-label="Mover para depois" title="Mover para depois" ${i === last ? 'disabled' : ''}>${icon('right')}</button>
+          </span>
           <span class="admin-spacer"></span>
           <button type="button" class="admin-icon-btn js-edit-slide" aria-label="Editar foto" title="Editar">${icon('edit')}</button>
           <button type="button" class="admin-icon-btn admin-icon-btn--danger js-delete-slide" aria-label="Excluir foto" title="Excluir">${icon('trash')}</button>
@@ -1035,6 +1097,11 @@ function setupImport() {
 
     btn.disabled = true;
     try {
+      if (await collectionHasItems('cenarios')) {
+        showToast('Os cenários já tinham sido importados — nada foi duplicado.');
+        loadList();
+        return;
+      }
       // Agrupa fotos com o mesmo título e categoria em um único cenário com várias fotos
       const grouped = new Map();
       EXISTING_SITE_ITEMS.forEach((item) => {
@@ -1124,8 +1191,10 @@ function renderList() {
           </div>
           <div class="admin-cenario__actions">
             ${canReorder ? `
-              <button type="button" class="admin-icon-btn js-move" data-dir="-1" aria-label="Mover para antes" title="Mover para antes" ${i === 0 ? 'disabled' : ''}>${icon('left')}</button>
-              <button type="button" class="admin-icon-btn js-move" data-dir="1" aria-label="Mover para depois" title="Mover para depois" ${i === last ? 'disabled' : ''}>${icon('right')}</button>` : ''}
+              <span class="admin-move">
+                <button type="button" class="admin-icon-btn js-move" data-dir="-1" aria-label="Mover para antes" title="Mover para antes" ${i === 0 ? 'disabled' : ''}>${icon('left')}</button>
+                <button type="button" class="admin-icon-btn js-move" data-dir="1" aria-label="Mover para depois" title="Mover para depois" ${i === last ? 'disabled' : ''}>${icon('right')}</button>
+              </span>` : ''}
             <span class="admin-spacer"></span>
             <button type="button" class="admin-icon-btn js-toggle-hidden" aria-label="${item.hidden ? 'Mostrar no site' : 'Esconder do site'}" title="${item.hidden ? 'Mostrar no site' : 'Esconder do site'}">${icon(item.hidden ? 'eye-off' : 'eye')}</button>
             <button type="button" class="admin-icon-btn js-edit" aria-label="Editar" title="Editar">${icon('edit')}</button>
@@ -1271,6 +1340,11 @@ function setupMontagemImport() {
 
     btn.disabled = true;
     try {
+      if (await collectionHasItems('montagem')) {
+        showToast('As fotos da montagem já tinham sido importadas — nada foi duplicado.');
+        loadMontagemList();
+        return;
+      }
       const batch = window.db.batch();
       EXISTING_MONTAGEM_PHOTOS.forEach((imageUrl) => {
         batch.set(window.db.collection('montagem').doc(), { imageUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
@@ -1583,29 +1657,37 @@ const TOURS = {
     { target: '.admin-stats', title: 'Resumo do site', text: 'Quantas fotos e cenários estão no site agora. Clique em um quadrinho para ir direto àquela parte.' },
     { target: '.admin-overview', title: 'Topo do site', text: 'Uma amostra do carrossel, a primeira coisa que as clientes veem. Clique em “Gerenciar carrossel” para trocar as fotos.' },
     { target: '.admin-quick', title: 'Atalhos', text: 'Caminhos rápidos para as tarefas mais comuns: novo cenário, foto no carrossel e foto de montagem.' },
-    { target: '.admin-help-btn', title: 'Ajuda sempre à mão', text: 'Toda tela tem um botão “Como usar”. Clique nele sempre que quiser rever este tutorial.' },
+    { target: '.admin-help-btn', title: 'Ajuda sempre à mão', text: 'Toda tela tem este botão “Como usar”. Clique nele sempre que quiser rever o tutorial.' },
   ],
   carrossel: [
-    { target: '#site-preview', title: 'Prévia real do site', text: 'É exatamente o que as clientes veem. Use “Computador” e “Celular” para ver nos dois tamanhos. Ela se atualiza sozinha depois de cada mudança.' },
-    { target: '[data-dropzone="carrossel"]', title: 'Adicionar fotos', text: 'Arraste fotos para cá ou clique para escolher. Prefira fotos deitadas (horizontais), elas ficam melhores no topo do site.' },
-    { target: '#carrossel-list', title: 'Suas fotos', text: 'A foto 1 é a capa. Arraste os cards ou use as setas ‹ › para mudar a ordem. O lápis troca a foto ou a descrição, e a lixeira exclui.' },
-    { target: '.admin-help-btn', title: 'Pronto!', text: 'Se tiver dúvida, clique em “Como usar” para ver este passo a passo de novo.' },
+    { target: '#site-preview', title: 'Prévia real do site', text: 'É exatamente o que as clientes veem no topo do site. Ela se atualiza sozinha depois de cada mudança.' },
+    { target: '.admin-site-preview__toggle', title: 'Computador ou celular', text: 'Troque aqui para ver como o site fica no computador e no celular.' },
+    { target: '[data-dropzone="carrossel"]', title: 'Adicionar fotos', text: 'Arraste fotos para cá ou clique para escolher. Prefira fotos deitadas (horizontais).' },
+    { target: '.admin-slide', title: 'Cada foto do carrossel', text: 'O número mostra a posição no site. A foto 1 é a capa. Você também pode arrastar o card para mudar a ordem.' },
+    { target: '.admin-slide .admin-move', title: 'Mudar a ordem', text: 'As setas levam a foto uma posição para antes ou para depois.' },
+    { target: '.admin-slide .js-edit-slide', title: 'Editar', text: 'O lápis abre a edição: dá para trocar a foto e escrever uma descrição.' },
+    { target: '.admin-slide .js-delete-slide', title: 'Excluir', text: 'A lixeira tira a foto do carrossel. Sempre pedimos confirmação antes.' },
   ],
   cenarios: [
     { target: '#new-cenario-btn', title: 'Novo cenário', text: 'Cadastre um cenário com título, categoria e fotos. A primeira foto vira a capa.' },
-    { target: '.admin-toolbar', title: 'Buscar e filtrar', text: 'Procure um cenário pelo nome ou troque de categoria (Nossos cenários, Chá de Bebê…).' },
-    { target: '#admin-list', title: 'Seus cenários', text: 'Arraste os cards ou use as setas para escolher a ordem no site. O olho esconde ou mostra o cenário sem apagar. O lápis edita fotos, título e a etiqueta “Novo” ou “Mais pedido”.' },
-    { target: '.admin-help-btn', title: 'Pronto!', text: 'Clique em “Como usar” quando quiser rever este passo a passo.' },
+    { target: '.admin-search', title: 'Buscar', text: 'Digite o nome para encontrar um cenário rapidinho.' },
+    { target: '.admin-filter', title: 'Categorias', text: 'Troque entre “Nossos cenários”, “Chá de Bebê” e outras categorias. O número mostra quantos cenários cada uma tem.' },
+    { target: '.admin-cenario', title: 'Cada cenário', text: 'O número na foto é a posição no site. Arraste o card para mudar a ordem. Clicar na foto abre a edição.' },
+    { target: '.admin-cenario .admin-move', title: 'Mudar a ordem', text: 'As setas levam o cenário uma posição para antes ou para depois.' },
+    { target: '.admin-cenario .js-toggle-hidden', title: 'Esconder ou mostrar', text: 'O olho esconde o cenário do site sem apagar (por exemplo, peça em manutenção). Clique de novo para mostrar.' },
+    { target: '.admin-cenario__actions .js-edit', title: 'Editar', text: 'O lápis abre a edição: fotos, capa, título, categoria e a etiqueta “Novo” ou “Mais pedido”.' },
+    { target: '.admin-cenario .js-delete', title: 'Excluir', text: 'A lixeira apaga o cenário de vez. Sempre pedimos confirmação antes.' },
   ],
   montagem: [
     { target: '[data-dropzone="montagem"]', title: 'Adicionar fotos', text: 'Arraste fotos de montagens para cá ou clique para escolher — pode ser várias de uma vez.' },
-    { target: '#montagem-list', title: 'Suas fotos', text: 'Passe o mouse sobre uma foto (ou toque, no celular) para trocá-la ou excluí-la.' },
-    { target: '.admin-help-btn', title: 'Pronto!', text: 'Clique em “Como usar” quando quiser rever este passo a passo.' },
+    { target: '.admin-photo', title: 'Cada foto', text: 'Estas são as fotos da seção “Montagem de festa”, na ordem em que aparecem no site.' },
+    { target: '.admin-photo .admin-photo__actions label', title: 'Trocar foto', text: 'Escolha uma foto nova para ficar no lugar desta.' },
+    { target: '.admin-photo .js-montagem-delete', title: 'Excluir', text: 'Tira a foto do site. Sempre pedimos confirmação antes.' },
   ],
   site: [
     { target: '.admin-tabs', title: 'Escolha o que editar', text: 'Cada aba é uma parte do site: contato e horários, topo, “O que locamos”, “Como funciona” e montagem.' },
-    { target: '.admin-site-section.is-active', title: 'Edite os campos', text: 'Mude os textos à vontade. Nas listas, use as setas para reordenar, a lixeira para remover e o botão “Adicionar” para criar itens novos.' },
-    { target: '.admin-savebar', title: 'Salvar', text: 'Quando terminar, clique em “Salvar alterações”. O aviso à esquerda mostra se ainda tem algo sem salvar.' },
+    { target: '.admin-site-section.is-active', title: 'Edite os campos', text: 'Mude os textos à vontade. Nas abas com listas, use as setas para reordenar, a lixeira para remover e “Adicionar” para criar itens.' },
+    { target: '#site-save', title: 'Salvar', text: 'Quando terminar, clique em “Salvar alterações”. O aviso ao lado mostra se ainda tem algo sem salvar.' },
   ],
 };
 
@@ -1680,7 +1762,25 @@ function setupTours() {
     if (e.key === 'ArrowRight') tour.querySelector('.admin-tour__next').click();
     if (e.key === 'ArrowLeft' && tourState.index > 0) showTourStep(tourState.index - 1);
   });
+  // Se a página rolar ou mudar de tamanho, o destaque acompanha o elemento
   window.addEventListener('resize', () => { if (tourState) positionTour(); });
+  window.addEventListener('scroll', () => { if (tourState) positionTour(); }, { passive: true });
+}
+
+/* O painel fica sempre no tamanho certo: sem zoom por pinça, duplo toque ou Ctrl +/- */
+function setupNoZoom() {
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((type) => {
+    document.addEventListener(type, (e) => e.preventDefault(), { passive: false });
+  });
+  document.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+  window.addEventListener('wheel', (e) => {
+    if (e.ctrlKey || e.metaKey) e.preventDefault();
+  }, { passive: false });
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0', '_'].includes(e.key)) e.preventDefault();
+  });
 }
 
 /* Na primeira vez que cada tela é aberta, o tutorial começa sozinho */
@@ -1699,11 +1799,15 @@ function findTourTarget(selector) {
 }
 
 function startTour(view) {
+  // admin-touring deixa visíveis os botões que só aparecem ao passar o mouse
+  document.body.classList.add('admin-touring');
   const steps = (TOURS[view] || []).filter((step) => findTourTarget(step.target));
-  if (!steps.length) return;
+  if (!steps.length) {
+    document.body.classList.remove('admin-touring');
+    return;
+  }
   tourState = { view, steps, index: 0 };
   document.getElementById('admin-tour').classList.remove('admin-hidden');
-  document.body.classList.add('admin-no-scroll');
   showTourStep(0);
 }
 
@@ -1723,9 +1827,10 @@ function showTourStep(index) {
   const target = findTourTarget(step.target);
   tourState.target = target;
   if (target) {
-    document.body.classList.remove('admin-no-scroll');
-    target.scrollIntoView({ block: 'center', behavior: 'auto' });
-    document.body.classList.add('admin-no-scroll');
+    // Rolagem instantânea (o CSS do site usa rolagem suave, que deixaria o destaque fora do lugar)
+    const r = target.getBoundingClientRect();
+    const y = window.scrollY + r.top - Math.max((window.innerHeight - r.height) / 2, 80);
+    window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
   }
   positionTour();
   tour.querySelector('.admin-tour__next').focus();
@@ -1779,5 +1884,5 @@ function endTour() {
   markTourSeen(tourState.view);
   tourState = null;
   document.getElementById('admin-tour').classList.add('admin-hidden');
-  document.body.classList.remove('admin-no-scroll');
+  document.body.classList.remove('admin-touring');
 }

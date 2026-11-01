@@ -1675,7 +1675,7 @@ svg use { pointer-events: none; }
   outline: 2px solid rgba(255, 255, 255, 0.9);
   outline-offset: 0;
   pointer-events: none;
-  transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+
 }
 .admin-tour__card {
   position: fixed;
@@ -1715,3 +1715,19 @@ svg use { pointer-events: none; }
   .admin-view__actions .btn { flex: 1; }
   .admin-tabs { top: 64px; }
 }
+
+/* ---------- Sem zoom no painel ---------- */
+html { touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* No celular, campos com letra menor que 16px fazem o iPhone dar zoom ao tocar */
+@media (max-width: 899px), (hover: none) {
+  .admin-body input,
+  .admin-body select,
+  .admin-body textarea { font-size: 16px !important; }
+}
+
+/* Grupo das setas de ordem (destacado junto no tutorial) */
+.admin-move { display: inline-flex; align-items: center; gap: 0.1rem; border-radius: 10px; }
+
+/* Durante o tutorial, mostra os botões que só aparecem ao passar o mouse */
+.admin-touring .admin-photo__actions,
+.admin-touring .admin-slide__grip { opacity: 1; }

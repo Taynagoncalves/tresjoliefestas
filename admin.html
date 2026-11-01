@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Admin — Très Jolie Festas</title>
   <link rel="icon" type="image/png" href="imagens/logo/logo-tresjolie.png">
@@ -201,6 +201,14 @@
           <div>
             <p><strong>Primeira vez aqui?</strong> Importe as fotos que já estão fixas no carrossel do site para poder trocá-las e excluí-las por aqui. Faça isso uma única vez.</p>
             <button type="button" class="btn btn--outline" id="carrossel-import-btn">Importar fotos atuais do carrossel</button>
+          </div>
+        </div>
+
+        <div class="admin-import admin-hidden" id="carrossel-dup-box">
+          <svg class="admin-import__icon" aria-hidden="true"><use href="#i-alert"/></svg>
+          <div>
+            <p id="carrossel-dup-text"></p>
+            <button type="button" class="btn btn--primary" id="carrossel-dup-btn">Remover fotos repetidas</button>
           </div>
         </div>
 
