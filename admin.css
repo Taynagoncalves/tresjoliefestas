@@ -60,7 +60,8 @@ svg use { pointer-events: none; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.admin-body .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.admin-body .btn:hover { transform: none; }
+.admin-body .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .admin-btn-danger {
   background: var(--admin-danger-bg);
@@ -79,7 +80,7 @@ svg use { pointer-events: none; }
   border-radius: 10px;
   color: var(--admin-muted);
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 .admin-icon-btn svg {
   width: 18px;
@@ -118,7 +119,6 @@ svg use { pointer-events: none; }
   border-radius: 50%;
   filter: blur(60px);
   opacity: 0.55;
-  animation: admin-float 14s ease-in-out infinite alternate;
 }
 .admin-login-blob--1 {
   width: 420px;
@@ -133,11 +133,6 @@ svg use { pointer-events: none; }
   bottom: -120px;
   right: -80px;
   background: #E9D3B4;
-  animation-delay: -6s;
-}
-@keyframes admin-float {
-  from { transform: translate(0, 0) scale(1); }
-  to { transform: translate(40px, 30px) scale(1.1); }
 }
 
 .admin-login-card {
@@ -150,11 +145,6 @@ svg use { pointer-events: none; }
   border-radius: var(--radius-lg);
   box-shadow: var(--admin-shadow-lg);
   padding: clamp(1.75rem, 6vw, 2.6rem);
-  animation: admin-rise 0.6s var(--admin-ease);
-}
-@keyframes admin-rise {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: none; }
 }
 
 .admin-login-brand { text-align: center; margin-bottom: 1.8rem; }
@@ -387,7 +377,7 @@ svg use { pointer-events: none; }
 }
 
 .admin-view { display: none; }
-.admin-view.is-active { display: block; animation: admin-rise 0.45s var(--admin-ease); }
+.admin-view.is-active { display: block; }
 
 .admin-view__header {
   display: flex;
@@ -446,9 +436,9 @@ svg use { pointer-events: none; }
   border: 1px solid var(--admin-line);
   border-radius: var(--radius-md);
   box-shadow: var(--admin-shadow);
-  transition: transform 0.25s var(--admin-ease), box-shadow 0.25s ease;
+  transition: box-shadow 0.2s ease;
 }
-.admin-stat:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(201, 143, 134, 0.2); }
+.admin-stat:hover { box-shadow: 0 14px 30px rgba(201, 143, 134, 0.2); }
 .admin-stat__icon {
   display: flex;
   align-items: center;
@@ -535,10 +525,9 @@ svg use { pointer-events: none; }
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transform: scale(1.06);
-  transition: opacity 1s ease, transform 4.5s ease;
+  transition: opacity 1s ease;
 }
-.js-hero-preview img.is-active { opacity: 1; transform: scale(1); }
+.js-hero-preview img.is-active { opacity: 1; }
 .admin-hero-preview__overlay {
   position: absolute;
   inset: 0;
@@ -632,13 +621,13 @@ svg use { pointer-events: none; }
   border: 1px solid var(--admin-line);
   border-radius: var(--radius-md);
   box-shadow: var(--admin-shadow);
-  transition: transform 0.25s var(--admin-ease), box-shadow 0.25s ease, opacity 0.2s ease, outline-color 0.2s ease;
+  transition: box-shadow 0.2s ease, opacity 0.2s ease, outline-color 0.2s ease;
   outline: 2px dashed transparent;
   outline-offset: 3px;
 }
-.admin-slide:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(47, 42, 40, 0.1); }
+.admin-slide:hover { box-shadow: 0 14px 30px rgba(47, 42, 40, 0.1); }
 .admin-slide.is-dragging { opacity: 0.4; }
-.admin-slide.is-over { outline-color: var(--color-rose-gold); transform: scale(1.02); }
+.admin-slide.is-over { outline-color: var(--color-rose-gold); }
 
 .admin-slide__media {
   position: relative;
@@ -730,14 +719,13 @@ svg use { pointer-events: none; }
   border-radius: var(--radius-md);
   background: var(--color-pink-bg);
   cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 .admin-dropzone:hover,
 .admin-dropzone:focus-within { border-color: var(--color-rose-gold); background: var(--color-pink-bg-soft); }
 .admin-dropzone.is-dragging {
   border-color: var(--color-rose-gold);
   background: var(--color-pink-bg-soft);
-  transform: scale(1.015);
 }
 .admin-dropzone > svg {
   width: 44px;
@@ -752,15 +740,10 @@ svg use { pointer-events: none; }
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition: transform 0.3s var(--admin-ease);
 }
-.admin-dropzone:hover > svg,
-.admin-dropzone.is-dragging > svg { transform: translateY(-4px); }
 .admin-dropzone strong { font-size: 0.95rem; font-weight: 600; color: var(--admin-ink); }
 .admin-dropzone > span:not(.admin-dropzone__progress) { max-width: 300px; font-size: 0.8rem; color: var(--admin-muted); }
 .admin-dropzone.is-busy { cursor: progress; pointer-events: none; }
-.admin-dropzone.is-busy > svg { animation: admin-bob 1s ease-in-out infinite alternate; }
-@keyframes admin-bob { to { transform: translateY(-6px); } }
 
 .admin-dropzone__progress {
   position: absolute;
@@ -903,9 +886,9 @@ svg use { pointer-events: none; }
   border: 1px solid var(--admin-line);
   border-radius: var(--radius-md);
   box-shadow: var(--admin-shadow);
-  transition: transform 0.25s var(--admin-ease), box-shadow 0.25s ease;
+  transition: box-shadow 0.2s ease;
 }
-.admin-cenario:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(47, 42, 40, 0.1); }
+.admin-cenario:hover { box-shadow: 0 14px 30px rgba(47, 42, 40, 0.1); }
 .admin-cenario__media {
   position: relative;
   display: block;
@@ -920,9 +903,7 @@ svg use { pointer-events: none; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s var(--admin-ease);
 }
-.admin-cenario:hover .admin-cenario__media img { transform: scale(1.05); }
 .admin-cenario__count {
   position: absolute;
   bottom: 0.55rem;
@@ -973,8 +954,7 @@ svg use { pointer-events: none; }
   background: var(--color-pink-bg-soft);
   box-shadow: var(--admin-shadow);
 }
-.admin-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s var(--admin-ease); }
-.admin-photo:hover img { transform: scale(1.05); }
+.admin-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .admin-photo__actions {
   position: absolute;
   top: 0.55rem;
@@ -982,13 +962,12 @@ svg use { pointer-events: none; }
   display: flex;
   gap: 0.35rem;
   opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 .admin-photo:hover .admin-photo__actions,
-.admin-photo:focus-within .admin-photo__actions { opacity: 1; transform: none; }
+.admin-photo:focus-within .admin-photo__actions { opacity: 1; }
 @media (hover: none) {
-  .admin-photo__actions { opacity: 1; transform: none; }
+  .admin-photo__actions { opacity: 1; }
 }
 .admin-photo.is-busy::after {
   content: "Enviando...";
@@ -1033,10 +1012,10 @@ svg use { pointer-events: none; }
   width: min(480px, 100%);
   background: var(--admin-surface);
   box-shadow: var(--admin-shadow-lg);
-  transform: translateX(100%);
-  transition: transform 0.35s var(--admin-ease);
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
-.admin-drawer-overlay.is-open .admin-drawer { transform: none; }
+.admin-drawer-overlay.is-open .admin-drawer { opacity: 1; }
 
 .admin-drawer__header {
   display: flex;
@@ -1150,8 +1129,8 @@ svg use { pointer-events: none; }
   animation: admin-modal-pop 0.25s var(--admin-ease);
 }
 @keyframes admin-modal-pop {
-  from { transform: scale(0.94); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .admin-modal__icon {
   display: inline-flex;
@@ -1223,10 +1202,10 @@ svg use { pointer-events: none; }
 .admin-toast--success svg { background: #4CAF50; }
 .admin-toast--error svg { background: #E5534B; }
 @keyframes admin-toast-in {
-  from { opacity: 0; transform: translateY(12px) scale(0.96); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-@keyframes admin-toast-out { to { opacity: 0; transform: translateX(20px); } }
+@keyframes admin-toast-out { to { opacity: 0; } }
 
 /* ---------- Celular ---------- */
 @media (max-width: 899px) {
@@ -1284,6 +1263,5 @@ svg use { pointer-events: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .admin-login-blob, .admin-hero-preview__badge i { animation: none; }
-  .admin-view.is-active, .admin-login-card { animation: none; }
+  .admin-hero-preview__badge i { animation: none; }
 }

@@ -100,6 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Uma foto solta fora da área de envio faria o navegador sair do painel para abrir a imagem
+  ['dragover', 'drop'].forEach((type) => window.addEventListener(type, (e) => e.preventDefault()));
+
   setupLogin();
   document.getElementById('logout-btn').addEventListener('click', () => window.auth.signOut());
 
