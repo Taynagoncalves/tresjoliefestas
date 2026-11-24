@@ -160,12 +160,11 @@
           <img class="js-photo" data-src="imagens/imagem%2010.jpeg" alt="Cenário tema capivara Feliz Aniversário com número em neon" loading="lazy">
         </div>
       </div>
-      <div class="hero__carousel-dots" id="hero-carousel-dots"></div>
+      <div class="hero__overlay" aria-hidden="true"></div>
     </div>
 
     <div class="container hero__content-wrap">
       <div class="hero__content">
-        <p class="hero__eyebrow">Asa Sul · Brasília</p>
         <h1 class="hero__title"><span id="cfg-hero-title">Locação de móveis, louças</span><br><em id="cfg-hero-highlight">e painéis para festas</em></h1>
         <p class="hero__subtitle" id="cfg-hero-subtitle">Cenários personalizados para tornar a sua festa inesquecível.</p>
         <div class="hero__actions">
@@ -173,11 +172,21 @@
             <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
             Fale no WhatsApp
           </a>
-          <a href="#cenarios" class="btn btn--ghost">Veja nossos cenários</a>
+          <a href="#cenarios" class="btn btn--outline btn--outline-light">Veja nossos cenários</a>
         </div>
       </div>
     </div>
 
+    <div class="hero__carousel-dots" id="hero-carousel-dots"></div>
+
+    <button class="hero__scroll" id="hero-scroll" aria-label="Rolar para a próxima seção">
+      <span>Role</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"/></svg>
+    </button>
+
+    <div class="wave-divider" aria-hidden="true">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,50 L1440,100 L0,100 Z"></path></svg>
+    </div>
   </section>
 
   <!-- ===== O QUE LOCAMOS ===== -->
@@ -292,7 +301,7 @@
   <section class="section montagem" id="montagem">
     <div class="container montagem__inner">
       <div class="montagem__content fade-in-up">
-        <p class="eyebrow">Serviço exclusivo</p>
+        <p class="eyebrow eyebrow--light">Serviço exclusivo</p>
         <h2 class="section__title">Montagem de festa</h2>
         <p class="montagem__quote" id="cfg-montagem-quote">Tranquilidade e sofisticação para o seu evento.</p>
 
@@ -302,13 +311,15 @@
           <li><svg class="icon icon--stroke" aria-hidden="true"><use href="#icon-check"/></svg>A comodidade de receber sua festa pronta, no seu endereço.</li>
         </ul>
 
-        <a href="#" class="btn btn--primary js-whatsapp" target="_blank" rel="noopener">
+        <a href="#" class="btn btn--light js-whatsapp" target="_blank" rel="noopener">
           <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
           Solicitar montagem completa
         </a>
       </div>
 
-      <div class="montagem__grid fade-in-up" id="montagem-grid"></div>
+      <div class="montagem__gallery fade-in-up">
+        <div class="montagem__grid" id="montagem-grid" data-collapse="6"></div>
+      </div>
     </div>
   </section>
 

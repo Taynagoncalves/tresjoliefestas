@@ -301,21 +301,23 @@ function renderGalleryGrid(containerId, items) {
   }).join('');
 }
 
-/* Mostra só os primeiros cenários de cada galeria, com botão para ver o resto */
+/* Mostra só os primeiros itens de cada galeria (cenários e montagem), com botão para ver o resto */
 function setupGalleryCollapse() {
-  document.querySelectorAll('.gallery-grid[data-collapse]').forEach((grid) => {
+  document.querySelectorAll('[data-collapse]').forEach((grid) => {
     const limit = Number(grid.dataset.collapse);
     const total = grid.children.length;
     if (total <= limit) return;
 
+    const isMontagem = grid.id === 'montagem-grid';
+    const moreLabel = isMontagem ? `Ver todas as ${total} fotos` : `Ver todos os ${total} cenários`;
     grid.classList.add('is-collapsed');
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'btn btn--ghost gallery-more';
-    btn.textContent = `Ver todos os ${total} cenários`;
+    btn.className = `btn ${isMontagem ? 'btn--light' : 'btn--ghost'} gallery-more`;
+    btn.textContent = moreLabel;
     btn.addEventListener('click', () => {
       const collapsed = grid.classList.toggle('is-collapsed');
-      btn.textContent = collapsed ? `Ver todos os ${total} cenários` : 'Mostrar menos';
+      btn.textContent = collapsed ? moreLabel : 'Mostrar menos';
       if (collapsed) grid.closest('section').scrollIntoView({ behavior: 'smooth' });
     });
     grid.after(btn);
