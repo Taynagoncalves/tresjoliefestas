@@ -14,14 +14,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   applySiteConfig(siteConfig);
   setupWhatsappLinks();
   setupGalleryCollapse();
-  ['#inicio .hero__title', '.section__title', '.cta__title'].forEach((sel) => document.querySelectorAll(sel).forEach(splitWords));
   setupMobileMenu();
   setupSmoothScrollAndActiveMenu();
   setupScrollAnimations();
   setupImagePlaceholders();
   setupGalleryLightbox();
   setupHeroCarousel();
-  setupParallax();
   setupCart();
   setYear();
 });
@@ -382,7 +380,7 @@ function setupHeaderScroll() {
   if (!header) return;
 
   const toggle = () => {
-    header.classList.toggle('scrolled', window.scrollY > 60);
+    header.classList.toggle('scrolled', window.scrollY > 10);
   };
   toggle();
   window.addEventListener('scroll', toggle, { passive: true });
@@ -638,78 +636,71 @@ function setupGalleryLightbox() {
   }, { passive: true });
 }
 
-/* ---------- Carrossel de cinema do Hero ----------
-   As fotos ficam empilhadas: a nova dissolve por cima da anterior enquanto o
-   CSS faz um zoom lento. Um contador "01 / 06" e linhas de progresso mostram
-   quanto falta para a próxima foto. */
-const HERO_SLIDE_MS = 6500;
-
+/* ---------- Carrossel de fundo do Hero ---------- */
 function setupHeroCarousel() {
-  const hero = document.getElementById('inicio');
+  const carousel = document.getElementById('hero-carousel');
   const track = document.getElementById('hero-carousel-track');
   const dotsWrap = document.getElementById('hero-carousel-dots');
   const scrollBtn = document.getElementById('hero-scroll');
 
-  if (!hero || !track || !dotsWrap) return;
+  if (!carousel || !track || !dotsWrap) return;
 
   const slides = Array.from(track.children);
   if (!slides.length) return;
 
   let currentIndex = 0;
-  let timer = null;
+  let autoplayTimer = null;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const pad = (n) => String(n).padStart(2, '0');
-
-  hero.style.setProperty('--slide-duration', `${HERO_SLIDE_MS}ms`);
-  const counter = document.createElement('span');
-  counter.className = 'hero__counter';
-  dotsWrap.appendChild(counter);
 
   const dots = slides.map((_, index) => {
     const dot = document.createElement('button');
     dot.className = 'hero__carousel-dot';
     dot.setAttribute('aria-label', `Ir para foto ${index + 1}`);
-    dot.addEventListener('click', () => goTo(index));
+    dot.addEventListener('click', () => { goTo(index); startAutoplay(); });
     dotsWrap.appendChild(dot);
     return dot;
   });
 
-  function update(previousIndex) {
-    slides.forEach((slide, index) => {
-      slide.classList.toggle('is-active', index === currentIndex);
-      // A anterior continua com o zoom enquanto some, para não dar "pulo"
-      slide.classList.toggle('is-leaving', index === previousIndex && index !== currentIndex);
-    });
-    dots.forEach((dot, index) => {
-      dot.classList.remove('is-active');
-      dot.classList.toggle('is-past', index < currentIndex);
-    });
-    void dotsWrap.offsetWidth; // reinicia a animação da linha de progresso
-    dots[currentIndex].classList.add('is-active');
-    counter.innerHTML = `<strong>${pad(currentIndex + 1)}</strong> / ${pad(slides.length)}`;
+  function update() {
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    dots.forEach((dot, index) => dot.classList.toggle('is-active', index === currentIndex));
   }
 
   function goTo(index) {
-    const previous = currentIndex;
     currentIndex = (index + slides.length) % slides.length;
-    update(previous);
-    schedule();
+    update();
   }
 
-  function schedule() {
-    clearTimeout(timer);
-    if (prefersReducedMotion || slides.length < 2) return;
-    timer = setTimeout(() => goTo(currentIndex + 1), HERO_SLIDE_MS);
+  function next() { goTo(currentIndex + 1); }
+  function prev() { goTo(currentIndex - 1); }
+
+  function startAutoplay() {
+    if (prefersReducedMotion) return;
+    stopAutoplay();
+    autoplayTimer = setInterval(next, 4500);
   }
 
-  // Swipe (mobile) — no hero inteiro, já que o texto fica por cima das fotos
+  function stopAutoplay() {
+    if (autoplayTimer) clearInterval(autoplayTimer);
+    autoplayTimer = null;
+  }
+
+  carousel.addEventListener('mouseenter', stopAutoplay);
+  carousel.addEventListener('mouseleave', startAutoplay);
+
+  // Swipe (mobile)
   let touchStartX = 0;
-  hero.addEventListener('touchstart', (e) => {
+  carousel.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
+    stopAutoplay();
   }, { passive: true });
-  hero.addEventListener('touchend', (e) => {
+
+  carousel.addEventListener('touchend', (e) => {
     const diff = e.changedTouches[0].screenX - touchStartX;
-    if (Math.abs(diff) > 40) goTo(currentIndex + (diff > 0 ? -1 : 1));
+    if (Math.abs(diff) > 40) {
+      diff > 0 ? prev() : next();
+    }
+    startAutoplay();
   }, { passive: true });
 
   if (scrollBtn) {
@@ -719,107 +710,8 @@ function setupHeroCarousel() {
     });
   }
 
-  update(-1);
-  schedule();
-
-  // O texto entra quando a primeira foto já carregou (ou logo depois, se demorar)
-  const firstImg = slides[0].querySelector('img');
-  const reveal = () => hero.classList.add('is-ready');
-  if (firstImg && !firstImg.complete) {
-    firstImg.addEventListener('load', reveal, { once: true });
-    firstImg.addEventListener('error', reveal, { once: true });
-    setTimeout(reveal, 1200);
-  } else {
-    requestAnimationFrame(reveal);
-  }
-}
-
-/* Separa um título em palavras, para elas surgirem uma a uma.
-   Mantém os elementos internos (em, span, br) e só embrulha o texto. */
-function splitWords(el) {
-  if (!el || el.dataset.split) return;
-  el.dataset.split = '1';
-  let i = 0;
-  const walk = (node) => {
-    Array.from(node.childNodes).forEach((child) => {
-      if (child.nodeType === Node.ELEMENT_NODE) {
-        walk(child);
-        return;
-      }
-      if (child.nodeType !== Node.TEXT_NODE || !child.textContent.trim()) return;
-      const frag = document.createDocumentFragment();
-      child.textContent.split(/(\s+)/).forEach((part) => {
-        if (!part) return;
-        if (/^\s+$/.test(part)) {
-          frag.appendChild(document.createTextNode(' '));
-          return;
-        }
-        const word = document.createElement('span');
-        word.className = 'word';
-        const inner = document.createElement('span');
-        inner.className = 'word__inner';
-        inner.style.setProperty('--i', i);
-        inner.textContent = part;
-        i += 1;
-        word.appendChild(inner);
-        frag.appendChild(word);
-      });
-      child.replaceWith(frag);
-    });
-  };
-  walk(el);
-}
-
-/* Leve profundidade ao rolar: o texto do topo sobe devagar e esmaece, e
-   algumas fotos se movem um pouquinho mais lento que a página. */
-function setupParallax() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const hero = document.getElementById('inicio');
-  const heroContent = hero && hero.querySelector('.hero__content-wrap');
-  const heroBg = hero && hero.querySelector('.hero__bg');
-  const layers = Array.from(document.querySelectorAll('[data-parallax]'));
-  const montagemItems = Array.from(document.querySelectorAll('.montagem__item'));
-  let ticking = false;
-
-  function update() {
-    ticking = false;
-    const vh = window.innerHeight;
-    const y = window.scrollY;
-
-    if (hero && y < hero.offsetHeight) {
-      const progress = y / hero.offsetHeight;
-      if (heroContent) {
-        heroContent.style.transform = `translateY(${y * 0.28}px)`;
-        heroContent.style.opacity = String(Math.max(0, 1 - progress * 1.4));
-      }
-      if (heroBg) heroBg.style.transform = `translateY(${y * 0.18}px)`;
-    }
-
-    layers.forEach((el) => {
-      const r = el.parentElement.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > vh) return;
-      // A foto tem 12% de sobra em cima e embaixo; o movimento nunca passa disso
-      const limit = r.height * 0.1;
-      const offset = Math.max(-limit, Math.min(limit, (r.top + r.height / 2 - vh / 2) * Number(el.dataset.parallax)));
-      el.style.transform = `translate3d(0, ${offset}px, 0)`;
-    });
-
-    montagemItems.forEach((item) => {
-      const r = item.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > vh) return;
-      const offset = Math.max(-14, Math.min(14, (r.top + r.height / 2 - vh / 2) * -0.04));
-      item.style.setProperty('--parallax', `${offset}px`);
-    });
-  }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(update);
-    }
-  }, { passive: true });
-  window.addEventListener('resize', update);
   update();
+  startAutoplay();
 }
 
 /* ---------- Carrinho de locação ---------- */
